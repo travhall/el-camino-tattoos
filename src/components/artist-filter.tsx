@@ -23,17 +23,13 @@ export function ArtistFilter({
 
   return (
     <nav aria-label="Filter portfolio by artist">
-      <ul className="flex flex-wrap gap-2">
+      <ul className="filter-list">
         {items.map(({ href, label, active }) => (
           <li key={href}>
             <Link
               href={href}
               aria-current={active ? "page" : undefined}
-              className={`inline-block rounded-full border border-foreground/30 px-4 py-1.5 text-sm ${
-                active
-                  ? "bg-foreground text-background"
-                  : "hover:bg-foreground/10"
-              }`}
+              className="filter-chip"
             >
               {label}
             </Link>

@@ -9,7 +9,8 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check:images": "node scripts/check-images.mjs"
+    "check:images": "node scripts/check-images.mjs",
+    "type-scale": "node scripts/type-scale.mjs && prettier --write src/styles/type-scale.css src/styles/type-scale.generated.json"
   },
   "dependencies": {
     "@keystatic/core": "^0.6.9",

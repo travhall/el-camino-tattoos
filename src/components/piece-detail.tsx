@@ -17,34 +17,32 @@ export function PieceDetail({
   ].filter((row): row is [string, string] => Boolean(row));
 
   return (
-    <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
-      <div className="relative aspect-[4/5] bg-foreground/5">
+    <div className="piece-detail">
+      <div className="piece-detail__media">
         <Image
           src={piece.image}
           alt={artist ? `${piece.title} by ${artist.name}` : piece.title}
           fill
           priority
           sizes="(min-width: 768px) 66vw, 100vw"
-          className="object-contain"
+          className="image-contain"
         />
       </div>
-      <div className="space-y-4">
-        <h1 id="piece-title" className="text-3xl font-semibold tracking-tight">
-          {piece.title}
-        </h1>
+      <div className="stack">
+        <h1 id="piece-title">{piece.title}</h1>
         {artist && (
           <p>
             by{" "}
-            <Link href={`/artists/${artist.slug}`} className="underline">
+            <Link href={`/artists/${artist.slug}`} className="link">
               {artist.name}
             </Link>
           </p>
         )}
         {details.length > 0 && (
-          <dl className="space-y-1 text-sm">
+          <dl className="piece-detail__meta">
             {details.map(([term, value]) => (
-              <div key={term} className="flex gap-2">
-                <dt className="text-foreground/70">{term}</dt>
+              <div key={term} className="piece-detail__meta-row">
+                <dt className="piece-detail__term">{term}</dt>
                 <dd>{value}</dd>
               </div>
             ))}

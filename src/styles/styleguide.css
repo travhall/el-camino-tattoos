@@ -1,0 +1,87 @@
+/* Layout for /styleguide only. Everything else there uses the real classes. */
+@layer components {
+  .sg-section {
+    @apply grid gap-6 border-t border-line pt-8;
+  }
+
+  /* Force a family for side-by-side comparison. */
+  .sg-face-body {
+    @apply font-sans;
+  }
+
+  .sg-face-display {
+    @apply font-display;
+  }
+
+  .sg-split {
+    @apply grid gap-8 md:grid-cols-2;
+  }
+
+  .sg-swatches {
+    @apply grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6;
+  }
+
+  .sg-swatch {
+    @apply h-20 rounded-md border border-line;
+  }
+
+  .sg-swatch--background {
+    @apply bg-background;
+  }
+
+  .sg-swatch--surface {
+    @apply bg-surface;
+  }
+
+  .sg-swatch--accent {
+    @apply bg-accent;
+  }
+
+  .sg-swatch--foreground {
+    @apply bg-foreground;
+  }
+
+  .sg-swatch--muted {
+    @apply bg-muted;
+  }
+
+  .sg-swatch--outline {
+    @apply bg-outline;
+  }
+
+  .sg-swatch--line {
+    @apply bg-line;
+  }
+
+  .sg-swatch--hover {
+    @apply bg-hover;
+  }
+
+  .sg-swatch--subtle {
+    @apply bg-subtle;
+  }
+
+  .sg-scale-row {
+    @apply grid items-baseline gap-2 md:grid-cols-[11rem_1fr];
+  }
+
+  .sg-tile {
+    @apply bg-surface p-3 text-sm text-muted;
+  }
+
+  .sg-tile--piece {
+    @apply aspect-[4/5];
+  }
+
+  .sg-tile--portrait {
+    @apply aspect-[3/4];
+  }
+
+  .sg-form {
+    @apply grid max-w-md gap-4;
+  }
+
+  .sg-gallery {
+    @apply grid grid-cols-2 gap-3 md:grid-cols-4;
+  }
+}

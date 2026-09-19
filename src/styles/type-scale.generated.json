@@ -1,0 +1,94 @@
+{
+  "config": {
+    "minViewport": 320,
+    "maxViewport": 1240,
+    "minBase": 16,
+    "maxBase": 18,
+    "minRatio": 1.2,
+    "maxRatio": 1.333,
+    "smallRatio": 1.125,
+    "floorPx": 12
+  },
+  "steps": [
+    {
+      "name": "xs",
+      "step": -2,
+      "lineHeight": 1.5,
+      "tracking": null,
+      "minPx": 12.642,
+      "maxPx": 14.2222
+    },
+    {
+      "name": "sm",
+      "step": -1,
+      "lineHeight": 1.5,
+      "tracking": null,
+      "minPx": 14.2222,
+      "maxPx": 16
+    },
+    {
+      "name": "base",
+      "step": 0,
+      "lineHeight": 1.55,
+      "tracking": null,
+      "minPx": 16,
+      "maxPx": 18
+    },
+    {
+      "name": "lg",
+      "step": 1,
+      "lineHeight": 1.45,
+      "tracking": null,
+      "minPx": 19.2,
+      "maxPx": 23.994
+    },
+    {
+      "name": "xl",
+      "step": 2,
+      "lineHeight": 1.3,
+      "tracking": null,
+      "minPx": 23.04,
+      "maxPx": 31.984
+    },
+    {
+      "name": "2xl",
+      "step": 3,
+      "lineHeight": 1.2,
+      "tracking": null,
+      "minPx": 27.648,
+      "maxPx": 42.6347
+    },
+    {
+      "name": "3xl",
+      "step": 4,
+      "lineHeight": 1.1,
+      "tracking": "-0.01em",
+      "minPx": 33.1776,
+      "maxPx": 56.832
+    },
+    {
+      "name": "4xl",
+      "step": 5,
+      "lineHeight": 1.05,
+      "tracking": "-0.02em",
+      "minPx": 39.8131,
+      "maxPx": 75.7571
+    },
+    {
+      "name": "5xl",
+      "step": 6,
+      "lineHeight": 1,
+      "tracking": "-0.02em",
+      "minPx": 47.7757,
+      "maxPx": 100.9842
+    },
+    {
+      "name": "6xl",
+      "step": 7,
+      "lineHeight": 1,
+      "tracking": "-0.03em",
+      "minPx": 57.3309,
+      "maxPx": 134.6119
+    }
+  ]
+}

@@ -29,8 +29,8 @@ export default async function ArtistPortfolioPage(
   if (!artist) notFound();
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-4xl font-semibold tracking-tight">Portfolio</h1>
+    <div className="stack stack--lg">
+      <h1>Portfolio</h1>
       <ArtistFilter artists={artists} activeSlug={artist.slug} />
       <PieceGrid pieces={pieces} artists={artists} />
     </div>

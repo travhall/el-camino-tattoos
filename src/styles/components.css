@@ -1,0 +1,173 @@
+/*
+ * Component styles. Markup uses these semantic (BEM-style) classes; Tailwind
+ * utilities are applied here with @apply, not inline in JSX.
+ */
+@layer components {
+  /* Site shell */
+  .site-header {
+    @apply border-b border-line;
+  }
+
+  .site-header__inner {
+    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4;
+  }
+
+  .site-header__brand {
+    @apply font-display text-xl font-semibold;
+  }
+
+  .site-nav {
+    @apply flex flex-wrap items-center gap-x-5 gap-y-2;
+  }
+
+  .site-nav__link {
+    @apply hover:underline;
+  }
+
+  .site-footer {
+    @apply mt-auto border-t border-line bg-surface;
+  }
+
+  .site-footer__inner {
+    @apply mx-auto max-w-6xl px-4 py-8 text-sm text-muted;
+  }
+
+  /* Button: primary by default; combine with a variant and/or size. */
+  .button {
+    @apply inline-flex items-center justify-center rounded-full bg-foreground px-4 py-1.5 font-medium text-background transition-colors hover:bg-foreground/85 disabled:opacity-50 motion-reduce:transition-none;
+  }
+
+  .button--secondary {
+    @apply border border-outline bg-transparent text-foreground hover:bg-hover;
+  }
+
+  .button--ghost {
+    @apply bg-transparent text-foreground hover:bg-hover;
+  }
+
+  .button--sm {
+    @apply px-3 py-1 text-sm;
+  }
+
+  .button--lg {
+    @apply px-6 py-2.5 text-lg;
+  }
+
+  /* Portfolio grid and tiles */
+  .piece-grid {
+    @apply grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4;
+  }
+
+  .piece-tile {
+    @apply block;
+  }
+
+  .piece-tile__media {
+    @apply relative aspect-[4/5] overflow-hidden bg-surface;
+  }
+
+  .piece-tile__image {
+    @apply transition-transform duration-300 motion-reduce:transition-none;
+  }
+
+  .piece-tile:hover .piece-tile__image {
+    @apply scale-[1.02];
+  }
+
+  .empty-state {
+    @apply text-muted;
+  }
+
+  /* Artist-name filter (plain links) */
+  .filter-list {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .filter-chip {
+    @apply inline-block rounded-full border border-outline px-4 py-1.5 text-sm hover:bg-hover;
+  }
+
+  .filter-chip[aria-current="page"] {
+    @apply bg-foreground text-background;
+  }
+
+  /* Artists */
+  .artist-grid {
+    @apply grid grid-cols-1 gap-6 md:grid-cols-3;
+  }
+
+  .artist-card {
+    @apply block;
+  }
+
+  .artist-card__media {
+    @apply relative aspect-[3/4] overflow-hidden bg-surface;
+  }
+
+  .artist-card__name {
+    @apply mt-3 text-lg;
+  }
+
+  .artist-card:hover .artist-card__name {
+    @apply underline;
+  }
+
+  .artist-card__meta {
+    @apply text-sm text-muted;
+  }
+
+  .artist-profile {
+    @apply grid gap-8 md:grid-cols-[minmax(0,1fr)_2fr];
+  }
+
+  .artist-profile__photo {
+    @apply relative aspect-[3/4] bg-surface;
+  }
+
+  /* Single piece: full page and viewer overlay share this */
+  .piece-detail {
+    @apply grid gap-6 md:grid-cols-[2fr_1fr];
+  }
+
+  .piece-detail__media {
+    @apply relative aspect-[4/5] bg-surface;
+  }
+
+  .piece-detail__meta {
+    @apply grid gap-1 text-sm;
+  }
+
+  .piece-detail__meta-row {
+    @apply flex gap-2;
+  }
+
+  .piece-detail__term {
+    @apply text-muted;
+  }
+
+  /* Piece viewer: native <dialog> */
+  .viewer {
+    @apply m-auto max-h-[92dvh] w-[min(64rem,calc(100vw-1.5rem))] overflow-auto overscroll-contain bg-background p-4 text-foreground backdrop:bg-black/80 md:p-6;
+  }
+
+  .viewer__bar {
+    @apply mb-4 flex justify-end;
+  }
+
+  /* Forms */
+  .field {
+    @apply grid gap-1;
+  }
+
+  .field__label {
+    @apply text-sm font-medium;
+  }
+
+  .field__control {
+    @apply w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
+  }
+
+  .check {
+    @apply flex items-center gap-2;
+  }
+}

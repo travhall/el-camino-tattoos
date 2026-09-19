@@ -35,13 +35,11 @@ export default function SiteLayout({ children, modal }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${hankenGrotesk.variable} ${cosmic.variable} h-full antialiased`}
+      className={`${hankenGrotesk.variable} ${cosmic.variable} site`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="site__body">
         <SiteHeader />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
-          {children}
-        </main>
+        <main className="page">{children}</main>
         <SiteFooter />
         {modal}
       </body>

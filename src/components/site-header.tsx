@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonClasses } from "@/components/ui/button";
 
 const links = [
   { href: "/artists", label: "Artists" },
@@ -9,25 +10,19 @@ const links = [
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-foreground/15">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
+    <header className="site-header">
+      <div className="site-header__inner">
+        <Link href="/" className="site-header__brand">
           El Camino Tattoos
         </Link>
-        <nav
-          aria-label="Primary"
-          className="flex flex-wrap items-center gap-x-5 gap-y-2"
-        >
+        <nav aria-label="Primary" className="site-nav">
           {links.map(({ href, label }) => (
-            <Link key={href} href={href} className="hover:underline">
+            <Link key={href} href={href} className="site-nav__link">
               {label}
             </Link>
           ))}
           {/* Persistent booking slot; points at /contact until a booking flow exists. */}
-          <Link
-            href="/contact"
-            className="rounded-full bg-foreground px-4 py-1.5 text-background"
-          >
+          <Link href="/contact" className={buttonClasses()}>
             Book
           </Link>
         </nav>

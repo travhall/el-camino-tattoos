@@ -9,8 +9,8 @@ export default async function PortfolioPage() {
   const [artists, pieces] = await Promise.all([getArtists(), getPieces()]);
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-4xl font-semibold tracking-tight">Portfolio</h1>
+    <div className="stack stack--lg">
+      <h1>Portfolio</h1>
       <ArtistFilter artists={artists} />
       <PieceGrid pieces={pieces} artists={artists} />
     </div>

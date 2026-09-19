@@ -13,7 +13,17 @@ npm run check:images
 npm run build
 ```
 
-Fonts: Hanken Grotesk (variable) via `next/font/google`.
+Fonts: Cosmic (variable, headings and display) via `next/font/local`, and Hanken Grotesk (variable, body) via `next/font/google`.
+
+## Styling
+
+Markup uses semantic classes, and Tailwind utilities are applied inside them with `@apply`. See `src/styles/` and the conventions in `CLAUDE.md`. Browse everything at `/styleguide`.
+
+The type scale is fluid and modular: a perfect fourth (1.333) on wide screens easing to a major third (1.2) on phones, with body text from 16px to 18px. To change it, edit the config in `scripts/type-scale.mjs` and run:
+
+```bash
+npm run type-scale
+```
 
 ## Content
 

@@ -1,0 +1,50 @@
+/* Layout primitives. Compose these instead of spacing utilities in markup. */
+@layer components {
+  /* <html> and <body> of the public site. */
+  .site {
+    @apply h-full antialiased;
+  }
+
+  .site__body {
+    @apply flex min-h-full flex-col;
+  }
+
+  .page {
+    @apply mx-auto w-full max-w-6xl flex-1 px-4 py-10;
+  }
+
+  /* Vertical rhythm between siblings. */
+  .stack {
+    @apply grid gap-4;
+  }
+
+  .stack--sm {
+    @apply gap-2;
+  }
+
+  .stack--lg {
+    @apply gap-8;
+  }
+
+  .stack--xl {
+    @apply gap-16;
+  }
+
+  /* Inline group that wraps. */
+  .cluster {
+    @apply flex flex-wrap items-center gap-3;
+  }
+
+  .section-header {
+    @apply flex items-baseline justify-between;
+  }
+
+  /* next/image with `fill` inside a positioned, aspect-ratio'd box. */
+  .image-cover {
+    @apply object-cover;
+  }
+
+  .image-contain {
+    @apply object-contain;
+  }
+}

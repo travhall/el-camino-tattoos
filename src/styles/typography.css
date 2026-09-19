@@ -1,0 +1,62 @@
+/*
+ * Semantic type classes. Headings are styled by element AND by class, so
+ * visual level and document level stay independent: <h3 class="heading-1">.
+ * Size tokens come from type-scale.css.
+ */
+@layer components {
+  h1,
+  .heading-1 {
+    @apply font-display text-3xl font-semibold;
+  }
+
+  h2,
+  .heading-2 {
+    @apply font-display text-2xl font-semibold;
+  }
+
+  h3,
+  .heading-3 {
+    @apply font-display text-xl font-semibold;
+  }
+
+  h4,
+  .heading-4 {
+    @apply font-display text-lg font-semibold;
+  }
+
+  .display {
+    @apply font-display text-5xl font-semibold;
+  }
+
+  .lead {
+    @apply text-lg;
+  }
+
+  .small {
+    @apply text-sm;
+  }
+
+  .caption {
+    @apply text-xs text-muted;
+  }
+
+  .eyebrow {
+    @apply text-sm font-medium tracking-wide text-muted uppercase;
+  }
+
+  .muted {
+    @apply text-muted;
+  }
+
+  .measure {
+    @apply max-w-prose;
+  }
+
+  .preserve-lines {
+    @apply whitespace-pre-line;
+  }
+
+  .link {
+    @apply underline decoration-accent decoration-2 underline-offset-4 hover:no-underline;
+  }
+}

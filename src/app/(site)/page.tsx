@@ -7,16 +7,12 @@ export default async function Home() {
   const [artists, pieces] = await Promise.all([getArtists(), getPieces()]);
 
   return (
-    <div className="space-y-16">
-      <h1 className="text-4xl font-semibold tracking-tight">
-        El Camino Tattoos
-      </h1>
+    <div className="stack stack--xl">
+      <h1 className="display">El Camino Tattoos</h1>
 
-      <section aria-labelledby="artists-heading">
-        <h2 id="artists-heading" className="mb-6 text-2xl font-semibold">
-          Artists
-        </h2>
-        <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <section aria-labelledby="artists-heading" className="stack stack--lg">
+        <h2 id="artists-heading">Artists</h2>
+        <ul className="artist-grid">
           {artists.map((artist) => (
             <li key={artist.slug}>
               <ArtistCard artist={artist} />
@@ -25,12 +21,10 @@ export default async function Home() {
         </ul>
       </section>
 
-      <section aria-labelledby="work-heading">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 id="work-heading" className="text-2xl font-semibold">
-            Recent work
-          </h2>
-          <Link href="/portfolio" className="hover:underline">
+      <section aria-labelledby="work-heading" className="stack stack--lg">
+        <div className="section-header">
+          <h2 id="work-heading">Recent work</h2>
+          <Link href="/portfolio" className="link">
             View all
           </Link>
         </div>

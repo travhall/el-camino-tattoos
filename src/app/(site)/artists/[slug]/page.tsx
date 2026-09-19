@@ -28,9 +28,9 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
   if (!artist) notFound();
 
   return (
-    <div className="space-y-12">
-      <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_2fr]">
-        <div className="relative aspect-[3/4] bg-foreground/5">
+    <div className="stack stack--xl">
+      <div className="artist-profile">
+        <div className="artist-profile__photo">
           {artist.photo && (
             <Image
               src={artist.photo}
@@ -38,27 +38,21 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
               fill
               priority
               sizes="(min-width: 768px) 33vw, 100vw"
-              className="object-cover"
+              className="image-cover"
             />
           )}
         </div>
-        <div className="space-y-4">
-          <h1 className="text-4xl font-semibold tracking-tight">
-            {artist.name}
-          </h1>
+        <div className="stack">
+          <h1>{artist.name}</h1>
           {artist.specialties.length > 0 && (
-            <p className="text-foreground/70">
-              {artist.specialties.join(", ")}
-            </p>
+            <p className="muted">{artist.specialties.join(", ")}</p>
           )}
-          {artist.bio && (
-            <p className="max-w-prose whitespace-pre-line">{artist.bio}</p>
-          )}
+          {artist.bio && <p className="measure preserve-lines">{artist.bio}</p>}
           {artist.instagram && (
             <p>
               <a
                 href={`https://instagram.com/${artist.instagram}`}
-                className="underline"
+                className="link"
                 rel="noopener noreferrer"
               >
                 @{artist.instagram}
@@ -68,15 +62,10 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
         </div>
       </div>
 
-      <section aria-labelledby="portfolio-heading">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 id="portfolio-heading" className="text-2xl font-semibold">
-            Portfolio
-          </h2>
-          <Link
-            href={`/artists/${artist.slug}/portfolio`}
-            className="hover:underline"
-          >
+      <section aria-labelledby="portfolio-heading" className="stack stack--lg">
+        <div className="section-header">
+          <h2 id="portfolio-heading">Portfolio</h2>
+          <Link href={`/artists/${artist.slug}/portfolio`} className="link">
             View all
           </Link>
         </div>
