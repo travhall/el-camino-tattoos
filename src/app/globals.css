@@ -9,6 +9,22 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-hanken-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-cosmic), var(--font-hanken-grotesk), ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,6 +32,11 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Lock page scroll behind an open modal <dialog> (the piece viewer). */
+html:has(dialog[open]) {
+  overflow: hidden;
 }
 
 body {
