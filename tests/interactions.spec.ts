@@ -53,6 +53,26 @@ test.describe("piece viewer", () => {
     await expect(page).toHaveURL(/\/portfolio$/);
   });
 
+  test("closes on a backdrop click but not on a click inside the dialog", async ({
+    page,
+  }) => {
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const dialog = page.getByRole("dialog", { name: "Fixture Koi" });
+    await expect(dialog).toBeVisible();
+
+    // Just inside the dialog's top-left corner: the former padding area.
+    await dialog.click({ position: { x: 2, y: 2 } });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("heading", { level: 1 }).click();
+    await expect(dialog).toBeVisible();
+
+    // Outside the dialog box is the backdrop.
+    await page.mouse.click(2, 2);
+    await expect(dialog).toBeHidden();
+    await expect(page).toHaveURL(/\/portfolio$/);
+  });
+
   test("a piece loaded directly is a full page, not a dialog", async ({
     page,
   }) => {

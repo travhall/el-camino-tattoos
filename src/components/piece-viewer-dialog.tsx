@@ -28,12 +28,19 @@ export function PieceViewerDialog({ children }: { children: React.ReactNode }) {
       }}
       className="viewer"
     >
-      <div className="viewer__bar">
-        <Button variant="secondary" onClick={() => dialogRef.current?.close()}>
-          Close
-        </Button>
+      {/* Padding lives on this inner wrapper, not the <dialog>, so a click whose
+          target is the dialog itself can only be a backdrop click. */}
+      <div className="viewer__inner">
+        <div className="viewer__bar">
+          <Button
+            variant="secondary"
+            onClick={() => dialogRef.current?.close()}
+          >
+            Close
+          </Button>
+        </div>
+        {children}
       </div>
-      {children}
     </dialog>
   );
 }
