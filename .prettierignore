@@ -1,5 +1,7 @@
 .next
 node_modules
 pnpm-lock.yaml
+test-results
+playwright-report
 public
 content

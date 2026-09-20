@@ -21,3 +21,13 @@ jobs:
       - run: pnpm format:check
       - run: pnpm check:images
       - run: pnpm build
+      # Seeds fixture content, rebuilds, and runs the Playwright accessibility
+      # and interaction suite against the built site.
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

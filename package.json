@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:images": "node scripts/check-images.mjs",
+    "test": "node scripts/e2e.mjs",
     "color-ramps": "node scripts/color-ramps.mjs && prettier --write src/styles/palette.css src/styles/palette.generated.json",
     "type-scale": "node scripts/type-scale.mjs && prettier --write src/styles/type-scale.css src/styles/space-scale.css src/styles/type-scale.generated.json"
   },
@@ -22,6 +23,8 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/prettier": "^2.7.3",
