@@ -90,5 +90,61 @@
       "minPx": 57.3309,
       "maxPx": 134.6119
     }
+  ],
+  "space": [
+    {
+      "name": "3xs",
+      "multiplier": 0.25,
+      "minPx": 4,
+      "maxPx": 4.5
+    },
+    {
+      "name": "2xs",
+      "multiplier": 0.5,
+      "minPx": 8,
+      "maxPx": 9
+    },
+    {
+      "name": "xs",
+      "multiplier": 0.75,
+      "minPx": 12,
+      "maxPx": 13.5
+    },
+    {
+      "name": "sm",
+      "multiplier": 1,
+      "minPx": 16,
+      "maxPx": 18
+    },
+    {
+      "name": "md",
+      "multiplier": 1.5,
+      "minPx": 24,
+      "maxPx": 27
+    },
+    {
+      "name": "lg",
+      "multiplier": 2,
+      "minPx": 32,
+      "maxPx": 36
+    },
+    {
+      "name": "xl",
+      "multiplier": 3,
+      "minPx": 48,
+      "maxPx": 54
+    },
+    {
+      "name": "2xl",
+      "multiplier": 4,
+      "minPx": 64,
+      "maxPx": 72
+    },
+    {
+      "name": "3xl",
+      "multiplier": 6,
+      "minPx": 96,
+      "maxPx": 108
+    }
   ]
 }

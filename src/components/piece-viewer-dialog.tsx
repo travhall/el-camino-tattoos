@@ -29,11 +29,7 @@ export function PieceViewerDialog({ children }: { children: React.ReactNode }) {
       className="viewer"
     >
       <div className="viewer__bar">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => dialogRef.current?.close()}
-        >
+        <Button variant="secondary" onClick={() => dialogRef.current?.close()}>
           Close
         </Button>
       </div>

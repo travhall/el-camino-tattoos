@@ -55,6 +55,10 @@
     @apply grid items-baseline gap-2 md:grid-cols-[11rem_1fr];
   }
 
+  .sg-space-bar {
+    @apply block h-3 rounded-full bg-accent;
+  }
+
   .sg-tile {
     @apply bg-surface p-3 text-sm text-muted;
   }

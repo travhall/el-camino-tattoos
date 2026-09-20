@@ -9,19 +9,25 @@
   }
 
   .site-header__inner {
-    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4;
+    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-md gap-y-xs px-sm py-sm;
   }
 
   .site-header__brand {
-    @apply font-display text-xl font-semibold;
+    @apply inline-flex min-h-11 items-center font-display text-xl font-semibold;
   }
 
   .site-nav {
-    @apply flex flex-wrap items-center gap-x-5 gap-y-2;
+    @apply flex flex-wrap items-center gap-x-md gap-y-3xs;
   }
 
+  /* 44px tall hit area; current page/section is marked by an underline as
+     well as aria-current, so it isn't conveyed by color alone. */
   .site-nav__link {
-    @apply hover:underline;
+    @apply inline-flex min-h-11 items-center hover:underline;
+  }
+
+  .site-nav__link[aria-current] {
+    @apply underline decoration-accent decoration-2 underline-offset-8;
   }
 
   .site-footer {
@@ -29,12 +35,15 @@
   }
 
   .site-footer__inner {
-    @apply mx-auto max-w-6xl px-4 py-8 text-sm text-muted;
+    @apply mx-auto max-w-6xl px-sm py-lg text-sm text-muted;
   }
 
   /* Button: primary by default; combine with a variant and/or size. */
+  /* 44px minimum height. The transparent border gives the button an edge in
+     forced-colors (high contrast) mode, where its fill is removed. */
   .button {
-    @apply inline-flex items-center justify-center rounded-full bg-foreground px-4 py-1.5 font-medium text-background transition-colors hover:bg-foreground/85 disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center rounded-full border border-transparent bg-foreground px-4 py-1.5 font-medium text-background transition-colors hover:bg-foreground/85 disabled:opacity-50 motion-reduce:transition-none;
+    transition-duration: var(--duration-fast);
   }
 
   .button--secondary {
@@ -50,16 +59,16 @@
   }
 
   .button--sm {
-    @apply px-3 py-1 text-sm;
+    @apply min-h-9 px-3 py-1 text-sm;
   }
 
   .button--lg {
-    @apply px-6 py-2.5 text-lg;
+    @apply min-h-12 px-6 py-2.5 text-lg;
   }
 
   /* Portfolio grid and tiles */
   .piece-grid {
-    @apply grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4;
+    @apply grid grid-cols-2 gap-xs md:grid-cols-3 lg:grid-cols-4;
   }
 
   .piece-tile {
@@ -71,7 +80,9 @@
   }
 
   .piece-tile__image {
-    @apply transition-transform duration-300 motion-reduce:transition-none;
+    @apply transition-transform motion-reduce:transition-none;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-out);
   }
 
   .piece-tile:hover .piece-tile__image {
@@ -88,16 +99,17 @@
   }
 
   .filter-chip {
-    @apply inline-block rounded-full border border-outline px-4 py-1.5 text-sm hover:bg-hover;
+    @apply inline-flex min-h-11 items-center rounded-full border border-outline px-4 py-1.5 text-sm hover:bg-hover;
   }
 
+  /* Selected state is fill AND weight, not color alone. */
   .filter-chip[aria-current="page"] {
-    @apply bg-foreground text-background;
+    @apply bg-foreground font-semibold text-background;
   }
 
   /* Artists */
   .artist-grid {
-    @apply grid grid-cols-1 gap-6 md:grid-cols-3;
+    @apply grid grid-cols-1 gap-md md:grid-cols-3;
   }
 
   .artist-card {
@@ -121,7 +133,7 @@
   }
 
   .artist-profile {
-    @apply grid gap-8 md:grid-cols-[minmax(0,1fr)_2fr];
+    @apply grid gap-lg md:grid-cols-[minmax(0,1fr)_2fr];
   }
 
   .artist-profile__photo {
@@ -130,7 +142,7 @@
 
   /* Single piece: full page and viewer overlay share this */
   .piece-detail {
-    @apply grid gap-6 md:grid-cols-[2fr_1fr];
+    @apply grid gap-md md:grid-cols-[2fr_1fr];
   }
 
   .piece-detail__media {
@@ -168,10 +180,25 @@
   }
 
   .field__control {
-    @apply w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
+    @apply min-h-11 w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
   }
 
   .check {
-    @apply flex items-center gap-2;
+    @apply flex min-h-11 items-center gap-2;
+  }
+
+  /* The label is the 44px hit area; the box itself just needs to be legible. */
+  .check input {
+    @apply size-5 shrink-0;
+  }
+
+  /* 404 and error pages */
+  .status-page {
+    @apply grid max-w-prose gap-sm py-lg;
+  }
+
+  /* The error heading takes focus programmatically; it isn't a control. */
+  .status-page h1:focus {
+    outline: none;
   }
 }
