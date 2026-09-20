@@ -1,50 +1,36 @@
 /*
- * Theme. The ONLY file that names brand colors. Everything else uses the
- * semantic Tailwind tokens mapped below (bg-background, text-foreground,
- * bg-surface, text-muted, ...). To re-theme, change the values in :root.
+ * Theme: maps semantic color roles to Tailwind utilities (bg-background,
+ * text-foreground, bg-surface, text-muted, border-outline, ...).
  *
- * Roles, not hues: no token is called "green" or "orange".
+ * This file names no colors. The role values (light and dark) and the ramps
+ * behind them are generated into palette.css by scripts/color-ramps.mjs,
+ * which also checks every pairing against WCAG contrast. To re-theme, edit
+ * the pinned hex values there and run `pnpm color-ramps`.
  *
- * Contrast (WCAG), measured on the rendered light theme:
- *   foreground on background ..... 8.5:1  AAA, body and UI text
- *   muted on background / surface  5.0:1 / 4.7:1  AA, secondary text
- *   outline on background/surface  3:1+   interactive borders (inputs, chips)
- *   accent on background ......... 2.1:1  fills and decoration ONLY, never
- *                                  text or focus rings
- *   foreground on accent ......... 4.1:1  large or bold text only
- * Re-measure after changing any value here.
+ * Guidance:
+ *   foreground / muted ... text
+ *   accent ............... fills (buttons, badges, selection)
+ *   accent-text .......... orange as text or a link color
+ *   accent-soft .......... tinted backgrounds, with foreground text on top
+ *   outline .............. borders on interactive controls (3:1)
+ *   line ................. decorative dividers
+ *   focus ................ focus ring
  */
 :root {
   color-scheme: light dark;
-
-  --background: #f9f5f0; /* page canvas */
-  --foreground: #344f1f; /* text and primary actions */
-  --surface: #f2ead3; /* image placeholders, footer, raised areas */
-  --accent: #f4991a; /* highlights and decoration */
-  --accent-foreground: var(--foreground); /* text on an accent fill */
-}
-
-/* Dark swaps canvas and ink, so it needs no colors beyond the brand's. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #344f1f;
-    --foreground: #f9f5f0;
-    --surface: color-mix(in oklab, var(--foreground) 10%, var(--background));
-    --accent-foreground: var(--background);
-  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-outline: var(--outline);
+  --color-line: var(--line);
+  --color-hover: var(--hover);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-
-  /* Tints of the foreground; they follow light and dark automatically. */
-  --color-muted: color-mix(in oklab, var(--foreground) 80%, transparent);
-  --color-outline: color-mix(in oklab, var(--foreground) 65%, transparent);
-  --color-line: color-mix(in oklab, var(--foreground) 15%, transparent);
-  --color-hover: color-mix(in oklab, var(--foreground) 10%, transparent);
-  --color-subtle: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-soft: var(--accent-soft);
+  --color-focus: var(--focus);
 }

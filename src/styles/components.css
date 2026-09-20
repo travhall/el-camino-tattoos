@@ -41,6 +41,10 @@
     @apply border border-outline bg-transparent text-foreground hover:bg-hover;
   }
 
+  .button--accent {
+    @apply bg-accent text-accent-foreground hover:bg-accent/85;
+  }
+
   .button--ghost {
     @apply bg-transparent text-foreground hover:bg-hover;
   }

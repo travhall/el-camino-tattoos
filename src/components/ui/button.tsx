@@ -1,12 +1,13 @@
 import Link from "next/link";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary" | "accent" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 // Styles live in src/styles/components.css (.button, .button--*).
 const variants = {
   primary: "",
   secondary: "button--secondary",
+  accent: "button--accent",
   ghost: "button--ghost",
 } satisfies Record<Variant, string>;
 

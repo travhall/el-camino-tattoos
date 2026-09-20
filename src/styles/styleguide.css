@@ -17,6 +17,7 @@
     @apply grid gap-8 md:grid-cols-2;
   }
 
+  /* Color: swatch fills are data (ramp hex or a role's CSS variable), set inline. */
   .sg-swatches {
     @apply grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6;
   }
@@ -25,40 +26,29 @@
     @apply h-20 rounded-md border border-line;
   }
 
-  .sg-swatch--background {
-    @apply bg-background;
+  .sg-ramp {
+    @apply grid grid-cols-4 gap-2 md:grid-cols-6 lg:grid-cols-11;
   }
 
-  .sg-swatch--surface {
-    @apply bg-surface;
+  .sg-ramp .sg-swatch {
+    @apply h-14;
   }
 
-  .sg-swatch--accent {
-    @apply bg-accent;
+  .sg-table {
+    @apply w-full border-collapse text-left text-sm;
   }
 
-  .sg-swatch--foreground {
-    @apply bg-foreground;
+  .sg-table caption {
+    @apply pb-2 text-left text-muted;
   }
 
-  .sg-swatch--muted {
-    @apply bg-muted;
+  .sg-table th,
+  .sg-table td {
+    @apply border-b border-line px-2 py-2 align-top;
   }
 
-  .sg-swatch--outline {
-    @apply bg-outline;
-  }
-
-  .sg-swatch--line {
-    @apply bg-line;
-  }
-
-  .sg-swatch--hover {
-    @apply bg-hover;
-  }
-
-  .sg-swatch--subtle {
-    @apply bg-subtle;
+  .sg-table th {
+    @apply font-medium;
   }
 
   .sg-scale-row {

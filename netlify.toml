@@ -1,6 +1,6 @@
 [build]
   # Image check only warns here so an editor's publish never breaks the deploy.
-  command = "npm run check:images -- --warn && npm run build"
+  command = "pnpm check:images --warn && pnpm build"
 
 [build.environment]
   NODE_VERSION = "22"

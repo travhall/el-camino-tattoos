@@ -4,7 +4,7 @@ import { collection, config, fields } from "@keystatic/core";
 // commit to GitHub, which triggers a rebuild. Without it (local dev, CI),
 // edits write straight to the working tree. The slug is a NEXT_PUBLIC_ var so
 // the client and server bundles agree. To run the one-time GitHub App setup
-// from `npm run dev`, set NEXT_PUBLIC_KEYSTATIC_STORAGE=github.
+// from `pnpm dev`, set NEXT_PUBLIC_KEYSTATIC_STORAGE=github.
 const useGitHub =
   Boolean(process.env.NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG) ||
   process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE === "github";
