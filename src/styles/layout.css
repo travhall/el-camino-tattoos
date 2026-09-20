@@ -1,42 +1,63 @@
 /* Layout primitives. Compose these instead of spacing utilities in markup. */
 @layer components {
-  /* <html> and <body> of the public site. */
-  .site {
-    @apply h-full antialiased;
+  /* Wraps the whole public site: sticky-footer column. */
+  .site-frame {
+    @apply flex min-h-dvh flex-col antialiased;
   }
 
-  .site__body {
-    @apply flex min-h-full flex-col;
+  /* First tab stop: jumps past the header to #main. Hidden until focused. */
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed top-sm left-sm z-50 rounded-full bg-foreground px-md py-xs font-medium text-background;
+  }
+
+  /* Text for assistive tech only. */
+  .visually-hidden {
+    @apply sr-only;
   }
 
   .page {
-    @apply mx-auto w-full max-w-6xl flex-1 px-4 py-10;
+    @apply mx-auto w-full max-w-6xl flex-1 px-sm py-xl;
   }
 
-  /* Vertical rhythm between siblings. */
+  /* <main> is a skip-link target (tabindex="-1"); it isn't interactive, so
+     don't draw a focus ring around the whole page. */
+  .page:focus {
+    outline: none;
+  }
+
+  /* Vertical rhythm between siblings, on the fluid space scale. */
   .stack {
-    @apply grid gap-4;
+    @apply grid gap-sm;
   }
 
   .stack--sm {
-    @apply gap-2;
+    @apply gap-2xs;
   }
 
   .stack--lg {
-    @apply gap-8;
+    @apply gap-lg;
   }
 
   .stack--xl {
-    @apply gap-16;
+    @apply gap-2xl;
   }
 
   /* Inline group that wraps. */
   .cluster {
-    @apply flex flex-wrap items-center gap-3;
+    @apply flex flex-wrap items-center gap-xs;
   }
 
   .section-header {
     @apply flex items-baseline justify-between;
+  }
+
+  /* Standalone links ("View all") get a 44px hit area. */
+  .section-header .link {
+    @apply inline-flex min-h-11 items-center;
   }
 
   /* next/image with `fill` inside a positioned, aspect-ratio'd box. */

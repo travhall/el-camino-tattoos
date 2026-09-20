@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavLink } from "@/components/nav-link";
 import { buttonClasses } from "@/components/ui/button";
 
 const links = [
@@ -17,9 +18,9 @@ export function SiteHeader() {
         </Link>
         <nav aria-label="Primary" className="site-nav">
           {links.map(({ href, label }) => (
-            <Link key={href} href={href} className="site-nav__link">
+            <NavLink key={href} href={href} className="site-nav__link">
               {label}
-            </Link>
+            </NavLink>
           ))}
           {/* Persistent booking slot; points at /contact until a booking flow exists. */}
           <Link href="/contact" className={buttonClasses()}>

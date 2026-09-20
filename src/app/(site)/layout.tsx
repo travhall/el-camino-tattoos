@@ -1,24 +1,7 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk } from "next/font/google";
-import localFont from "next/font/local";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { SiteShell } from "@/components/site-shell";
 import { siteName, siteUrl } from "@/lib/site";
 import "../globals.css";
-
-const hankenGrotesk = Hanken_Grotesk({
-  variable: "--font-hanken-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// Headings and display type. Variable weight axis: 100-900.
-const cosmic = localFont({
-  src: "../../../public/fonts/Cosmic-VF.woff2",
-  variable: "--font-cosmic",
-  weight: "100 900",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -31,18 +14,17 @@ export const metadata: Metadata = {
   twitter: { card: "summary" },
 };
 
-export default function SiteLayout({ children, modal }: LayoutProps<"/">) {
+export default function SiteLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      className={`${hankenGrotesk.variable} ${cosmic.variable} site`}
-    >
-      <body className="site__body">
-        <SiteHeader />
-        <main className="page">{children}</main>
-        <SiteFooter />
-        {modal}
-      </body>
-    </html>
+    <div className="site-frame">
+      <SiteShell>{children}</SiteShell>
+      {modal}
+    </div>
   );
 }

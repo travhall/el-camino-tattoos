@@ -13,7 +13,7 @@ export default async function ArtistsPage() {
       <ul className="artist-grid">
         {artists.map((artist) => (
           <li key={artist.slug}>
-            <ArtistCard artist={artist} />
+            <ArtistCard artist={artist} headingLevel={2} />
           </li>
         ))}
       </ul>
