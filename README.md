@@ -26,11 +26,27 @@ Color comes from three tonal ramps built from the brand colors and exposed as se
 pnpm color-ramps
 ```
 
-The type scale is fluid and modular: a perfect fourth (1.333) on wide screens easing to a major third (1.2) on phones, with body text from 16px to 18px. The same generator produces the fluid space scale (`gap-md`, `p-lg`, ...). To change either, edit the config in `scripts/type-scale.mjs` and run:
+The type scale is fluid and modular: a perfect fourth (1.333) on wide screens easing to a major third (1.2) on phones, with body text from 16px to 18px. The same generator produces the fluid space scale (`gap-fluid-md`, `p-fluid-lg`, ...). To change either, edit the config in `scripts/type-scale.mjs` and run:
 
 ```bash
 pnpm type-scale
 ```
+
+## Testing
+
+```bash
+pnpm exec playwright install chromium   # once
+pnpm test                               # seeds fixtures, builds, runs Playwright, cleans up
+pnpm test --grep "touch targets"        # extra args go to Playwright
+```
+
+The suite runs axe-core (WCAG 2.0 to 2.2 A/AA) on every route in light and dark at phone and desktop widths, plus interaction tests for the skip link, nav state, piece viewer, 404, contact form, reduced motion and touch-target sizes. CI runs it on every push and pull request, and uploads the Playwright report when it fails.
+
+## Contact form and analytics
+
+The contact form uses Netlify Forms. Netlify reads `public/__forms.html` at deploy time to register the form, and `src/components/contact-form.tsx` posts to it. Submissions appear in the Netlify dashboard. This needs a first deploy to verify end to end.
+
+Analytics (Cloudflare Web Analytics, cookieless) loads only when `CLOUDFLARE_ANALYTICS_TOKEN` is set in Netlify, so local dev and previews aren't tracked.
 
 ## Content
 
