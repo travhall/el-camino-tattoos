@@ -192,6 +192,15 @@
     @apply size-5 shrink-0;
   }
 
+  /* Contact form. Status text carries a bold lead-in so it isn't color alone. */
+  .contact-form {
+    @apply grid max-w-xl gap-fluid-sm;
+  }
+
+  .form-status {
+    @apply rounded-md border border-outline bg-surface px-3 py-2;
+  }
+
   /* 404 and error pages */
   .status-page {
     @apply grid max-w-prose gap-fluid-sm py-fluid-lg;

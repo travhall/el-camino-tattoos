@@ -1,0 +1,30 @@
+<!doctype html>
+<!--
+  Netlify Forms detection only. Netlify scans this static file at deploy time
+  to register the "contact" form; visitors never see it. The real form is
+  src/components/contact-form.tsx and posts here. Field names below MUST match
+  that component. `action` is where Netlify redirects after a successful
+  submission (used by the no-JavaScript fallback).
+-->
+<html lang="en">
+  <head>
+    <title>Forms</title>
+  </head>
+  <body>
+    <form
+      name="contact"
+      method="POST"
+      action="/contact/thanks"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="artist" />
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>
