@@ -25,6 +25,19 @@ export type Piece = {
   date: string | null;
 };
 
+/**
+ * Accepts what an editor might paste ("name", "@name", or a profile URL) and
+ * returns a bare handle, or "" when it isn't a valid Instagram username.
+ */
+export function normalizeInstagramHandle(raw: string): string {
+  const handle = raw
+    .trim()
+    .replace(/^(?:https?:\/\/)?(?:www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .replace(/[/?#].*$/, "");
+  return /^[A-Za-z0-9._]{1,30}$/.test(handle) ? handle : "";
+}
+
 export const getArtists = cache(async (): Promise<Artist[]> => {
   const entries = await reader.collections.artists.all();
   return entries
@@ -34,7 +47,7 @@ export const getArtists = cache(async (): Promise<Artist[]> => {
       photo: entry.photo,
       specialties: entry.specialties,
       bio: entry.bio,
-      instagram: entry.instagram,
+      instagram: normalizeInstagramHandle(entry.instagram),
       order: entry.order ?? 100,
     }))
     .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));

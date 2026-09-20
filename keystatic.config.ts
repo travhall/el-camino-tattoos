@@ -45,6 +45,12 @@ export default config({
         instagram: fields.text({
           label: "Instagram handle",
           description: "Without the @.",
+          validation: {
+            pattern: {
+              regex: /^[A-Za-z0-9._]{0,30}$/,
+              message: "Letters, numbers, periods and underscores only.",
+            },
+          },
         }),
         order: fields.integer({
           label: "Order",
