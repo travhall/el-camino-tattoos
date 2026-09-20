@@ -38,7 +38,7 @@
   /* Roles: light */
   --background: var(--paper-50);
   --surface: var(--paper-100);
-  --foreground: var(--ink-700);
+  --foreground: var(--ink-900);
   --muted: var(--ink-600);
   --outline: var(--ink-500);
   --line: var(--paper-200);
@@ -52,13 +52,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: var(--ink-700);
-    --surface: var(--ink-800);
-    --foreground: var(--paper-50);
+    --background: var(--paper-950);
+    --surface: var(--paper-800);
+    --foreground: var(--ink-50);
     --muted: var(--paper-200);
     --outline: var(--paper-400);
-    --line: var(--ink-600);
-    --hover: var(--ink-600);
+    --line: var(--ink-700);
+    --hover: var(--ink-700);
     --accent: var(--accent-500);
     --accent-foreground: var(--ink-900);
     --accent-text: var(--accent-400);

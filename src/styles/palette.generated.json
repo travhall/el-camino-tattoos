@@ -52,8 +52,8 @@
         "hex": "#f2ead3"
       },
       "foreground": {
-        "ref": "ink.700",
-        "hex": "#344f1f"
+        "ref": "ink.900",
+        "hex": "#122503"
       },
       "muted": {
         "ref": "ink.600",
@@ -94,16 +94,16 @@
     },
     "dark": {
       "background": {
-        "ref": "ink.700",
-        "hex": "#344f1f"
+        "ref": "paper.950",
+        "hex": "#110d04"
       },
       "surface": {
-        "ref": "ink.800",
-        "hex": "#233910"
+        "ref": "paper.800",
+        "hex": "#3a3629"
       },
       "foreground": {
-        "ref": "paper.50",
-        "hex": "#f9f5f0"
+        "ref": "ink.50",
+        "hex": "#f5fdf0"
       },
       "muted": {
         "ref": "paper.200",
@@ -114,12 +114,12 @@
         "hex": "#9e9785"
       },
       "line": {
-        "ref": "ink.600",
-        "hex": "#4d663b"
+        "ref": "ink.700",
+        "hex": "#344f1f"
       },
       "hover": {
-        "ref": "ink.600",
-        "hex": "#4d663b"
+        "ref": "ink.700",
+        "hex": "#344f1f"
       },
       "accent": {
         "ref": "accent.500",
@@ -149,24 +149,24 @@
       "bg": "background",
       "min": 7,
       "note": "body text",
-      "light": 8.47,
-      "dark": 8.47
+      "light": 14.98,
+      "dark": 18.64
     },
     {
       "fg": "foreground",
       "bg": "surface",
       "min": 7,
       "note": "text on surface",
-      "light": 7.65,
-      "dark": 11.63
+      "light": 13.54,
+      "dark": 11.61
     },
     {
       "fg": "foreground",
       "bg": "hover",
       "min": 4.5,
       "note": "text on hover fill",
-      "light": 5.84,
-      "dark": 5.9
+      "light": 10.34,
+      "dark": 8.84
     },
     {
       "fg": "muted",
@@ -174,7 +174,7 @@
       "min": 4.5,
       "note": "secondary text",
       "light": 5.9,
-      "dark": 5.84
+      "dark": 12.32
     },
     {
       "fg": "muted",
@@ -182,7 +182,7 @@
       "min": 4.5,
       "note": "secondary text on surface",
       "light": 5.33,
-      "dark": 8.02
+      "dark": 7.67
     },
     {
       "fg": "outline",
@@ -190,7 +190,7 @@
       "min": 3,
       "note": "input and chip borders",
       "light": 4.13,
-      "dark": 3.16
+      "dark": 6.66
     },
     {
       "fg": "outline",
@@ -198,7 +198,7 @@
       "min": 3,
       "note": "borders on surface",
       "light": 3.73,
-      "dark": 4.34
+      "dark": 4.15
     },
     {
       "fg": "accent-text",
@@ -206,7 +206,7 @@
       "min": 4.5,
       "note": "accent text and links",
       "light": 5.25,
-      "dark": 4.86
+      "dark": 10.24
     },
     {
       "fg": "accent-text",
@@ -214,7 +214,7 @@
       "min": 4.5,
       "note": "accent text on surface",
       "light": 4.74,
-      "dark": 6.67
+      "dark": 6.38
     },
     {
       "fg": "focus",
@@ -222,7 +222,7 @@
       "min": 3,
       "note": "focus ring",
       "light": 5.25,
-      "dark": 4.86
+      "dark": 10.24
     },
     {
       "fg": "focus",
@@ -230,7 +230,7 @@
       "min": 3,
       "note": "focus ring on surface",
       "light": 4.74,
-      "dark": 6.67
+      "dark": 6.38
     },
     {
       "fg": "accent-foreground",
@@ -245,8 +245,8 @@
       "bg": "accent-soft",
       "min": 4.5,
       "note": "text on soft accent",
-      "light": 7.64,
-      "dark": 13.66
+      "light": 13.52,
+      "dark": 14.26
     }
   ]
 }
