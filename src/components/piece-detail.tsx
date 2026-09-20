@@ -2,6 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Artist, Piece } from "@/lib/content";
 
+// Keystatic dates are calendar dates ("2026-08-01"), so format them in UTC to
+// keep the day from shifting with the visitor's time zone.
+const dateFormat = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "long",
+  timeZone: "UTC",
+});
+
+function formatDate(date: string) {
+  const parsed = new Date(`${date}T00:00:00Z`);
+  return Number.isNaN(parsed.getTime()) ? date : dateFormat.format(parsed);
+}
+
 /** Shared by the full piece page and the overlay that opens over the gallery. */
 export function PieceDetail({
   piece,
@@ -13,7 +25,7 @@ export function PieceDetail({
   const details = [
     piece.style && ["Style", piece.style],
     piece.placement && ["Placement", piece.placement],
-    piece.date && ["Date", piece.date],
+    piece.date && ["Date", formatDate(piece.date)],
   ].filter((row): row is [string, string] => Boolean(row));
 
   return (
