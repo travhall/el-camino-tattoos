@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SiteLogo } from "@/components/site-logo";
 import { NavLink } from "@/components/nav-link";
 import { buttonClasses } from "@/components/ui/button";
 
@@ -14,7 +15,8 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="site-header__inner">
         <Link href="/" className="site-header__brand">
-          El Camino Tattoos
+          <SiteLogo className="site-header__logo" />
+          <span className="visually-hidden">El Camino Tattoos</span>
         </Link>
         <nav aria-label="Primary" className="site-nav">
           {links.map(({ href, label }) => (

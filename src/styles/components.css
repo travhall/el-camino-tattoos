@@ -13,7 +13,11 @@
   }
 
   .site-header__brand {
-    @apply inline-flex min-h-11 items-center font-display text-xl font-semibold;
+    @apply inline-flex min-h-11 items-center;
+  }
+
+  .site-header__logo {
+    @apply h-5 w-auto md:h-6;
   }
 
   .site-nav {
