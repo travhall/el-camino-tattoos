@@ -26,7 +26,7 @@ Color comes from three tonal ramps built from the brand colors and exposed as se
 pnpm color-ramps
 ```
 
-The type scale is fluid and modular: a perfect fourth (1.333) on wide screens easing to a major third (1.2) on phones, with body text from 16px to 18px. To change it, edit the config in `scripts/type-scale.mjs` and run:
+The type scale is fluid and modular: a perfect fourth (1.333) on wide screens easing to a major third (1.2) on phones, with body text from 16px to 18px. The same generator produces the fluid space scale (`gap-md`, `p-lg`, ...). To change either, edit the config in `scripts/type-scale.mjs` and run:
 
 ```bash
 pnpm type-scale

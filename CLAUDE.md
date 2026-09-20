@@ -17,5 +17,19 @@
 - **Type scale is generated.** Edit the config in `scripts/type-scale.mjs`, run `pnpm type-scale`, and never hand-edit `src/styles/type-scale.css` or `type-scale.generated.json`. Sizes are fluid `--text-*` tokens (`text-xs` to `text-6xl`) that replace Tailwind's defaults.
 - **Color is generated from ramps and used through semantic roles.** Brand colors are pinned in `scripts/color-ramps.mjs`, which builds OKLCH ramps (`ink`, `accent`, `paper`), picks a step per role for light and dark, and FAILS if any pairing misses its WCAG target. Run `pnpm color-ramps` after editing it, and never hand-edit `src/styles/palette.css` or `palette.generated.json`. Never write a hex value or a hue name (`green`, `orange`) anywhere else, and don't reference ramp steps (`ink-700`) from components; use roles. Roles: `background`, `surface`, `foreground`, `muted`, `outline`, `line`, `hover`, `accent`, `accent-foreground`, `accent-text`, `accent-soft`, `focus`. Guidance: `accent` is for fills, `accent-text` when orange must be text or a link color, `outline` (3:1) for borders on interactive controls, `line` for decorative dividers. `src/styles/theme.css` maps roles to Tailwind utilities.
 - **Fonts:** Cosmic (`font-display`) is for headings and display type, and Hanken Grotesk (`font-sans`) for everything else.
+- **Spacing is a fluid scale too.** `pnpm type-scale` also writes `--spacing-3xs` to `--spacing-3xl`, used as `gap-md`, `p-lg`, `py-xl`. Prefer these over numeric utilities (`gap-4`) for layout spacing.
 - **New UI goes in `/styleguide` first**, then into components.
+
+## Accessibility conventions
+
+- **Landmarks and skip link** live in `SiteShell` (`skip-link`, `<main id="main" tabindex="-1">`). Don't remove or reorder them; the skip link must stay the first tab stop.
+- **Touch targets:** standalone interactive elements are at least 44px (`min-h-11`). Inline links inside running text are exempt. Only use `.button--sm` for compact, secondary controls.
+- **State is never color alone.** Current page or section uses `aria-current` with an underline (nav) or fill plus weight (filter chips). Style from the attribute, not a class.
+- **Motion:** use `--duration-fast|base|slow` and `--ease-out`. A global `prefers-reduced-motion` rule in `globals.css` shortens all transitions and animations, so don't add animation that depends on running for its meaning.
+- **Forced colors:** buttons keep a transparent border so they keep an edge when fills are removed. Focus uses `outline` (never box-shadow) with the `--focus` role.
+- **Images:** content images get descriptive `alt`. Use `alt=""` when the same link already has the name as text (artist cards).
+- **Heading order:** don't skip levels. Components that render headings take a `headingLevel` (see `ArtistCard`).
+- **404 and error titles:** render `<title>` inside the component (`NotFoundContent`, `ErrorContent`). The `metadata` title on a not-found page is replaced by the layout default after hydration.
+- **Known framework quirk:** Next serves `notFound()` responses with `<html id="__next_error__">` and no `lang` until hydration. Everything is correct after hydration, and the 404 status and content are right.
+- **Verify with axe-core** (WCAG 2.0 to 2.2 A/AA plus best-practice) in both light and dark before shipping UI, including the piece viewer with the dialog open. There is no automated a11y test in CI yet.
 - **Formatting:** `pnpm format` (Prettier with the Tailwind plugin). CI runs `format:check`.
