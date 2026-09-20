@@ -11,7 +11,7 @@
   }
 
   .skip-link:focus {
-    @apply not-sr-only fixed top-sm left-sm z-50 rounded-full bg-foreground px-md py-xs font-medium text-background;
+    @apply not-sr-only fixed top-fluid-sm left-fluid-sm z-50 rounded-full bg-foreground px-fluid-md py-fluid-xs font-medium text-background;
   }
 
   /* Text for assistive tech only. */
@@ -20,7 +20,7 @@
   }
 
   .page {
-    @apply mx-auto w-full max-w-6xl flex-1 px-sm py-xl;
+    @apply mx-auto w-full max-w-6xl flex-1 px-fluid-sm py-fluid-xl;
   }
 
   /* <main> is a skip-link target (tabindex="-1"); it isn't interactive, so
@@ -31,24 +31,24 @@
 
   /* Vertical rhythm between siblings, on the fluid space scale. */
   .stack {
-    @apply grid gap-sm;
+    @apply grid gap-fluid-sm;
   }
 
   .stack--sm {
-    @apply gap-2xs;
+    @apply gap-fluid-2xs;
   }
 
   .stack--lg {
-    @apply gap-lg;
+    @apply gap-fluid-lg;
   }
 
   .stack--xl {
-    @apply gap-2xl;
+    @apply gap-fluid-2xl;
   }
 
   /* Inline group that wraps. */
   .cluster {
-    @apply flex flex-wrap items-center gap-xs;
+    @apply flex flex-wrap items-center gap-fluid-xs;
   }
 
   .section-header {

@@ -9,7 +9,7 @@
   }
 
   .site-header__inner {
-    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-md gap-y-xs px-sm py-sm;
+    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs px-fluid-sm py-fluid-sm;
   }
 
   .site-header__brand {
@@ -17,7 +17,7 @@
   }
 
   .site-nav {
-    @apply flex flex-wrap items-center gap-x-md gap-y-3xs;
+    @apply flex flex-wrap items-center gap-x-fluid-md gap-y-fluid-3xs;
   }
 
   /* 44px tall hit area; current page/section is marked by an underline as
@@ -35,7 +35,7 @@
   }
 
   .site-footer__inner {
-    @apply mx-auto max-w-6xl px-sm py-lg text-sm text-muted;
+    @apply mx-auto max-w-6xl px-fluid-sm py-fluid-lg text-sm text-muted;
   }
 
   /* Button: primary by default; combine with a variant and/or size. */
@@ -68,7 +68,7 @@
 
   /* Portfolio grid and tiles */
   .piece-grid {
-    @apply grid grid-cols-2 gap-xs md:grid-cols-3 lg:grid-cols-4;
+    @apply grid grid-cols-2 gap-fluid-xs md:grid-cols-3 lg:grid-cols-4;
   }
 
   .piece-tile {
@@ -109,7 +109,7 @@
 
   /* Artists */
   .artist-grid {
-    @apply grid grid-cols-1 gap-md md:grid-cols-3;
+    @apply grid grid-cols-1 gap-fluid-md md:grid-cols-3;
   }
 
   .artist-card {
@@ -133,7 +133,7 @@
   }
 
   .artist-profile {
-    @apply grid gap-lg md:grid-cols-[minmax(0,1fr)_2fr];
+    @apply grid gap-fluid-lg md:grid-cols-[minmax(0,1fr)_2fr];
   }
 
   .artist-profile__photo {
@@ -142,7 +142,7 @@
 
   /* Single piece: full page and viewer overlay share this */
   .piece-detail {
-    @apply grid gap-md md:grid-cols-[2fr_1fr];
+    @apply grid gap-fluid-md md:grid-cols-[2fr_1fr];
   }
 
   .piece-detail__media {
@@ -194,7 +194,7 @@
 
   /* 404 and error pages */
   .status-page {
-    @apply grid max-w-prose gap-sm py-lg;
+    @apply grid max-w-prose gap-fluid-sm py-fluid-lg;
   }
 
   /* The error heading takes focus programmatically; it isn't a control. */
