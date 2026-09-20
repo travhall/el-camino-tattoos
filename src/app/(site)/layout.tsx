@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@/components/analytics";
 import { SiteShell } from "@/components/site-shell";
 import { siteName, siteUrl } from "@/lib/site";
 import "../globals.css";
@@ -25,6 +26,7 @@ export default function SiteLayout({
     <div className="site-frame">
       <SiteShell>{children}</SiteShell>
       {modal}
+      <Analytics />
     </div>
   );
 }
