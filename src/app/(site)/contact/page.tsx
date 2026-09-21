@@ -12,7 +12,8 @@ export default async function ContactPage() {
       <div className="stack">
         <h1>Contact</h1>
         <p className="lead muted measure">
-          Send a message and we&rsquo;ll get back to you.
+          Tell us about the tattoo you have in mind and we&rsquo;ll get back to
+          you.
         </p>
       </div>
       <ContactForm

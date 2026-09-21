@@ -100,13 +100,23 @@ test("an unmatched URL is a real 404 with a stable title and lang", async ({
 });
 
 test.describe("contact form", () => {
-  test("posts urlencoded to /__forms.html and lands on the thanks page", async ({
+  async function fillRequired(page: Page) {
+    await page.getByLabel("Name", { exact: true }).fill("Test Person");
+    await page.getByLabel("Email").fill("test@example.com");
+    await page.getByLabel("Tell us about your idea").fill("A small koi.");
+    await page.getByLabel("Placement").fill("Inner left forearm");
+    await page.getByLabel("Approximate size").fill("4 inches");
+  }
+
+  test("posts multipart to /__forms.html and lands on the thanks page", async ({
     page,
   }) => {
+    let contentType = "";
     let posted = "";
     await page.route("**/__forms.html", async (route) => {
       if (route.request().method() === "POST") {
-        posted = route.request().postData() ?? "";
+        contentType = route.request().headers()["content-type"] ?? "";
+        posted = route.request().postDataBuffer()?.toString("latin1") ?? "";
         await route.fulfill({ status: 200, body: "" });
       } else {
         await route.continue();
@@ -114,10 +124,16 @@ test.describe("contact form", () => {
     });
 
     await open(page, "/contact");
-    await page.getByLabel("Name", { exact: true }).fill("Test Person");
-    await page.getByLabel("Email").fill("test@example.com");
+    await fillRequired(page);
+    await page.getByLabel("Phone (optional)").fill("555-0100");
     await page.getByLabel("Artist (optional)").selectOption("Fixture One");
-    await page.getByLabel("Tell us about your idea").fill("A small koi.");
+    await page.getByLabel("Color", { exact: true }).check();
+    await page.getByLabel(/covers up or reworks/).check();
+    await page.getByLabel("Reference image 1").setInputFiles({
+      name: "koi.png",
+      mimeType: "image/png",
+      buffer: Buffer.from("fake-image-bytes"),
+    });
     await page.getByRole("button", { name: "Send message" }).click();
 
     await expect(page).toHaveURL(/\/contact\/thanks$/);
@@ -125,13 +141,50 @@ test.describe("contact form", () => {
       "Thanks for reaching out",
     );
 
-    const fields = new URLSearchParams(posted);
-    expect(fields.get("form-name")).toBe("contact");
-    expect(fields.get("name")).toBe("Test Person");
-    expect(fields.get("email")).toBe("test@example.com");
-    expect(fields.get("artist")).toBe("Fixture One");
-    expect(fields.get("message")).toBe("A small koi.");
-    expect(fields.get("bot-field")).toBe("");
+    // Files force multipart; the browser must set the boundary itself.
+    expect(contentType).toMatch(/^multipart\/form-data; boundary=/);
+    const field = (name: string) =>
+      new RegExp(
+        `name="${name}"(?:; filename="[^"]*")?\\r\\n(?:Content-Type:[^\\r]*\\r\\n)?\\r\\n([^\\r]*)`,
+      ).exec(posted)?.[1];
+    expect(field("form-name")).toBe("contact");
+    expect(field("name")).toBe("Test Person");
+    expect(field("email")).toBe("test@example.com");
+    expect(field("phone")).toBe("555-0100");
+    expect(field("artist")).toBe("Fixture One");
+    expect(field("message")).toBe("A small koi.");
+    expect(field("placement")).toBe("Inner left forearm");
+    expect(field("size")).toBe("4 inches");
+    expect(field("color")).toBe("Color");
+    expect(field("cover-up")).toBe("yes");
+    expect(field("bot-field")).toBe("");
+    expect(posted).toContain('name="reference-1"; filename="koi.png"');
+    expect(field("reference-1")).toBe("fake-image-bytes");
+  });
+
+  test("refuses images over the size limit without posting", async ({
+    page,
+  }) => {
+    let posts = 0;
+    await page.route("**/__forms.html", (route) => {
+      if (route.request().method() === "POST") posts += 1;
+      return route.continue();
+    });
+
+    await open(page, "/contact");
+    await fillRequired(page);
+    await page.getByLabel("Reference image 1").setInputFiles({
+      name: "huge.jpg",
+      mimeType: "image/jpeg",
+      buffer: Buffer.alloc(8 * 1024 * 1024),
+    });
+    await page.getByRole("button", { name: "Send message" }).click();
+
+    await expect(
+      page.getByRole("alert").filter({ hasText: "images add up to" }),
+    ).toBeVisible();
+    await expect(page).toHaveURL(/\/contact$/);
+    expect(posts).toBe(0);
   });
 
   test("announces a failed send and lets the visitor retry", async ({
@@ -144,9 +197,7 @@ test.describe("contact form", () => {
     );
 
     await open(page, "/contact");
-    await page.getByLabel("Name", { exact: true }).fill("Test Person");
-    await page.getByLabel("Email").fill("test@example.com");
-    await page.getByLabel("Tell us about your idea").fill("A small koi.");
+    await fillRequired(page);
     await page.getByRole("button", { name: "Send message" }).click();
 
     // Next's route announcer is also role="alert", so match on the message.
@@ -193,7 +244,7 @@ test.describe("touch targets on a phone", () => {
       const tooSmall = await page.evaluate(() => {
         const found: string[] = [];
         const controls = document.querySelectorAll<HTMLElement>(
-          "a[href], button, select, textarea, input:not([type=hidden]):not([type=checkbox])",
+          "a[href], button, select, textarea, input:not([type=hidden]):not([type=checkbox]):not([type=radio])",
         );
         for (const el of controls) {
           if (el.closest("[hidden]") || el.classList.contains("skip-link")) {
@@ -218,6 +269,18 @@ test.describe("touch targets on a phone", () => {
       });
 
       expect(tooSmall).toEqual([]);
+
+      // Checkboxes and radios are exempt themselves; their label is the target.
+      const smallChecks = await page.evaluate(() =>
+        [
+          ...document.querySelectorAll<HTMLElement>(
+            "label.check:has(input:is([type=checkbox], [type=radio]))",
+          ),
+        ]
+          .filter((el) => el.getBoundingClientRect().height < 43.5)
+          .map((el) => (el.textContent ?? "").trim()),
+      );
+      expect(smallChecks).toEqual([]);
     });
   }
 });

@@ -3,7 +3,8 @@
   Netlify Forms detection only. Netlify scans this static file at deploy time
   to register the "contact" form; visitors never see it. The real form is
   src/components/contact-form.tsx and posts here. Field names below MUST match
-  that component. `action` is where Netlify redirects after a successful
+  that component (Netlify allows one file per input, hence three reference
+  inputs; 8MB per submission). `action` is where Netlify redirects after a successful
   submission (used by the no-JavaScript fallback).
 -->
 <html lang="en">
@@ -15,6 +16,7 @@
       name="contact"
       method="POST"
       action="/contact/thanks"
+      enctype="multipart/form-data"
       data-netlify="true"
       netlify-honeypot="bot-field"
       hidden
@@ -23,8 +25,17 @@
       <input type="text" name="bot-field" />
       <input type="text" name="name" />
       <input type="email" name="email" />
+      <input type="tel" name="phone" />
       <input type="text" name="artist" />
       <textarea name="message"></textarea>
+      <input type="text" name="placement" />
+      <input type="text" name="size" />
+      <input type="radio" name="color" value="Black and gray" />
+      <input type="checkbox" name="cover-up" value="yes" />
+      <input type="text" name="availability" />
+      <input type="file" name="reference-1" />
+      <input type="file" name="reference-2" />
+      <input type="file" name="reference-3" />
     </form>
   </body>
 </html>

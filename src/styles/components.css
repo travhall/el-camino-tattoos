@@ -191,6 +191,15 @@
     @apply min-h-11 w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
   }
 
+  /* Grouped controls (radios, related file inputs). */
+  .fieldset {
+    @apply grid min-w-0 gap-1 border-0 p-0;
+  }
+
+  .field__hint {
+    @apply text-sm text-muted;
+  }
+
   .check {
     @apply flex min-h-11 items-center gap-2;
   }
