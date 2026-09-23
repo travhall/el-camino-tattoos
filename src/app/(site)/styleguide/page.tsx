@@ -264,7 +264,19 @@ export default function StyleGuidePage() {
           <Button variant="secondary">Secondary</Button>
           <Button variant="accent">Accent</Button>
           <Button variant="ghost">Ghost</Button>
-          <Button disabled>Disabled</Button>
+        </div>
+        <div className="cluster">
+          <Button disabled>Primary disabled</Button>
+          <Button variant="secondary" disabled>
+            Secondary disabled
+          </Button>
+          <Button variant="accent" disabled>
+            Accent disabled
+          </Button>
+          <Button variant="ghost" disabled>
+            Ghost disabled
+          </Button>
+          <Button pending>Pending</Button>
         </div>
         <div className="cluster">
           <Button size="sm">Small</Button>

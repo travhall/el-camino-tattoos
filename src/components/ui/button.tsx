@@ -31,14 +31,25 @@ export function Button({
   size,
   className,
   type = "button",
+  pending = false,
   ...props
-}: Options & React.ComponentPropsWithoutRef<"button">) {
+}: Options &
+  React.ComponentPropsWithoutRef<"button"> & {
+    /**
+     * Busy but still focusable: use instead of `disabled` while work is in
+     * flight. This only sets aria-busy/aria-disabled and the styling; it does
+     * NOT block activation, so the caller must ignore activations while pending.
+     */
+    pending?: boolean;
+  }) {
   return (
     <button
       type={type}
       className={[buttonClasses({ variant, size }), className]
         .filter(Boolean)
         .join(" ")}
+      aria-busy={pending || undefined}
+      aria-disabled={pending || undefined}
       {...props}
     />
   );
