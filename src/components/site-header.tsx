@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
 import { NavLink } from "@/components/nav-link";
-import { buttonClasses } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 
 const links = [
   { href: "/artists", label: "Artists" },
@@ -25,9 +25,7 @@ export function SiteHeader() {
             </NavLink>
           ))}
           {/* Persistent booking slot; points at /contact until a booking flow exists. */}
-          <Link href="/contact" className={buttonClasses()}>
-            Book
-          </Link>
+          <ButtonLink href="/contact">Book</ButtonLink>
         </nav>
       </div>
     </header>

@@ -22,8 +22,11 @@ type Options = { variant?: Variant; size?: Size };
 export function buttonClasses({
   variant = "primary",
   size = "md",
-}: Options = {}) {
-  return ["button", variants[variant], sizes[size]].filter(Boolean).join(" ");
+  className,
+}: Options & { className?: string } = {}) {
+  return ["button", variants[variant], sizes[size], className]
+    .filter(Boolean)
+    .join(" ");
 }
 
 export function Button({
@@ -34,7 +37,7 @@ export function Button({
   pending = false,
   ...props
 }: Options &
-  React.ComponentPropsWithoutRef<"button"> & {
+  React.ComponentProps<"button"> & {
     /**
      * Busy but still focusable: use instead of `disabled` while work is in
      * flight. This only sets aria-busy/aria-disabled and the styling; it does
@@ -45,9 +48,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={[buttonClasses({ variant, size }), className]
-        .filter(Boolean)
-        .join(" ")}
+      className={buttonClasses({ variant, size, className })}
       aria-busy={pending || undefined}
       aria-disabled={pending || undefined}
       {...props}
@@ -60,13 +61,8 @@ export function ButtonLink({
   size,
   className,
   ...props
-}: Options & React.ComponentPropsWithoutRef<typeof Link>) {
+}: Options & React.ComponentProps<typeof Link>) {
   return (
-    <Link
-      className={[buttonClasses({ variant, size }), className]
-        .filter(Boolean)
-        .join(" ")}
-      {...props}
-    />
+    <Link className={buttonClasses({ variant, size, className })} {...props} />
   );
 }
