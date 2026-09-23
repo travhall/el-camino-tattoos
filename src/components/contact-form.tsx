@@ -32,6 +32,7 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status.state === "sending") return;
 
     const body = new FormData(event.currentTarget);
     let uploadBytes = 0;
@@ -237,10 +238,14 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
       )}
 
       <div>
-        <Button type="submit" disabled={status.state === "sending"}>
+        <Button type="submit" pending={status.state === "sending"}>
           {status.state === "sending" ? "Sending…" : "Send message"}
         </Button>
       </div>
+      {/* Present before it changes so screen readers announce the update. */}
+      <p role="status" className="visually-hidden">
+        {status.state === "sending" ? "Sending your message…" : ""}
+      </p>
     </form>
   );
 }

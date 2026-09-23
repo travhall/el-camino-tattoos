@@ -205,10 +205,65 @@ test.describe("contact form", () => {
       page.getByRole("alert").filter({ hasText: "send your message" }),
     ).toBeVisible();
     await expect(page).toHaveURL(/\/contact$/);
-    await expect(
-      page.getByRole("button", { name: "Send message" }),
-    ).toBeEnabled();
+    const button = page.getByRole("button", { name: "Send message" });
+    await expect(button).toBeEnabled();
+    await expect(button).not.toHaveAttribute("aria-disabled", "true");
   });
+
+  test("keeps focus and announces while sending", async ({ page }) => {
+    let posts = 0;
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    await page.route("**/__forms.html", async (route) => {
+      if (route.request().method() !== "POST") return route.continue();
+      posts += 1;
+      await held;
+      return route.fulfill({ status: 200, body: "" });
+    });
+
+    await open(page, "/contact");
+    await fillRequired(page);
+    const button = page.getByRole("button", { name: /Send message|Sending/ });
+    await button.focus();
+    await page.keyboard.press("Enter");
+
+    // aria-disabled, not native disabled, so focus stays on the button.
+    await expect(button).toHaveAttribute("aria-disabled", "true");
+    await expect(button).toHaveAttribute("aria-busy", "true");
+    await expect(button).toBeFocused();
+    await expect(
+      page.getByRole("status").filter({ hasText: "Sending your message" }),
+    ).toHaveText("Sending your message…");
+
+    // A second activation while pending must not post again.
+    await page.keyboard.press("Enter");
+    expect(posts).toBe(1);
+
+    release();
+    await expect(page).toHaveURL(/\/contact\/thanks$/);
+  });
+});
+
+test("disabled buttons ignore hover", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await open(page, "/styleguide");
+
+  const background = (name: string) =>
+    page
+      .getByRole("button", { name, exact: true })
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+
+  const enabled = page.getByRole("button", { name: "Secondary", exact: true });
+  const before = await background("Secondary");
+  await enabled.hover();
+  await expect.poll(() => background("Secondary")).not.toBe(before);
+
+  for (const name of ["Secondary disabled", "Pending"]) {
+    const control = page.getByRole("button", { name, exact: true });
+    const idle = await background(name);
+    await control.hover({ force: true });
+    expect(await background(name)).toBe(idle);
+  }
 });
 
 test("reduced motion collapses transitions", async ({ page }) => {
