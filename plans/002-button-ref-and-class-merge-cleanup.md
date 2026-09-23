@@ -46,9 +46,13 @@ export function buttonClasses({
 }
 
 export function Button({
-  variant, size, className, type = "button", pending = false, ...props
-}: Options &
-  React.ComponentPropsWithoutRef<"button"> & { pending?: boolean }) {
+  variant,
+  size,
+  className,
+  type = "button",
+  pending = false,
+  ...props
+}: Options & React.ComponentPropsWithoutRef<"button"> & { pending?: boolean }) {
   return (
     <button
       type={type}
@@ -63,7 +67,10 @@ export function Button({
 }
 
 export function ButtonLink({
-  variant, size, className, ...props
+  variant,
+  size,
+  className,
+  ...props
 }: Options & React.ComponentPropsWithoutRef<typeof Link>) {
   return (
     <Link
@@ -86,7 +93,7 @@ import { buttonClasses } from "@/components/ui/button";
           </Link>
 ```
 
-  `Link` is still needed in this file for the brand link (`<Link href="/" className="site-header__brand">`), so keep that import.
+`Link` is still needed in this file for the brand link (`<Link href="/" className="site-header__brand">`), so keep that import.
 
 - `buttonClasses` is imported only by `site-header.tsx` (verify with grep in Step 1). Decision: **keep `buttonClasses` exported** (it is useful for future non-`<a>`/non-`<button>` elements); only add a `className` option to it.
 
@@ -187,7 +194,7 @@ export function buttonClasses({
 In `src/components/site-header.tsx`: change the import to `import { ButtonLink } from "@/components/ui/button";` and replace the Book link with:
 
 ```tsx
-          <ButtonLink href="/contact">Book</ButtonLink>
+<ButtonLink href="/contact">Book</ButtonLink>
 ```
 
 Keep the existing comment above it. Keep the `Link` import (brand link still uses it).

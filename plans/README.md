@@ -6,10 +6,10 @@ honor its STOP conditions, and update your row when done.
 
 ## Execution order & status
 
-| Plan | Title                                                 | Priority | Effort | Depends on | Status |
-| ---- | ----------------------------------------------------- | -------- | ------ | ---------- | ------ |
+| Plan | Title                                                 | Priority | Effort | Depends on | Status                                                                          |
+| ---- | ----------------------------------------------------- | -------- | ------ | ---------- | ------------------------------------------------------------------------------- |
 | 001  | Disabled state inert + accessible `pending` state     | P1       | M      | —          | DONE (merged to main: `de1e0e8`, `dc8427a`, `397a10a`, plus test fix `0212bc7`) |
-| 002  | `ref` support and single class-merge point for Button | P3       | S      | 001        | DONE (merged to main: `d367dd2`) |
+| 002  | `ref` support and single class-merge point for Button | P3       | S      | 001        | DONE (merged to main: `d367dd2`)                                                |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 

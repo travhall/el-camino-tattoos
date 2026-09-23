@@ -71,22 +71,22 @@ export function Button({
 `src/styles/components.css` today (lines 46-71):
 
 ```css
-  .button {
-    @apply inline-flex min-h-11 items-center justify-center rounded-full border border-transparent bg-foreground px-4 py-1.5 font-medium text-background transition-colors hover:bg-foreground/85 disabled:opacity-50 motion-reduce:transition-none;
-    transition-duration: var(--duration-fast);
-  }
+.button {
+  @apply inline-flex min-h-11 items-center justify-center rounded-full border border-transparent bg-foreground px-4 py-1.5 font-medium text-background transition-colors hover:bg-foreground/85 disabled:opacity-50 motion-reduce:transition-none;
+  transition-duration: var(--duration-fast);
+}
 
-  .button--secondary {
-    @apply border border-outline bg-transparent text-foreground hover:bg-hover;
-  }
+.button--secondary {
+  @apply border border-outline bg-transparent text-foreground hover:bg-hover;
+}
 
-  .button--accent {
-    @apply bg-accent text-accent-foreground hover:bg-accent/85;
-  }
+.button--accent {
+  @apply bg-accent text-accent-foreground hover:bg-accent/85;
+}
 
-  .button--ghost {
-    @apply bg-transparent text-foreground hover:bg-hover;
-  }
+.button--ghost {
+  @apply bg-transparent text-foreground hover:bg-hover;
+}
 ```
 
 `src/components/contact-form.tsx`:
@@ -96,17 +96,19 @@ export function Button({
 - lines ~233-243:
 
 ```tsx
-      {status.state === "error" && (
-        <p role="alert" className="form-status">
-          <strong>Something went wrong.</strong> {status.message}
-        </p>
-      )}
+{
+  status.state === "error" && (
+    <p role="alert" className="form-status">
+      <strong>Something went wrong.</strong> {status.message}
+    </p>
+  );
+}
 
-      <div>
-        <Button type="submit" disabled={status.state === "sending"}>
-          {status.state === "sending" ? "Sending…" : "Send message"}
-        </Button>
-      </div>
+<div>
+  <Button type="submit" disabled={status.state === "sending"}>
+    {status.state === "sending" ? "Sending…" : "Send message"}
+  </Button>
+</div>;
 ```
 
 Repo conventions that apply (from `CLAUDE.md`, inlined because you have not read it):
@@ -122,14 +124,14 @@ Repo conventions that apply (from `CLAUDE.md`, inlined because you have not read
 
 ## Commands you will need
 
-| Purpose   | Command                                            | Expected on success                    |
-| --------- | -------------------------------------------------- | -------------------------------------- |
-| Install   | `pnpm install`                                     | exit 0                                 |
-| Typecheck | `pnpm exec tsc --noEmit`                           | exit 0, no output                      |
-| Lint      | `pnpm lint`                                        | exit 0                                 |
-| Format    | `pnpm format:check` (fix with `pnpm format`)       | exit 0                                 |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all tests pass                      |
-| One test  | `pnpm test --grep "<title fragment>"`              | matching tests pass                    |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Install   | `pnpm install`                                        | exit 0              |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all tests pass      |
+| One test  | `pnpm test --grep "<title fragment>"`                 | matching tests pass |
 
 Use `pnpm` only (never npm/npx). `pnpm test` leaves `.next` built with fixture content; that is expected.
 
@@ -164,19 +166,19 @@ Use `pnpm` only (never npm/npx). `pnpm test` leaves `.next` built with fixture c
 In `src/app/(site)/styleguide/page.tsx`, Buttons section, replace the single `<Button disabled>Disabled</Button>` with one disabled button per variant, and add a pending example. Target shape (keep the surrounding `cluster` divs and existing buttons):
 
 ```tsx
-        <div className="cluster">
-          <Button disabled>Primary disabled</Button>
-          <Button variant="secondary" disabled>
-            Secondary disabled
-          </Button>
-          <Button variant="accent" disabled>
-            Accent disabled
-          </Button>
-          <Button variant="ghost" disabled>
-            Ghost disabled
-          </Button>
-          <Button pending>Pending</Button>
-        </div>
+<div className="cluster">
+  <Button disabled>Primary disabled</Button>
+  <Button variant="secondary" disabled>
+    Secondary disabled
+  </Button>
+  <Button variant="accent" disabled>
+    Accent disabled
+  </Button>
+  <Button variant="ghost" disabled>
+    Ghost disabled
+  </Button>
+  <Button pending>Pending</Button>
+</div>
 ```
 
 (`pending` does not exist yet, so typecheck will fail until Step 2. That is expected.)
@@ -239,15 +241,17 @@ In `src/components/contact-form.tsx`:
 2. Replace the submit block with:
 
 ```tsx
-      <div>
-        <Button type="submit" pending={status.state === "sending"}>
-          {status.state === "sending" ? "Sending…" : "Send message"}
-        </Button>
-      </div>
-      {/* Present before it changes so screen readers announce the update. */}
-      <p role="status" className="visually-hidden">
-        {status.state === "sending" ? "Sending your message…" : ""}
-      </p>
+<div>
+  <Button type="submit" pending={status.state === "sending"}>
+    {status.state === "sending" ? "Sending…" : "Send message"}
+  </Button>
+</div>;
+{
+  /* Present before it changes so screen readers announce the update. */
+}
+<p role="status" className="visually-hidden">
+  {status.state === "sending" ? "Sending your message…" : ""}
+</p>;
 ```
 
 Keep the existing `role="alert"` error block unchanged. Do not remove the visible label swap.
