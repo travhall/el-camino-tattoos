@@ -237,7 +237,11 @@ test.describe("contact form", () => {
 
     // A second activation while pending must not post again.
     await page.keyboard.press("Enter");
+    // A "did not happen" check cannot be event-driven, so it needs a short wait.
+    await page.waitForTimeout(250);
     expect(posts).toBe(1);
+    await expect(button).toHaveAttribute("aria-busy", "true");
+    await expect(button).toBeFocused();
 
     release();
     await expect(page).toHaveURL(/\/contact\/thanks$/);
