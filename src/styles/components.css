@@ -46,20 +46,20 @@
   /* 44px minimum height. The transparent border gives the button an edge in
      forced-colors (high contrast) mode, where its fill is removed. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center rounded-full border border-transparent bg-foreground px-4 py-1.5 font-medium text-background transition-colors hover:bg-foreground/85 disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center rounded-full border border-transparent bg-foreground px-4 py-1.5 font-medium text-background transition-colors not-disabled:not-aria-disabled:hover:bg-foreground/85 disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
   .button--secondary {
-    @apply border border-outline bg-transparent text-foreground hover:bg-hover;
+    @apply border border-outline bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
   }
 
   .button--accent {
-    @apply bg-accent text-accent-foreground hover:bg-accent/85;
+    @apply bg-accent text-accent-foreground not-disabled:not-aria-disabled:hover:bg-accent/85;
   }
 
   .button--ghost {
-    @apply bg-transparent text-foreground hover:bg-hover;
+    @apply bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
   }
 
   .button--sm {
