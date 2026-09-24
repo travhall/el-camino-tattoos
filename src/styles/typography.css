@@ -57,6 +57,6 @@
   }
 
   .link {
-    @apply underline decoration-accent decoration-2 underline-offset-4 hover:no-underline;
+    @apply underline decoration-highlight decoration-2 underline-offset-4 hover:no-underline;
   }
 }

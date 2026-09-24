@@ -31,7 +31,7 @@
   }
 
   .site-nav__link[aria-current] {
-    @apply underline decoration-accent decoration-2 underline-offset-8;
+    @apply underline decoration-highlight decoration-2 underline-offset-8;
   }
 
   .site-footer {
@@ -42,11 +42,11 @@
     @apply mx-auto max-w-6xl px-fluid-sm py-fluid-lg text-sm text-muted;
   }
 
-  /* Button: primary by default; combine with a variant and/or size. */
+  /* Button: primary (gold) by default; combine with a variant and/or size. */
   /* 44px minimum height. The transparent border gives the button an edge in
      forced-colors (high contrast) mode, where its fill is removed. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-transparent bg-foreground px-4 py-1.5 font-medium text-background transition-colors not-disabled:not-aria-disabled:hover:bg-foreground/85 disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-transparent bg-accent px-4 py-1.5 font-medium text-accent-foreground transition-colors not-disabled:not-aria-disabled:hover:bg-accent-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -54,8 +54,10 @@
     @apply border border-outline bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
   }
 
-  .button--accent {
-    @apply bg-accent text-accent-foreground not-disabled:not-aria-disabled:hover:bg-accent/85;
+  /* Solid ink: for use beside or on top of gold, where a second gold button
+     would compete. */
+  .button--ink {
+    @apply bg-foreground text-background not-disabled:not-aria-disabled:hover:bg-foreground/85;
   }
 
   .button--ghost {

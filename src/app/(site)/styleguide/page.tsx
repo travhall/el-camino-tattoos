@@ -17,7 +17,7 @@ const weights = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 const roles = [
   { name: "background", note: "page canvas" },
   { name: "surface", note: "placeholders, footer" },
-  { name: "foreground", note: "text, primary actions" },
+  { name: "foreground", note: "text, solid ink fills" },
   { name: "muted", note: "secondary text" },
   { name: "outline", note: "interactive borders" },
   { name: "line", note: "dividers" },
@@ -284,7 +284,7 @@ export default async function StyleGuidePage() {
         <div className="cluster">
           <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="accent">Accent</Button>
+          <Button variant="ink">Ink</Button>
           <Button variant="ghost">Ghost</Button>
         </div>
         <div className="cluster">
@@ -292,8 +292,8 @@ export default async function StyleGuidePage() {
           <Button variant="secondary" disabled>
             Secondary disabled
           </Button>
-          <Button variant="accent" disabled>
-            Accent disabled
+          <Button variant="ink" disabled>
+            Ink disabled
           </Button>
           <Button variant="ghost" disabled>
             Ghost disabled
