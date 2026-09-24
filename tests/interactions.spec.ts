@@ -126,6 +126,7 @@ test.describe("contact form", () => {
     await open(page, "/contact");
     await fillRequired(page);
     await page.getByLabel("Phone (optional)").fill("555-0100");
+    await page.getByLabel("Budget (optional)").fill("$300 to $500");
     await page.getByLabel("Artist (optional)").selectOption("Fixture One");
     await page.getByLabel("Color", { exact: true }).check();
     await page.getByLabel(/covers up or reworks/).check();
@@ -155,6 +156,7 @@ test.describe("contact form", () => {
     expect(field("message")).toBe("A small koi.");
     expect(field("placement")).toBe("Inner left forearm");
     expect(field("size")).toBe("4 inches");
+    expect(field("budget")).toBe("$300 to $500");
     expect(field("color")).toBe("Color");
     expect(field("cover-up")).toBe("yes");
     expect(field("bot-field")).toBe("");

@@ -25,7 +25,7 @@ export function SiteHeader() {
             </NavLink>
           ))}
           {/* Persistent booking slot; points at /contact until a booking flow exists. */}
-          <ButtonLink href="/contact">Book</ButtonLink>
+          <ButtonLink href="/contact">Request</ButtonLink>
         </nav>
       </div>
     </header>

@@ -39,7 +39,32 @@
   }
 
   .site-footer__inner {
-    @apply mx-auto max-w-6xl px-fluid-sm py-fluid-lg text-sm text-muted;
+    @apply mx-auto grid max-w-6xl gap-fluid-md px-fluid-sm py-fluid-lg text-sm text-muted;
+  }
+
+  /* Shop details: address and contact on one side, hours on the other. */
+  .shop-info {
+    @apply grid items-start gap-fluid-md md:grid-cols-2;
+  }
+
+  .shop-info__contact {
+    @apply grid justify-items-start gap-fluid-2xs not-italic;
+  }
+
+  .shop-info__link {
+    @apply inline-flex min-h-11 items-center;
+  }
+
+  .shop-info__hours {
+    @apply grid gap-1;
+  }
+
+  .shop-info__hours-row {
+    @apply flex gap-2;
+  }
+
+  .shop-info__days {
+    @apply font-medium text-foreground;
   }
 
   /* Button: primary (gold) by default; combine with a variant and/or size. */

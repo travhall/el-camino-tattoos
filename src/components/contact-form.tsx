@@ -124,7 +124,7 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
           Artist (optional)
         </label>
         <select id="contact-artist" name="artist" className="field__control">
-          <option value="">No preference</option>
+          <option value="">No preference, we&rsquo;ll match you</option>
           {artists.map((artist) => (
             <option key={artist.slug} value={artist.name}>
               {artist.name}
@@ -177,6 +177,23 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
         />
         <p id="contact-size-hint" className="field__hint">
           A rough guess in inches is fine. e.g. 4 inches tall.
+        </p>
+      </div>
+
+      <div className="field">
+        <label htmlFor="contact-budget" className="field__label">
+          Budget (optional)
+        </label>
+        <input
+          id="contact-budget"
+          name="budget"
+          type="text"
+          aria-describedby="contact-budget-hint"
+          className="field__control"
+        />
+        <p id="contact-budget-hint" className="field__hint">
+          Tell us what you&rsquo;re hoping to spend and we&rsquo;ll tell you
+          what&rsquo;s realistic.
         </p>
       </div>
 

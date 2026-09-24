@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { ArtistCard } from "@/components/artist-card";
+import { ArtistGrid } from "@/components/artist-grid";
 import { getArtists } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
+import { siteName } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Artists" };
+export const metadata: Metadata = pageMetadata({
+  title: "Artists",
+  description: `The artists at ${siteName}: their styles and their portfolios.`,
+  path: "/artists",
+});
 
 export default async function ArtistsPage() {
   const artists = await getArtists();
@@ -10,13 +16,7 @@ export default async function ArtistsPage() {
   return (
     <div className="stack stack--lg">
       <h1>Artists</h1>
-      <ul className="artist-grid">
-        {artists.map((artist) => (
-          <li key={artist.slug}>
-            <ArtistCard artist={artist} headingLevel={2} />
-          </li>
-        ))}
-      </ul>
+      <ArtistGrid artists={artists} headingLevel={2} />
     </div>
   );
 }
