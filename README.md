@@ -20,11 +20,13 @@ Fonts: Cosmic (variable, headings and display) via `next/font/local`, and Hanken
 
 Markup uses semantic classes, and Tailwind utilities are applied inside them with `@apply`. See `src/styles/` and the conventions in `CLAUDE.md`. Browse everything at `/styleguide`.
 
-Color comes from three tonal ramps built from the brand colors and exposed as semantic roles (`background`, `foreground`, `accent`, ...) for light and dark. `scripts/color-ramps.mjs` checks every role pairing against WCAG contrast and refuses to generate if one fails. To change the palette, edit the pinned colors there and run:
+Color is primitives mapped to roles. `scripts/color-ramps.mjs` generates tonal ramps (`paper`, `ink`, `gold`, `red`, `green`, `navy`) from pinned brand values into `src/styles/palette.css`. Semantic roles (`background`, `foreground`, `accent`, `highlight`, ...) are hand-edited in `src/styles/roles.css`, for light and dark, and update live in the browser with no build step. To change a role, edit that file. To change a brand value, edit the pins in the generator and run:
 
 ```bash
 pnpm color-ramps
 ```
+
+`pnpm check:contrast` measures every role pairing against WCAG contrast. It reports and never blocks; CI runs it, and `/styleguide` shows the same numbers.
 
 The type scale is fluid and modular: a perfect fourth (1.333) on wide screens easing to a major third (1.2) on phones, with body text from 16px to 18px. The same generator produces the fluid space scale (`gap-fluid-md`, `p-fluid-lg`, ...). To change either, edit the config in `scripts/type-scale.mjs` and run:
 
