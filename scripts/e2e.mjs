@@ -17,8 +17,11 @@ process.on("SIGINT", async () => {
 
 let exitCode = 1;
 try {
-  await seedFixtures();
-  exitCode = await run(["build"]);
+  exitCode = await run(["check:contrast"]);
+  if (exitCode === 0) {
+    await seedFixtures();
+    exitCode = await run(["build"]);
+  }
   if (exitCode === 0) {
     exitCode = await run([
       "exec",

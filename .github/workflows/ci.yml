@@ -20,6 +20,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm check:images
+      - run: pnpm check:contrast
       - run: pnpm build
       # Seeds fixture content, rebuilds, and runs the Playwright accessibility
       # and interaction suite against the built site.
