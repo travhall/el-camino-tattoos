@@ -33,10 +33,10 @@
   --outline: var(--ink-600);
   --line: var(--paper-300);
   --hover: var(--paper-200);
-  --accent: var(--gold-500);
+  --accent: var(--gold-300);
   --accent-foreground: var(--ink-950);
-  --accent-hover: var(--gold-600);
-  --accent-text: var(--gold-800);
+  --accent-hover: var(--gold-400);
+  --accent-text: var(--gold-700);
   --accent-soft: var(--gold-100);
   --highlight: var(--red-500);
   --highlight-foreground: var(--paper-50);
@@ -54,8 +54,8 @@
     --outline: var(--paper-400);
     --line: var(--ink-800);
     --hover: var(--ink-800);
-    --accent-hover: var(--gold-400);
-    --accent-text: var(--gold-400);
+    --accent-hover: var(--gold-200);
+    --accent-text: var(--gold-200);
     --accent-soft: var(--gold-900);
     --highlight: var(--red-400);
     --highlight-foreground: var(--ink-950);

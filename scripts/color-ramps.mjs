@@ -17,38 +17,26 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
 // Primitives, named by color. Sailor Jerry style: aged paper, ink black, and the
 // four flash colors. Pins are exact brand values; the rest is generated.
+//
+// Keep ramps smooth: pin as few steps as you can, and pin each brand color at
+// the step whose lightness is closest to its own (a light gold belongs near 300,
+// not 500). The generator spaces lightness evenly between and beyond pins, so
+// pins that are unevenly spaced in lightness make a ramp lurch. The report at
+// the end of `pnpm color-ramps` flags any ramp that does.
 const ramps = {
-  // Aged parchment: canvas, raised surfaces, dividers, and dark-mode text.
-  paper: {
-    pins: {
-      50: "#fbf3dc",
-      100: "#f1e6c9",
-      200: "#e6d6ad",
-      300: "#cdb98c",
-      400: "#bdae92",
-      500: "#8b7d66",
-    },
-  },
+  // Aged parchment: canvas, raised surfaces, dividers, and dark-mode text. Only
+  // the two lightest steps are pinned; the rest steps evenly down to black.
+  paper: { pins: { 50: "#fbf3dc", 100: "#f1e6c9" } },
   // Warm black: light-mode text, dark-mode canvas and surfaces.
-  ink: {
-    pins: {
-      600: "#6a5b47",
-      700: "#55483a",
-      800: "#3a3129",
-      900: "#1f1a16",
-      950: "#12100e",
-    },
-  },
-  // Mustard gold: primary actions.
-  gold: { pins: { 400: "#f0b429", 500: "#e9ac1f" } },
+  ink: { pins: { 700: "#55483a", 950: "#12100e" } },
+  // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
+  gold: { pins: { 300: "#e9ac1f" } },
   // Tattoo red: emphasis and state indicators.
-  red: {
-    pins: { 300: "#f0776b", 400: "#e5493f", 500: "#bf2a2e", 600: "#a3211f" },
-  },
+  red: { pins: { 300: "#f0776b", 500: "#bf2a2e" } },
   // Deep green. Not mapped to a role yet.
-  green: { pins: { 400: "#4aa172", 700: "#2c6a48" } },
+  green: { pins: { 400: "#4aa172" } },
   // Navy: focus ring.
-  navy: { pins: { 300: "#7aa2d6", 700: "#1d3557" } },
+  navy: { pins: { 300: "#7aa2d6" } },
 };
 
 // ---- color math ----------------------------------------------------------
@@ -166,6 +154,24 @@ function buildRamp({ pins }) {
 const built = Object.fromEntries(
   Object.entries(ramps).map(([name, def]) => [name, buildRamp(def)]),
 );
+
+// ---- smoothness report ---------------------------------------------------
+// Warns (never fails) when a ramp's lightness steps are uneven, which reads as
+// the ramp "jumping". The first interval is skipped: paper's canvas steps are
+// deliberately close together.
+const stepsOf = (ramp) => {
+  const l = STEPS.map((step) => rgbToOklch(hexToRgb(ramp[step])).L);
+  return l.slice(1).map((v, i) => l[i] - v);
+};
+for (const [name, ramp] of Object.entries(built)) {
+  const d = stepsOf(ramp).slice(1);
+  const ratio = Math.max(...d) / Math.min(...d);
+  if (ratio > 1.5) {
+    console.warn(
+      `color-ramps: ${name} ramp is uneven (largest lightness step is ${ratio.toFixed(1)}x the smallest). Check its pins.`,
+    );
+  }
+}
 
 // ---- output --------------------------------------------------------------
 const rampVars = Object.entries(built).flatMap(([name, ramp]) =>
