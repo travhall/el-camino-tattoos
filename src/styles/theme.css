@@ -2,19 +2,9 @@
  * Theme: maps semantic color roles to Tailwind utilities (bg-background,
  * text-foreground, bg-surface, text-muted, border-outline, ...).
  *
- * This file names no colors. The role values (light and dark) and the ramps
- * behind them are generated into palette.css by scripts/color-ramps.mjs,
- * which also checks every pairing against WCAG contrast. To re-theme, edit
- * the pinned hex values there and run `pnpm color-ramps`.
- *
- * Guidance:
- *   foreground / muted ... text
- *   accent ............... fills (buttons, badges, selection)
- *   accent-text .......... orange as text or a link color
- *   accent-soft .......... tinted backgrounds, with foreground text on top
- *   outline .............. borders on interactive controls (3:1)
- *   line ................. decorative dividers
- *   focus ................ focus ring
+ * This file names no colors. The role values (light and dark) are hand-edited
+ * in roles.css, pointing at the generated ramps in palette.css. Guidance for
+ * each role lives at the top of roles.css.
  */
 :root {
   color-scheme: light dark;
@@ -30,7 +20,11 @@
   --color-hover: var(--hover);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-highlight-text: var(--highlight-text);
   --color-focus: var(--focus);
 }

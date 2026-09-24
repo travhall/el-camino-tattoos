@@ -1,78 +1,55 @@
-// Brand color ramps and semantic roles. Single source of truth for color.
+// Color primitives. Generates the ramps in src/styles/palette.css.
 //
-//   1. Each brand color is "pinned" to a step of a tonal ramp; the other steps
-//      are generated in OKLCH (even lightness, hue held, chroma eased at the
-//      ends, gamut-clipped).
-//   2. Roles (background, foreground, muted, ...) pick steps from the ramps,
-//      separately for light and dark.
-//   3. Every role pairing is checked against a WCAG contrast target. The
-//      script FAILS (no files written) if any pairing misses, so contrast
-//      can't silently regress when a color changes.
+//   1. Each primitive (paper, ink, gold, red, green, navy) is a tonal ramp. You
+//      pin the exact brand values to the steps you want; the steps between and
+//      beyond the pins are generated in OKLCH (even lightness, hue held, chroma
+//      eased at the ends, gamut-clipped). Pin more steps for more control.
+//   2. Semantic roles (background, foreground, accent, ...) are NOT made here.
+//      They are hand-edited in src/styles/roles.css, which points at steps of
+//      these ramps. Contrast is checked separately: `pnpm check:contrast`.
 //
-// Re-theme: change the pinned hex values (or the role picks) below, then run
-// `pnpm color-ramps`. Nothing else in the codebase names a color.
+// Re-theme the primitives: change the pinned hex values below, then run
+// `pnpm color-ramps`. Ramp names (gold, red, ...) live only in this file, the
+// generated palette and roles.css; components use roles.
 import { writeFile } from "node:fs/promises";
 
 const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
-// Ramp names are roles of a color family, not hues.
+// Primitives, named by color. Sailor Jerry style: aged paper, ink black, and the
+// four flash colors. Pins are exact brand values; the rest is generated.
 const ramps = {
-  // Text and primary actions.
-  ink: { pins: { 700: "#344f1f" } },
-  // Highlights.
-  accent: { pins: { 500: "#f4991a" } },
-  // Canvas and raised surfaces (warm neutral).
-  paper: { pins: { 50: "#f9f5f0", 100: "#f2ead3" } },
-};
-
-// step picks are "ramp.step".
-const roles = {
-  light: {
-    background: "paper.50",
-    surface: "paper.100",
-    foreground: "ink.900",
-    muted: "ink.600",
-    outline: "ink.500",
-    line: "paper.200",
-    hover: "paper.200",
-    accent: "accent.500",
-    "accent-foreground": "ink.900",
-    "accent-text": "accent.700",
-    "accent-soft": "accent.100",
-    focus: "accent.700",
+  // Aged parchment: canvas, raised surfaces, dividers, and dark-mode text.
+  paper: {
+    pins: {
+      50: "#fbf3dc",
+      100: "#f1e6c9",
+      200: "#e6d6ad",
+      300: "#cdb98c",
+      400: "#bdae92",
+      500: "#8b7d66",
+    },
   },
-  dark: {
-    background: "paper.950",
-    surface: "paper.800",
-    foreground: "ink.50",
-    muted: "paper.200",
-    outline: "paper.400",
-    line: "ink.700",
-    hover: "ink.700",
-    accent: "accent.500",
-    "accent-foreground": "ink.900",
-    "accent-text": "accent.400",
-    "accent-soft": "accent.900",
-    focus: "accent.400",
+  // Warm black: light-mode text, dark-mode canvas and surfaces.
+  ink: {
+    pins: {
+      600: "#6a5b47",
+      700: "#55483a",
+      800: "#3a3129",
+      900: "#1f1a16",
+      950: "#12100e",
+    },
   },
+  // Mustard gold: primary actions.
+  gold: { pins: { 400: "#f0b429", 500: "#e9ac1f" } },
+  // Tattoo red: emphasis and state indicators.
+  red: {
+    pins: { 300: "#f0776b", 400: "#e5493f", 500: "#bf2a2e", 600: "#a3211f" },
+  },
+  // Deep green. Not mapped to a role yet.
+  green: { pins: { 400: "#4aa172", 700: "#2c6a48" } },
+  // Navy: focus ring.
+  navy: { pins: { 300: "#7aa2d6", 700: "#1d3557" } },
 };
-
-// [foreground role, background role, minimum WCAG ratio, what it covers]
-const pairs = [
-  ["foreground", "background", 7, "body text"],
-  ["foreground", "surface", 7, "text on surface"],
-  ["foreground", "hover", 4.5, "text on hover fill"],
-  ["muted", "background", 4.5, "secondary text"],
-  ["muted", "surface", 4.5, "secondary text on surface"],
-  ["outline", "background", 3, "input and chip borders"],
-  ["outline", "surface", 3, "borders on surface"],
-  ["accent-text", "background", 4.5, "accent text and links"],
-  ["accent-text", "surface", 4.5, "accent text on surface"],
-  ["focus", "background", 3, "focus ring"],
-  ["focus", "surface", 3, "focus ring on surface"],
-  ["accent-foreground", "accent", 4.5, "text on accent fill"],
-  ["foreground", "accent-soft", 4.5, "text on soft accent"],
-];
 
 // ---- color math ----------------------------------------------------------
 const toLinear = (c) =>
@@ -136,16 +113,6 @@ function toHex({ L, C, h }) {
   return rgbToHex(rgb.map(fromLinear));
 }
 
-const luminance = (hex) => {
-  const [r, g, b] = hexToRgb(hex).map(toLinear);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-};
-
-const contrast = (a, b) => {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-};
-
 // ---- ramp generation -----------------------------------------------------
 const LIGHTEST = 0.985;
 const DARKEST = 0.16;
@@ -200,92 +167,25 @@ const built = Object.fromEntries(
   Object.entries(ramps).map(([name, def]) => [name, buildRamp(def)]),
 );
 
-const pick = (ref) => {
-  const [name, step] = ref.split(".");
-  const hex = built[name]?.[step];
-  if (!hex) throw new Error(`Unknown ramp step: ${ref}`);
-  return hex;
-};
-
-// ---- contrast check ------------------------------------------------------
-const results = [];
-let failures = 0;
-for (const [fg, bg, min, note] of pairs) {
-  const row = { fg, bg, min, note };
-  for (const theme of ["light", "dark"]) {
-    const ratio = contrast(pick(roles[theme][fg]), pick(roles[theme][bg]));
-    row[theme] = Math.round(ratio * 100) / 100;
-    if (ratio < min) {
-      failures++;
-      console.error(
-        `FAIL ${theme}: ${fg} (${roles[theme][fg]}) on ${bg} (${roles[theme][bg]}) = ${ratio.toFixed(2)}, needs ${min}`,
-      );
-    }
-  }
-  results.push(row);
-}
-
-if (failures > 0) {
-  console.error(
-    `\ncolor-ramps: ${failures} contrast failure(s); nothing written.`,
-  );
-  process.exit(1);
-}
-
 // ---- output --------------------------------------------------------------
 const rampVars = Object.entries(built).flatMap(([name, ramp]) =>
   Object.entries(ramp).map(([step, hex]) => `  --${name}-${step}: ${hex};`),
 );
 
-const roleVars = (theme) =>
-  Object.entries(roles[theme]).map(([role, ref]) => {
-    const [name, step] = ref.split(".");
-    return `  --${role}: var(--${name}-${step});`;
-  });
-
 const css = [
   "/* Generated by scripts/color-ramps.mjs. Do not edit; run `pnpm color-ramps`. */",
+  "/* Primitive ramps only. Roles are hand-edited in roles.css. */",
   ":root {",
-  "  /* Ramps */",
   ...rampVars,
-  "",
-  "  /* Roles: light */",
-  ...roleVars("light"),
-  "}",
-  "",
-  "@media (prefers-color-scheme: dark) {",
-  "  :root {",
-  ...roleVars("dark").map((line) => `  ${line}`),
-  "  }",
   "}",
   "",
 ].join("\n");
 
-const json = {
-  steps: STEPS,
-  ramps: built,
-  roles: {
-    light: Object.fromEntries(
-      Object.entries(roles.light).map(([r, ref]) => [
-        r,
-        { ref, hex: pick(ref) },
-      ]),
-    ),
-    dark: Object.fromEntries(
-      Object.entries(roles.dark).map(([r, ref]) => [
-        r,
-        { ref, hex: pick(ref) },
-      ]),
-    ),
-  },
-  pairs: results,
-};
+const json = { steps: STEPS, ramps: built };
 
 await writeFile("src/styles/palette.css", css);
 await writeFile(
   "src/styles/palette.generated.json",
   `${JSON.stringify(json, null, 2)}\n`,
 );
-console.log(
-  `color-ramps: ${Object.keys(built).length} ramps, ${pairs.length} pairings x 2 themes, all pass.`,
-);
+console.log(`color-ramps: ${Object.keys(built).length} ramps written.`);

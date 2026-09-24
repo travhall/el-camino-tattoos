@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/palette.css";
+@import "../styles/roles.css";
 @import "../styles/theme.css";
 @import "../styles/type-scale.css";
 @import "../styles/space-scale.css";

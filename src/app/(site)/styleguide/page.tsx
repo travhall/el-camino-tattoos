@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Button, ButtonLink } from "@/components/ui/button";
-import palette from "@/styles/palette.generated.json";
 import typeScale from "@/styles/type-scale.generated.json";
+import {
+  checkContrast,
+  loadInputs,
+  passes,
+} from "../../../../scripts/contrast.mjs";
 
 export const metadata: Metadata = {
   title: "Style guide",
@@ -20,8 +24,12 @@ const roles = [
   { name: "hover", note: "hover fill" },
   { name: "accent", note: "fills: buttons, badges" },
   { name: "accent-foreground", note: "text on accent" },
-  { name: "accent-text", note: "orange as text or links" },
+  { name: "accent-hover", note: "accent fill, hovered" },
+  { name: "accent-text", note: "accent as readable text" },
   { name: "accent-soft", note: "tinted backgrounds" },
+  { name: "highlight", note: "red marks: underlines, states" },
+  { name: "highlight-foreground", note: "text on highlight" },
+  { name: "highlight-text", note: "red as readable text" },
   { name: "focus", note: "focus ring" },
 ] as const;
 
@@ -46,8 +54,19 @@ function Label({ children }: { children: React.ReactNode }) {
   return <p className="small muted">{children}</p>;
 }
 
-export default function StyleGuidePage() {
+type Pairing = ReturnType<typeof checkContrast>[number];
+
+// Never color alone: a miss is spelled out in the cell.
+function ratio(row: Pairing, mode: "light" | "dark") {
+  const value = row[mode];
+  if (value === null) return "role missing";
+  return passes(row, mode) ? `${value}:1` : `${value}:1, below minimum`;
+}
+
+export default async function StyleGuidePage() {
   const { config, steps, space } = typeScale;
+  const { rolesCss, ramps } = await loadInputs();
+  const pairs = checkContrast(rolesCss, ramps);
 
   return (
     <div className="stack stack--xl">
@@ -205,33 +224,36 @@ export default function StyleGuidePage() {
 
         <div className="stack">
           <Label>
-            Ramps: brand colors pinned to a step, the rest generated in OKLCH.
-            Edit the pinned values and role picks in scripts/color-ramps.mjs,
-            then run <code>pnpm color-ramps</code>.
+            Primitive ramps: brand colors pinned to steps, the rest generated in
+            OKLCH. Edit the pinned values in scripts/color-ramps.mjs, then run{" "}
+            <code>pnpm color-ramps</code>. Roles are hand-edited in{" "}
+            <code>src/styles/roles.css</code>, no build step.
           </Label>
-          {Object.entries(palette.ramps).map(([name, ramp]) => (
-            <div key={name} className="stack stack--sm">
-              <p className="small">{name}</p>
-              <ul className="sg-ramp">
-                {Object.entries(ramp).map(([step, hex]) => (
-                  <li key={step}>
-                    <div
-                      className="sg-swatch"
-                      style={{ backgroundColor: hex }}
-                    />
-                    <p className="caption">{step}</p>
-                    <p className="caption">{hex}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {Object.entries(ramps as Record<string, Record<string, string>>).map(
+            ([name, ramp]) => (
+              <div key={name} className="stack stack--sm">
+                <p className="small">{name}</p>
+                <ul className="sg-ramp">
+                  {Object.entries(ramp).map(([step, hex]) => (
+                    <li key={step}>
+                      <div
+                        className="sg-swatch"
+                        style={{ backgroundColor: hex }}
+                      />
+                      <p className="caption">{step}</p>
+                      <p className="caption">{hex}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ),
+          )}
         </div>
 
         <table className="sg-table">
           <caption>
-            Contrast, measured from the generated palette. The generator fails
-            if any row drops below its minimum.
+            Contrast, measured from roles.css. This only reports; run{" "}
+            <code>pnpm check:contrast</code> to fail on a miss (CI does).
           </caption>
           <thead>
             <tr>
@@ -243,15 +265,15 @@ export default function StyleGuidePage() {
             </tr>
           </thead>
           <tbody>
-            {palette.pairs.map((pair) => (
+            {pairs.map((pair) => (
               <tr key={`${pair.fg}-${pair.bg}`}>
                 <th scope="row">
                   {pair.fg} on {pair.bg}
                 </th>
                 <td>{pair.note}</td>
                 <td>{pair.min}:1</td>
-                <td>{pair.light}:1</td>
-                <td>{pair.dark}:1</td>
+                <td>{ratio(pair, "light")}</td>
+                <td>{ratio(pair, "dark")}</td>
               </tr>
             ))}
           </tbody>
