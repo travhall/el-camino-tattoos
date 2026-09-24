@@ -59,4 +59,35 @@
   .link {
     @apply underline decoration-highlight decoration-2 underline-offset-4 hover:no-underline;
   }
+
+  /* Text an editor wrote in Keystatic (Aftercare, FAQ answers). The editor
+     only offers paragraphs, bold, italic, links, lists and h2/h3, so those
+     are the only elements styled here. */
+  .richtext {
+    @apply grid gap-fluid-xs;
+  }
+
+  .richtext > :is(h2, h3) {
+    @apply mt-fluid-xs;
+  }
+
+  .richtext ul {
+    @apply list-disc pl-6;
+  }
+
+  .richtext ol {
+    @apply list-decimal pl-6;
+  }
+
+  .richtext li + li {
+    @apply mt-1;
+  }
+
+  .richtext a {
+    @apply underline decoration-highlight decoration-2 underline-offset-4 hover:no-underline;
+  }
+
+  .richtext strong {
+    @apply font-semibold;
+  }
 }

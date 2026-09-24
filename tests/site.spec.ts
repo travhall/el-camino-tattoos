@@ -1,4 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { hydrated } from "./routes";
 
 // content/site.yaml is committed with placeholder shop details (the sister
@@ -96,5 +98,87 @@ test.describe("search and sharing metadata", () => {
     expect(await meta(page, 'meta[property="og:image"]')).toMatch(
       /\/images\/artists\//,
     );
+  });
+});
+
+test.describe("editable pages", () => {
+  test("the FAQ lists questions in order, each linkable and answered", async ({
+    page,
+  }) => {
+    await open(page, "/faq");
+
+    const questions = page.getByRole("heading", { level: 2 });
+    await expect(questions).toHaveText([
+      "How much is a deposit?",
+      "Do you take walk-ins?",
+    ]);
+
+    // The slug is the anchor, and the section is named by its question.
+    const deposit = page.locator("#zz-fixture-deposit");
+    await expect(deposit).toHaveAttribute(
+      "aria-labelledby",
+      "zz-fixture-deposit-question",
+    );
+    await expect(
+      deposit.getByRole("link", { name: "contact page" }),
+    ).toHaveAttribute("href", "/contact");
+
+    // Formatting the editor offers comes through: bold and a list.
+    const walkIns = page.locator("#zz-fixture-walk-ins");
+    await expect(walkIns.locator("strong")).toHaveText("Ask first");
+    await expect(walkIns.getByRole("listitem")).toHaveText([
+      "Small pieces are easiest",
+      "Bring a photo ID",
+    ]);
+  });
+
+  test("the FAQ has a title, description and canonical URL", async ({
+    page,
+  }) => {
+    await open(page, "/faq");
+    await expect(page).toHaveTitle("FAQ | El Camino Tattoos");
+    expect(await meta(page, 'meta[name="description"]')).toContain(
+      "common questions",
+    );
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      /\/faq$/,
+    );
+  });
+
+  test("the header links to the FAQ", async ({ page }) => {
+    await open(page, "/");
+    await expect(
+      page
+        .getByRole("navigation", { name: "Primary" })
+        .getByRole("link", { name: "FAQ" }),
+    ).toHaveAttribute("href", "/faq");
+  });
+
+  test("Aftercare renders what the editor wrote, under one h1", async ({
+    page,
+  }) => {
+    // The fixture only exists when there was no real Aftercare file to keep.
+    const file = path.join(process.cwd(), "content/aftercare.mdoc");
+    const seeded =
+      existsSync(file) &&
+      readFileSync(file, "utf8").includes("Fixture aftercare");
+    test.skip(!seeded, "real Aftercare content is present");
+
+    await open(page, "/aftercare");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Aftercare",
+    );
+    await expect(page.getByRole("heading", { level: 2 })).toHaveText(
+      "Fixture aftercare",
+    );
+    await expect(page.getByRole("heading", { level: 3 })).toHaveText(
+      "The first days",
+    );
+    await expect(page.locator("main ol > li")).toHaveText([
+      "Wash gently",
+      "Pat dry",
+      "Apply a thin layer of ointment",
+    ]);
   });
 });

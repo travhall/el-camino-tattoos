@@ -1,4 +1,5 @@
 import { createReader } from "@keystatic/core/reader";
+import type { Node } from "@markdoc/markdoc";
 import { cache } from "react";
 import config from "../../keystatic.config";
 
@@ -93,6 +94,39 @@ export const getPiecesByArtist = cache(async (artistSlug: string) => {
 export const getPiece = cache(async (slug: string) => {
   const pieces = await getPieces();
   return pieces.find((piece) => piece.slug === slug) ?? null;
+});
+
+const hasContent = (node: Node) => node.children.length > 0;
+
+/** The Aftercare page's rich text, or null until someone has written it. */
+export const getAftercare = cache(async (): Promise<Node | null> => {
+  const entry = await reader.singletons.aftercare.read();
+  if (!entry) return null;
+  const { node } = await entry.content();
+  return hasContent(node) ? node : null;
+});
+
+export type Faq = {
+  slug: string;
+  question: string;
+  order: number;
+  answer: Node;
+};
+
+/** FAQ entries in order. An entry with no question or no answer is skipped. */
+export const getFaqs = cache(async (): Promise<Faq[]> => {
+  const entries = await reader.collections.faq.all();
+  const faqs = await Promise.all(
+    entries.map(async ({ slug, entry }) => ({
+      slug,
+      question: entry.question.trim(),
+      order: entry.order ?? 100,
+      answer: (await entry.answer()).node,
+    })),
+  );
+  return faqs
+    .filter((faq) => faq.question && hasContent(faq.answer))
+    .sort((a, b) => a.order - b.order || a.question.localeCompare(b.question));
 });
 
 export type Site = {

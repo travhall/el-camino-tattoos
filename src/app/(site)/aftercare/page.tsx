@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RichText } from "@/components/rich-text";
+import { getAftercare } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { siteName } from "@/lib/site";
 
@@ -9,18 +11,24 @@ export const metadata: Metadata = pageMetadata({
   path: "/aftercare",
 });
 
-export default function AftercarePage() {
+export default async function AftercarePage() {
+  const content = await getAftercare();
+
   return (
     <div className="stack">
       <h1>Aftercare</h1>
-      <p className="muted measure">
-        Aftercare instructions are coming soon. If you have a question about a
-        healing tattoo, please{" "}
-        <Link href="/contact" className="link">
-          get in touch
-        </Link>
-        .
-      </p>
+      {content ? (
+        <RichText node={content} />
+      ) : (
+        <p className="muted measure">
+          Aftercare instructions haven&rsquo;t been added yet. If you have a
+          question about a healing tattoo, please{" "}
+          <Link href="/contact" className="link">
+            get in touch
+          </Link>
+          .
+        </p>
+      )}
     </div>
   );
 }

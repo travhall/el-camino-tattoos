@@ -21,6 +21,30 @@ const instagramField = () =>
     },
   });
 
+// The formatting an editor gets in Aftercare and FAQ text. Headings start at
+// 2 because each page supplies its own <h1>; no images, tables or code, so the
+// page can't be broken from the editor.
+const richText = (label: string, { headings }: { headings: boolean }) =>
+  fields.markdoc({
+    label,
+    extension: "mdoc",
+    options: {
+      bold: true,
+      italic: true,
+      link: true,
+      orderedList: true,
+      unorderedList: true,
+      heading: headings ? [2, 3] : false,
+      blockquote: false,
+      code: false,
+      codeBlock: false,
+      divider: false,
+      image: false,
+      table: false,
+      strikethrough: false,
+    },
+  });
+
 export default config({
   storage: useGitHub
     ? { kind: "github", repo: { owner: "travhall", name: "el-camino-tattoos" } }
@@ -30,11 +54,35 @@ export default config({
     brand: { name: "El Camino Tattoos" },
     navigation: {
       Shop: ["site"],
+      Pages: ["aftercare", "faq"],
       Content: ["artists", "pieces"],
     },
   },
 
   collections: {
+    faq: collection({
+      label: "FAQ",
+      slugField: "question",
+      path: "content/faq/*",
+      format: { contentField: "answer" },
+      columns: ["question", "order"],
+      schema: {
+        question: fields.slug({
+          name: {
+            label: "Question",
+            description:
+              "As a visitor would ask it. e.g. How much is a deposit?",
+          },
+        }),
+        order: fields.integer({
+          label: "Order",
+          description: "Lower numbers appear first.",
+          defaultValue: 100,
+        }),
+        answer: richText("Answer", { headings: false }),
+      },
+    }),
+
     artists: collection({
       label: "Artists",
       slugField: "name",
@@ -103,6 +151,15 @@ export default config({
   },
 
   singletons: {
+    aftercare: singleton({
+      label: "Aftercare",
+      path: "content/aftercare",
+      format: { contentField: "content" },
+      schema: {
+        content: richText("Aftercare instructions", { headings: true }),
+      },
+    }),
+
     site: singleton({
       label: "Shop info",
       path: "content/site",

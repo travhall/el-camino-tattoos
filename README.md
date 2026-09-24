@@ -64,6 +64,8 @@ Analytics (Cloudflare Web Analytics, cookieless) loads only when `CLOUDFLARE_ANA
 
 Artists and portfolio pieces live in `content/`, and their images in `public/images/`. Edit them in the admin at `/keystatic`.
 
+The **Aftercare** page and the **FAQ** are also edited in the admin, under **Pages**. Aftercare is one rich-text entry (`content/aftercare.mdoc`), and each FAQ question is its own entry (`content/faq/*.mdoc`) with an order number. The editor offers bold, italic, links, lists and (Aftercare only) headings, so the page layout can't be broken. Until something is written, each page says so and points to the contact form. Each question is linkable by its slug, e.g. `/faq#deposit`.
+
 Shop details (address, hours, phone, email, Instagram, the walk-ins and consultation notes, the deposit amount, and the site description) are one entry, `content/site.yaml`, edited under **Shop info** in the admin. Every field is optional and shows only when filled in. The committed values are placeholders (the address is the sister skate shop's); replace them before launch.
 
 - **Locally:** the admin writes straight to your working tree.

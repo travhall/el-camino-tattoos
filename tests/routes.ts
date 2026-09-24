@@ -8,6 +8,7 @@ export const routes = [
   "/portfolio",
   "/portfolio/zz-fixture-koi",
   "/aftercare",
+  "/faq",
   "/contact",
   "/contact/thanks",
   "/styleguide",

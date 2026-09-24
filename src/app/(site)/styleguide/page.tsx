@@ -400,6 +400,25 @@ export default async function StyleGuidePage() {
         </ul>
       </Section>
 
+      <Section id="richtext" title="Rich text">
+        <div className="richtext measure">
+          <p>
+            Text an editor writes in Keystatic: paragraphs with{" "}
+            <strong>bold</strong>, <em>italic</em> and{" "}
+            <a href="#richtext-heading">links</a>.
+          </p>
+          <h3>Headings, lists</h3>
+          <ul>
+            <li>Bulleted items</li>
+            <li>Keep each one short</li>
+          </ul>
+          <ol>
+            <li>Numbered steps</li>
+            <li>Read in order</li>
+          </ol>
+        </div>
+      </Section>
+
       <Section id="cards" title="Cards and grid">
         <div className="sg-gallery">
           {Array.from({ length: 4 }, (_, index) => (

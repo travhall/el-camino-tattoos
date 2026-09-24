@@ -255,6 +255,15 @@
     @apply rounded-md border border-error bg-error-soft px-3 py-2;
   }
 
+  /* FAQ: one section per question, each linkable by its slug. */
+  .faq {
+    @apply grid gap-fluid-md;
+  }
+
+  .faq__item {
+    @apply grid gap-fluid-2xs border-t border-line pt-fluid-sm;
+  }
+
   /* 404 and error pages */
   .status-page {
     @apply grid max-w-prose gap-fluid-sm py-fluid-lg;
