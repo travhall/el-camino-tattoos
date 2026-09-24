@@ -14,6 +14,7 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "test": "node scripts/e2e.mjs",
     "color-ramps": "node scripts/color-ramps.mjs && prettier --write src/styles/palette.css src/styles/palette.generated.json",
+    "figma-manifest": "node scripts/figma-manifest.mjs && prettier --write figma/manifest.json",
     "type-scale": "node scripts/type-scale.mjs && prettier --write src/styles/type-scale.css src/styles/space-scale.css src/styles/type-scale.generated.json"
   },
   "dependencies": {

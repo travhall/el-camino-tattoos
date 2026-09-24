@@ -34,6 +34,16 @@ The type scale is fluid and modular: a perfect fourth (1.333) on wide screens ea
 pnpm type-scale
 ```
 
+## Figma
+
+The Figma file (colors, type and space scale, motion, layout tokens, and the Button, form field and filter chip components) is a mirror of the code, not a source. After changing a role, a ramp pin, the type scale or a layout value, run:
+
+```bash
+pnpm figma-manifest
+```
+
+That writes `figma/manifest.json`, every token in one file, with a short hash. The Figma file's Sync page records the hash it was last checked against, so if the two differ, ask Claude to re-sync Figma. Layout values (max widths, radii, the 44px target) are named in `scripts/figma-manifest.mjs` because they live in Tailwind utilities rather than variables.
+
 ## Testing
 
 ```bash
