@@ -10,6 +10,7 @@
  *   src/styles/roles.css                semantic roles, light and dark
  *   src/styles/type-scale.generated.json  fluid type and space scale
  *   src/app/globals.css                 motion tokens
+ *   src/lib/fonts.ts                    fonts (checked, names are listed below)
  * Layout values are named below because they live in Tailwind utilities on
  * the components rather than in variables; `source` says where each one is used.
  */
@@ -88,6 +89,38 @@ const layout = {
   "opacity/scrim": { value: 0.8, source: ".viewer backdrop (bg-black/80)" },
 };
 
+/**
+ * Fonts (src/lib/fonts.ts) and the weight scale. Both fonts are variable
+ * (100 to 900), so a weight is a number, not a style name: Cosmic spells 600
+ * "Semi Bold" and Hanken "SemiBold". The scale is all nine of Tailwind's
+ * font-* classes (regular is font-normal), so any of them can be used in code
+ * and in Figma without changing this file.
+ */
+const fonts = {
+  display: { family: "Cosmic", axis: "100 900" },
+  body: { family: "Hanken Grotesk", axis: "100 900" },
+  weights: {
+    thin: 100,
+    extralight: 200,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+    extrabold: 800,
+    black: 900,
+  },
+};
+const fontsSource = read("src/lib/fonts.ts");
+if (
+  !fontsSource.includes("Hanken_Grotesk") ||
+  !fontsSource.includes("Cosmic-VF")
+) {
+  throw new Error(
+    "src/lib/fonts.ts no longer loads Hanken Grotesk and Cosmic; update fonts in figma-manifest.mjs",
+  );
+}
+
 const body = {
   ramps: palette.ramps,
   steps: palette.steps,
@@ -99,6 +132,7 @@ const body = {
   },
   motion,
   layout,
+  fonts,
 };
 
 const hash = createHash("sha256")

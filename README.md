@@ -42,7 +42,7 @@ The Figma file (colors, type and space scale, motion, layout tokens, and the But
 pnpm figma-manifest
 ```
 
-That writes `figma/manifest.json`, every token in one file, with a short hash. The Figma file's Sync page records the hash it was last checked against, so if the two differ, ask Claude to re-sync Figma. Layout values (max widths, radii, the 44px target) are named in `scripts/figma-manifest.mjs` because they live in Tailwind utilities rather than variables.
+That writes `figma/manifest.json`, every token in one file, with a short hash. The Figma file's Sync page records the hash it was last checked against, so if the two differ, ask Claude to re-sync Figma. Layout values (max widths, radii, the 44px target) and the font weights are named in `scripts/figma-manifest.mjs` because they live in Tailwind utilities rather than variables. Both fonts are variable, so weights are numbers, and all nine steps (100 to 900, Tailwind's `font-thin` to `font-black`) are in the manifest and in Figma, whether or not the code uses them yet.
 
 ## Testing
 
