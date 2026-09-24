@@ -1,0 +1,11 @@
+# PLACEHOLDER shop details. The address is the sister skate shop's. Replace
+# everything here before launch (edit in /keystatic, under Shop info).
+description: Traditional tattoos and more in downtown Eau Claire, Wisconsin. Walk-ins welcome when available, free consultations.
+street: 310 Water Street
+city: Eau Claire
+region: WI
+postalCode: "54703"
+walkIns: true
+walkInNote: Walk-ins welcome when available.
+consultationNote: Free consultations.
+depositAmount: 100

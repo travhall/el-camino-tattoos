@@ -94,3 +94,39 @@ export const getPiece = cache(async (slug: string) => {
   const pieces = await getPieces();
   return pieces.find((piece) => piece.slug === slug) ?? null;
 });
+
+export type Site = {
+  description: string;
+  phone: string;
+  email: string;
+  street: string;
+  city: string;
+  region: string;
+  postalCode: string;
+  hours: readonly { days: string; time: string }[];
+  walkIns: boolean;
+  walkInNote: string;
+  consultationNote: string;
+  depositAmount: number | null;
+  instagram: string;
+};
+
+/** Shop details from the Keystatic "Shop info" entry. Every field may be empty. */
+export const getSite = cache(async (): Promise<Site> => {
+  const entry = await reader.singletons.site.read();
+  return {
+    description: entry?.description ?? "",
+    phone: entry?.phone ?? "",
+    email: entry?.email ?? "",
+    street: entry?.street ?? "",
+    city: entry?.city ?? "",
+    region: entry?.region ?? "",
+    postalCode: entry?.postalCode ?? "",
+    hours: entry?.hours ?? [],
+    walkIns: entry?.walkIns ?? false,
+    walkInNote: entry?.walkInNote ?? "",
+    consultationNote: entry?.consultationNote ?? "",
+    depositAmount: entry?.depositAmount ?? null,
+    instagram: normalizeInstagramHandle(entry?.instagram ?? ""),
+  };
+});
