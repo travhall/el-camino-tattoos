@@ -26,17 +26,17 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 const ramps = {
   // Aged parchment: canvas, raised surfaces, dividers, and dark-mode text. Only
   // the two lightest steps are pinned; the rest steps evenly down to black.
-  paper: { pins: { 50: "#fbf3dc", 100: "#f1e6c9" } },
+  paper: { pins: { 50: "#fef8e7", 100: "#f1e6c9" } },
   // Warm black: light-mode text, dark-mode canvas and surfaces.
   ink: { pins: { 700: "#55483a", 950: "#12100e" } },
   // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
   gold: { pins: { 300: "#e9ac1f" } },
   // Tattoo red: emphasis and state indicators.
-  red: { pins: { 300: "#f0776b", 500: "#bf2a2e" } },
+  red: { pins: { 600: "#bf2a2e" } },
   // Deep green. Not mapped to a role yet.
   green: { pins: { 400: "#4aa172" } },
   // Navy: focus ring.
-  navy: { pins: { 300: "#7aa2d6" } },
+  navy: { pins: { 400: "#7aa2d6" } },
 };
 
 // ---- color math ----------------------------------------------------------
@@ -102,8 +102,15 @@ function toHex({ L, C, h }) {
 }
 
 // ---- ramp generation -----------------------------------------------------
-const LIGHTEST = 0.985;
+// The ends of every ramp. Step 950 is the darkest. Steps 50 and 100 (unless you
+// pin them) are a soft tint of the ramp's own color, at a fraction of its
+// chroma, so a ramp opens with a small step instead of jumping from
+// near-white to a full tint. Below 100, lightness runs evenly to the darkest.
 const DARKEST = 0.16;
+const LIGHT_END = [
+  { index: 0, L: 0.98, chroma: 0.4 },
+  { index: 1, L: 0.925, chroma: 0.65 },
+];
 
 function buildRamp({ pins }) {
   const pinned = Object.entries(pins)
@@ -114,7 +121,14 @@ function buildRamp({ pins }) {
     }))
     .sort((p, q) => p.index - q.index);
 
-  const first = pinned[0];
+  const ref = pinned.find((p) => p.index >= 2) ?? pinned[0];
+  for (const { index, L, chroma } of LIGHT_END) {
+    if (!pinned.some((p) => p.index === index)) {
+      pinned.push({ index, hex: null, L, C: ref.C * chroma, h: ref.h });
+    }
+  }
+  pinned.sort((p, q) => p.index - q.index);
+
   const last = pinned[pinned.length - 1];
   const lastIndex = STEPS.length - 1;
 
@@ -122,18 +136,13 @@ function buildRamp({ pins }) {
   STEPS.forEach((step, index) => {
     const exact = pinned.find((p) => p.index === index);
     if (exact) {
-      ramp[step] = exact.hex;
+      ramp[step] = exact.hex ?? toHex(exact);
       return;
     }
     let L;
     let C;
     let h;
-    if (index < first.index) {
-      const t = index / first.index; // 0 = lightest end
-      L = LIGHTEST + (first.L - LIGHTEST) * t;
-      C = first.C * (0.25 + 0.75 * t);
-      h = first.h;
-    } else if (index > last.index) {
+    if (index > last.index) {
       const t = (index - last.index) / (lastIndex - last.index);
       L = last.L + (DARKEST - last.L) * t;
       C = last.C * (1 - 0.35 * t);

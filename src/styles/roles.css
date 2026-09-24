@@ -48,9 +48,9 @@
   --accent-hover: var(--gold-400);
   --accent-text: var(--gold-700);
   --accent-soft: var(--gold-100);
-  --highlight: var(--red-500);
+  --highlight: var(--red-600);
   --highlight-foreground: var(--ink-50);
-  --highlight-text: var(--red-600);
+  --highlight-text: var(--red-700);
   --focus: var(--navy-700);
 }
 
@@ -67,9 +67,9 @@
     --accent-hover: var(--gold-200);
     --accent-text: var(--gold-200);
     --accent-soft: var(--gold-900);
-    --highlight: var(--red-400);
+    --highlight: var(--red-500);
     --highlight-foreground: var(--ink-950);
-    --highlight-text: var(--red-300);
-    --focus: var(--navy-300);
+    --highlight-text: var(--red-400);
+    --focus: var(--navy-400);
   }
 }
