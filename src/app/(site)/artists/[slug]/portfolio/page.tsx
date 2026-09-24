@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { ArtistFilter } from "@/components/artist-filter";
 import { PieceGrid } from "@/components/piece-grid";
 import { getArtist, getArtists, getPiecesByArtist } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
+import { siteName } from "@/lib/site";
 
 export async function generateStaticParams() {
   const artists = await getArtists();
@@ -14,7 +16,12 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const artist = await getArtist(slug);
-  return { title: artist ? `${artist.name} — Portfolio` : "Portfolio" };
+  if (!artist) return { title: "Portfolio" };
+  return pageMetadata({
+    title: `${artist.name} — Portfolio`,
+    description: `Tattoos by ${artist.name} at ${siteName}.`,
+    path: `/artists/${artist.slug}/portfolio`,
+  });
 }
 
 export default async function ArtistPortfolioPage(

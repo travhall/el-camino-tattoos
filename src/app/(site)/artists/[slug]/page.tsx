@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PieceGrid } from "@/components/piece-grid";
 import { getArtist, getArtists, getPiecesByArtist } from "@/lib/content";
+import { pageMetadata, truncate } from "@/lib/seo";
+import { siteName } from "@/lib/site";
 
 export async function generateStaticParams() {
   const artists = await getArtists();
@@ -15,7 +17,17 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const artist = await getArtist(slug);
-  return { title: artist?.name ?? "Artist" };
+  if (!artist) return { title: "Artist" };
+  const styles = artist.specialties.join(", ");
+  return pageMetadata({
+    title: artist.name,
+    description: artist.bio
+      ? truncate(artist.bio)
+      : `${artist.name} at ${siteName}${styles ? `. ${styles}.` : "."}`,
+    path: `/artists/${artist.slug}`,
+    image: artist.photo ?? undefined,
+    imageAlt: `Portrait of ${artist.name}`,
+  });
 }
 
 export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
