@@ -54,6 +54,8 @@ Analytics (Cloudflare Web Analytics, cookieless) loads only when `CLOUDFLARE_ANA
 
 Artists and portfolio pieces live in `content/`, and their images in `public/images/`. Edit them in the admin at `/keystatic`.
 
+Shop details (address, hours, phone, email, Instagram, the walk-ins and consultation notes, the deposit amount, and the site description) are one entry, `content/site.yaml`, edited under **Shop info** in the admin. Every field is optional and shows only when filled in. The committed values are placeholders (the address is the sister skate shop's); replace them before launch.
+
 - **Locally:** the admin writes straight to your working tree.
 - **In production:** the admin commits to GitHub (`travhall/el-camino-tattoos`), and Netlify rebuilds from the commit.
 
