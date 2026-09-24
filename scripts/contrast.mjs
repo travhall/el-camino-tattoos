@@ -23,6 +23,8 @@ export const PAIRS = [
   ["focus", "surface", 3, "focus ring on surface"],
   ["accent-foreground", "accent", 4.5, "text on accent fill"],
   ["accent-foreground", "accent-hover", 4.5, "text on accent fill, hovered"],
+  ["accent-edge", "background", 3, "border around an accent fill"],
+  ["accent-edge", "surface", 3, "accent fill border on surface"],
   ["foreground", "accent-soft", 4.5, "text on soft accent"],
   ["highlight-text", "background", 4.5, "red as text"],
   ["highlight-text", "surface", 4.5, "red as text on surface"],

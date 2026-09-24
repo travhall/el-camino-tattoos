@@ -68,10 +68,12 @@
   }
 
   /* Button: primary (gold) by default; combine with a variant and/or size. */
-  /* 44px minimum height. The transparent border gives the button an edge in
-     forced-colors (high contrast) mode, where its fill is removed. */
+  /* 44px minimum height. The gold fill is 1.9:1 against paper, so the deeper
+     accent-edge border carries the 3:1 the button's shape needs. Every other
+     variant resets it. A border also keeps an edge in forced-colors (high
+     contrast) mode, where the fill is removed. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-transparent bg-accent px-4 py-1.5 font-medium text-accent-foreground transition-colors not-disabled:not-aria-disabled:hover:bg-accent-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-accent-edge bg-accent px-4 py-1.5 font-medium text-accent-foreground transition-colors not-disabled:not-aria-disabled:hover:bg-accent-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -82,11 +84,11 @@
   /* Solid ink: for use beside or on top of gold, where a second gold button
      would compete. */
   .button--ink {
-    @apply bg-foreground text-background not-disabled:not-aria-disabled:hover:bg-foreground/85;
+    @apply border-transparent bg-foreground text-background not-disabled:not-aria-disabled:hover:bg-foreground/85;
   }
 
   .button--ghost {
-    @apply bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
+    @apply border-transparent bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
   }
 
   .button--sm {

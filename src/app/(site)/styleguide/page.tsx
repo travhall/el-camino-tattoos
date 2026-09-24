@@ -26,6 +26,7 @@ const roles = [
   { name: "accent", note: "fills: buttons, badges" },
   { name: "accent-foreground", note: "text on accent" },
   { name: "accent-hover", note: "accent fill, hovered" },
+  { name: "accent-edge", note: "border around an accent fill" },
   { name: "accent-text", note: "accent as readable text" },
   { name: "accent-soft", note: "tinted backgrounds" },
   { name: "highlight", note: "red marks: underlines, states" },
