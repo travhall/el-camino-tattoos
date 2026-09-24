@@ -3,13 +3,20 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
 
 type Artist = { slug: string; name: string };
 
 type Status =
   | { state: "idle" }
   | { state: "sending" }
+  | { state: "invalid"; count: number }
   | { state: "error"; message: string };
+
+type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+// Field name to message, so an error can be looked up and cleared by name.
+type Errors = Record<string, string>;
 
 // Netlify rejects a submission over 8MB in total, files and text combined.
 // Leave headroom for the text fields.
@@ -17,6 +24,41 @@ const MAX_UPLOAD_BYTES = 7 * 1024 * 1024;
 
 // Netlify Forms takes one file per input, so references get one input each.
 const referenceSlots = [1, 2, 3] as const;
+
+// What to say when a required field is empty or malformed, by field name. The
+// browser's own wording is the fallback for anything not listed.
+const messages: Record<string, { missing: string; invalid?: string }> = {
+  name: { missing: "Enter your name." },
+  email: {
+    missing: "Enter your email address.",
+    invalid: "Enter an email address like name@example.com.",
+  },
+  message: { missing: "Tell us about your idea." },
+  placement: { missing: "Tell us where on your body." },
+  size: { missing: "Give us a rough size." },
+};
+
+function isControl(element: EventTarget): element is Control {
+  return (
+    element instanceof HTMLInputElement ||
+    element instanceof HTMLSelectElement ||
+    element instanceof HTMLTextAreaElement
+  );
+}
+
+function messageFor(control: Control) {
+  const text = messages[control.name];
+  if (control.validity.valueMissing) {
+    return text?.missing ?? control.validationMessage;
+  }
+  return text?.invalid ?? control.validationMessage;
+}
+
+// Once scripts run, take over validation from the browser so errors appear
+// inline. The server-rendered form stays natively validated without scripts.
+function takeOverValidation(form: HTMLFormElement | null) {
+  if (form) form.noValidate = true;
+}
 
 /**
  * Netlify Forms inquiry form. With the Next runtime the page isn't static HTML,
@@ -29,12 +71,44 @@ const referenceSlots = [1, 2, 3] as const;
 export function ContactForm({ artists }: { artists: readonly Artist[] }) {
   const router = useRouter();
   const [status, setStatus] = useState<Status>({ state: "idle" });
+  const [errors, setErrors] = useState<Errors>({});
+
+  // A field that has an error re-checks as it is edited, so the message goes
+  // away the moment it is fixed. Fields without an error stay quiet.
+  function onInput(event: React.FormEvent<HTMLFormElement>) {
+    const control = event.target;
+    if (!isControl(control) || !errors[control.name]) return;
+    const { name } = control;
+    const message = control.validity.valid ? "" : messageFor(control);
+    setErrors((current) => {
+      const next = { ...current };
+      if (message) next[name] = message;
+      else delete next[name];
+      return next;
+    });
+  }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status.state === "sending") return;
 
-    const body = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const invalid = Array.from(form.elements)
+      .filter(isControl)
+      .filter((control) => control.willValidate && !control.validity.valid);
+    if (invalid.length > 0) {
+      setErrors(
+        Object.fromEntries(
+          invalid.map((control) => [control.name, messageFor(control)]),
+        ),
+      );
+      setStatus({ state: "invalid", count: invalid.length });
+      invalid[0].focus();
+      return;
+    }
+    setErrors({});
+
+    const body = new FormData(form);
     let uploadBytes = 0;
     for (const [, value] of body) {
       if (value instanceof File) uploadBytes += value.size;
@@ -55,19 +129,28 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
     } catch {
       setStatus({
         state: "error",
-        message:
-          "We couldn\u2019t send your message. Please try again in a moment.",
+        message: "We couldn’t send your message. Please try again in a moment.",
       });
     }
   }
 
+  // Announced once, on submit, so fixing fields doesn't chatter.
+  const announcement =
+    status.state === "sending"
+      ? "Sending your message…"
+      : status.state === "invalid"
+        ? `${status.count} ${status.count === 1 ? "field needs" : "fields need"} attention.`
+        : "";
+
   return (
     <form
+      ref={takeOverValidation}
       name="contact"
       method="post"
       action="/__forms.html"
       encType="multipart/form-data"
       onSubmit={onSubmit}
+      onInput={onInput}
       className="contact-form"
     >
       <input type="hidden" name="form-name" value="contact" />
@@ -78,124 +161,91 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
         </label>
       </p>
 
-      <div className="field">
-        <label htmlFor="contact-name" className="field__label">
-          Name
-        </label>
-        <input
-          id="contact-name"
-          name="name"
-          type="text"
-          autoComplete="name"
-          required
-          className="field__control"
-        />
-      </div>
+      <Field id="contact-name" label="Name" error={errors.name}>
+        {(control) => (
+          <input
+            {...control}
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+          />
+        )}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-email" className="field__label">
-          Email
-        </label>
-        <input
-          id="contact-email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          className="field__control"
-        />
-      </div>
+      <Field id="contact-email" label="Email" error={errors.email}>
+        {(control) => (
+          <input
+            {...control}
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+          />
+        )}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-phone" className="field__label">
-          Phone (optional)
-        </label>
-        <input
-          id="contact-phone"
-          name="phone"
-          type="tel"
-          autoComplete="tel"
-          className="field__control"
-        />
-      </div>
+      <Field id="contact-phone" label="Phone (optional)">
+        {(control) => (
+          <input {...control} name="phone" type="tel" autoComplete="tel" />
+        )}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-artist" className="field__label">
-          Artist (optional)
-        </label>
-        <select id="contact-artist" name="artist" className="field__control">
-          <option value="">No preference, we&rsquo;ll match you</option>
-          {artists.map((artist) => (
-            <option key={artist.slug} value={artist.name}>
-              {artist.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Field id="contact-artist" label="Artist (optional)">
+        {(control) => (
+          <select {...control} name="artist">
+            <option value="">No preference, we&rsquo;ll match you</option>
+            {artists.map((artist) => (
+              <option key={artist.slug} value={artist.name}>
+                {artist.name}
+              </option>
+            ))}
+          </select>
+        )}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-message" className="field__label">
-          Tell us about your idea
-        </label>
-        <textarea
-          id="contact-message"
-          name="message"
-          rows={6}
-          required
-          className="field__control"
-        />
-      </div>
+      <Field
+        id="contact-message"
+        label="Tell us about your idea"
+        error={errors.message}
+      >
+        {(control) => (
+          <textarea {...control} name="message" rows={6} required />
+        )}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-placement" className="field__label">
-          Placement
-        </label>
-        <input
-          id="contact-placement"
-          name="placement"
-          type="text"
-          required
-          aria-describedby="contact-placement-hint"
-          className="field__control"
-        />
-        <p id="contact-placement-hint" className="field__hint">
-          Where on your body, as specific as you can. e.g. inner left forearm.
-        </p>
-      </div>
+      <Field
+        id="contact-placement"
+        label="Placement"
+        hint="Where on your body, as specific as you can. e.g. inner left forearm."
+        error={errors.placement}
+      >
+        {(control) => (
+          <input {...control} name="placement" type="text" required />
+        )}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-size" className="field__label">
-          Approximate size
-        </label>
-        <input
-          id="contact-size"
-          name="size"
-          type="text"
-          required
-          aria-describedby="contact-size-hint"
-          className="field__control"
-        />
-        <p id="contact-size-hint" className="field__hint">
-          A rough guess in inches is fine. e.g. 4 inches tall.
-        </p>
-      </div>
+      <Field
+        id="contact-size"
+        label="Approximate size"
+        hint="A rough guess in inches is fine. e.g. 4 inches tall."
+        error={errors.size}
+      >
+        {(control) => <input {...control} name="size" type="text" required />}
+      </Field>
 
-      <div className="field">
-        <label htmlFor="contact-budget" className="field__label">
-          Budget (optional)
-        </label>
-        <input
-          id="contact-budget"
-          name="budget"
-          type="text"
-          aria-describedby="contact-budget-hint"
-          className="field__control"
-        />
-        <p id="contact-budget-hint" className="field__hint">
-          Tell us what you&rsquo;re hoping to spend and we&rsquo;ll tell you
-          what&rsquo;s realistic.
-        </p>
-      </div>
+      <Field
+        id="contact-budget"
+        label="Budget (optional)"
+        hint={
+          <>
+            Tell us what you&rsquo;re hoping to spend and we&rsquo;ll tell you
+            what&rsquo;s realistic.
+          </>
+        }
+      >
+        {(control) => <input {...control} name="budget" type="text" />}
+      </Field>
 
       <fieldset className="fieldset">
         <legend className="field__label">Color (optional)</legend>
@@ -212,17 +262,12 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
         <span>This covers up or reworks an existing tattoo</span>
       </label>
 
-      <div className="field">
-        <label htmlFor="contact-availability" className="field__label">
-          Preferred days or time frame (optional)
-        </label>
-        <input
-          id="contact-availability"
-          name="availability"
-          type="text"
-          className="field__control"
-        />
-      </div>
+      <Field
+        id="contact-availability"
+        label="Preferred days or time frame (optional)"
+      >
+        {(control) => <input {...control} name="availability" type="text" />}
+      </Field>
 
       <fieldset className="fieldset">
         <legend className="field__label">Reference images (optional)</legend>
@@ -261,7 +306,7 @@ export function ContactForm({ artists }: { artists: readonly Artist[] }) {
       </div>
       {/* Present before it changes so screen readers announce the update. */}
       <p role="status" className="visually-hidden">
-        {status.state === "sending" ? "Sending your message…" : ""}
+        {announcement}
       </p>
     </form>
   );

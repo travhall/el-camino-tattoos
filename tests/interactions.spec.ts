@@ -212,6 +212,93 @@ test.describe("contact form", () => {
     await expect(button).not.toHaveAttribute("aria-disabled", "true");
   });
 
+  test("marks invalid fields inline and clears each as it is fixed", async ({
+    page,
+  }) => {
+    let posts = 0;
+    await page.route("**/__forms.html", (route) => {
+      if (route.request().method() === "POST") posts += 1;
+      return route.continue();
+    });
+
+    await open(page, "/contact");
+    await page.getByRole("button", { name: "Send message" }).click();
+
+    // Five required fields are empty. Nothing is posted, the first invalid
+    // field takes focus, and the count is announced once.
+    expect(posts).toBe(0);
+    const name = page.getByLabel("Name", { exact: true });
+    const email = page.getByLabel("Email");
+    await expect(name).toBeFocused();
+    await expect(name).toHaveAttribute("aria-invalid", "true");
+    await expect(name).toHaveAccessibleDescription("Enter your name.");
+    await expect(email).toHaveAccessibleDescription(
+      "Enter your email address.",
+    );
+    await expect(
+      page.getByRole("status").filter({ hasText: "need attention" }),
+    ).toHaveText("5 fields need attention.");
+
+    // Not color alone: the message is text, and the border is thicker.
+    const ring = (control: typeof name) =>
+      control.evaluate((el) => getComputedStyle(el).boxShadow);
+    expect(await ring(name)).not.toBe("none");
+    expect(await ring(page.getByLabel("Phone (optional)"))).toBe("none");
+
+    // Optional fields never get an error.
+    await expect(page.getByLabel("Phone (optional)")).not.toHaveAttribute(
+      "aria-invalid",
+    );
+
+    // The error state has to pass axe (contrast of the red text and border),
+    // in both themes.
+    for (const colorScheme of ["light", "dark"] as const) {
+      await page.emulateMedia({ colorScheme });
+      const { violations } = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+        .analyze();
+      expect(
+        violations.map((v) => `${colorScheme}: ${v.id}`),
+        colorScheme,
+      ).toEqual([]);
+    }
+
+    // Typing fixes the name and its error goes away; the others stay.
+    await name.fill("Test Person");
+    await expect(name).not.toHaveAttribute("aria-invalid");
+    await expect(page.getByText("Enter your name.")).toHaveCount(0);
+    await expect(email).toHaveAttribute("aria-invalid", "true");
+
+    // A malformed email swaps the message rather than clearing it.
+    await email.fill("nope");
+    await expect(email).toHaveAccessibleDescription(
+      "Enter an email address like name@example.com.",
+    );
+    await email.fill("test@example.com");
+    await expect(email).not.toHaveAttribute("aria-invalid");
+  });
+
+  test("checked boxes are drawn in the foreground role, not browser blue", async ({
+    page,
+  }) => {
+    await open(page, "/contact");
+    for (const colorScheme of ["light", "dark"] as const) {
+      await page.emulateMedia({ colorScheme });
+      const { accent, foreground } = await page.evaluate(() => {
+        const probe = document.createElement("span");
+        probe.style.color = "var(--foreground)";
+        document.body.append(probe);
+        const foreground = getComputedStyle(probe).color;
+        probe.remove();
+        return {
+          accent: getComputedStyle(document.documentElement).accentColor,
+          foreground,
+        };
+      });
+      expect(accent, colorScheme).toBe(foreground);
+    }
+  });
+
   test("keeps focus and announces while sending", async ({ page }) => {
     let posts = 0;
     let release!: () => void;

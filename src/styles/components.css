@@ -227,6 +227,16 @@
     @apply text-sm text-muted;
   }
 
+  /* Invalid: the border turns red AND doubles up (an inset ring, so nothing
+     shifts), and a message sits under the control. Never color alone. */
+  .field__control[aria-invalid="true"] {
+    @apply border-error shadow-[inset_0_0_0_1px_var(--error)];
+  }
+
+  .field__error {
+    @apply text-sm font-medium text-error-text;
+  }
+
   .check {
     @apply flex min-h-11 items-center gap-2;
   }
@@ -242,7 +252,7 @@
   }
 
   .form-status {
-    @apply rounded-md border border-outline bg-surface px-3 py-2;
+    @apply rounded-md border border-error bg-error-soft px-3 py-2;
   }
 
   /* 404 and error pages */

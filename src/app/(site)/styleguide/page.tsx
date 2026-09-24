@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
 import typeScale from "@/styles/type-scale.generated.json";
 import {
   checkContrast,
@@ -30,6 +31,9 @@ const roles = [
   { name: "highlight", note: "red marks: underlines, states" },
   { name: "highlight-foreground", note: "text on highlight" },
   { name: "highlight-text", note: "red as readable text" },
+  { name: "error", note: "invalid borders, alert edges" },
+  { name: "error-text", note: "error messages" },
+  { name: "error-soft", note: "alert background" },
   { name: "focus", note: "focus ring" },
 ] as const;
 
@@ -314,56 +318,67 @@ export default async function StyleGuidePage() {
       </Section>
 
       <Section id="forms" title="Form fields">
-        <form className="sg-form">
-          <div className="field">
-            <label htmlFor="sg-name" className="field__label">
-              Name
+        <form className="sg-form" noValidate>
+          <Field id="sg-name" label="Name">
+            {(control) => (
+              <input
+                {...control}
+                name="name"
+                type="text"
+                placeholder="Your name"
+              />
+            )}
+          </Field>
+          <Field
+            id="sg-email"
+            label="Email"
+            hint="Where we reply. We don't share it."
+            error="Enter an email address like name@example.com."
+          >
+            {(control) => (
+              <input
+                {...control}
+                name="email"
+                type="email"
+                defaultValue="not-an-email"
+              />
+            )}
+          </Field>
+          <Field id="sg-artist" label="Artist">
+            {(control) => (
+              <select {...control} name="artist">
+                <option>No preference</option>
+                <option>Artist one</option>
+                <option>Artist two</option>
+              </select>
+            )}
+          </Field>
+          <Field id="sg-idea" label="Tell us about your idea">
+            {(control) => <textarea {...control} name="idea" rows={4} />}
+          </Field>
+          <fieldset className="fieldset">
+            <legend className="field__label">Checked and unchecked</legend>
+            <label className="check">
+              <input type="checkbox" name="first-tattoo" defaultChecked />
+              <span>This is my first tattoo</span>
             </label>
-            <input
-              id="sg-name"
-              name="name"
-              type="text"
-              placeholder="Your name"
-              className="field__control"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="sg-email" className="field__label">
-              Email
+            <label className="check">
+              <input type="checkbox" name="cover-up" />
+              <span>This covers up an existing tattoo</span>
             </label>
-            <input
-              id="sg-email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              className="field__control"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="sg-artist" className="field__label">
-              Artist
+            <label className="check">
+              <input type="radio" name="sg-color" defaultChecked />
+              <span>Black and gray</span>
             </label>
-            <select id="sg-artist" name="artist" className="field__control">
-              <option>No preference</option>
-              <option>Artist one</option>
-              <option>Artist two</option>
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor="sg-idea" className="field__label">
-              Tell us about your idea
+            <label className="check">
+              <input type="radio" name="sg-color" />
+              <span>Color</span>
             </label>
-            <textarea
-              id="sg-idea"
-              name="idea"
-              rows={4}
-              className="field__control"
-            />
-          </div>
-          <label className="check">
-            <input type="checkbox" name="first-tattoo" />
-            <span>This is my first tattoo</span>
-          </label>
+          </fieldset>
+          <p className="form-status">
+            <strong>Something went wrong.</strong> We couldn&rsquo;t send your
+            message. Please try again in a moment.
+          </p>
           <Button type="submit">Send</Button>
         </form>
       </Section>
