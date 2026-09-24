@@ -12,6 +12,7 @@ export const PAIRS = [
   ["foreground", "background", 7, "body text"],
   ["foreground", "surface", 7, "text on surface"],
   ["foreground", "hover", 4.5, "text on hover fill"],
+  ["background", "foreground", 4.5, "label on an ink (inverse) fill"],
   ["muted", "background", 4.5, "secondary text"],
   ["muted", "surface", 4.5, "secondary text on surface"],
   ["outline", "background", 3, "input and chip borders"],
