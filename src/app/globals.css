@@ -42,6 +42,14 @@
     @apply bg-background font-sans text-base text-foreground;
   }
 
+  /* Checked checkboxes and radios take their fill from accent-color, and the
+     browser picks a legible check. It is foreground, not the accent role: gold
+     against paper is 1.9:1, under the 3:1 a state indicator needs, while
+     foreground is 17:1 or better in both themes. Unset, browsers draw blue. */
+  :root {
+    accent-color: var(--foreground);
+  }
+
   ::selection {
     @apply bg-accent text-accent-foreground;
   }

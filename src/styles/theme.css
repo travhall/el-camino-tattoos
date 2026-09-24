@@ -26,5 +26,8 @@
   --color-highlight: var(--highlight);
   --color-highlight-foreground: var(--highlight-foreground);
   --color-highlight-text: var(--highlight-text);
+  --color-error: var(--error);
+  --color-error-text: var(--error-text);
+  --color-error-soft: var(--error-soft);
   --color-focus: var(--focus);
 }

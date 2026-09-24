@@ -29,6 +29,13 @@ export const PAIRS = [
   ["highlight", "background", 3, "red underlines and state marks"],
   ["highlight", "surface", 3, "red state marks on surface"],
   ["highlight-foreground", "highlight", 4.5, "text on red fill"],
+  ["error-text", "background", 4.5, "error message"],
+  ["error-text", "surface", 4.5, "error message on surface"],
+  ["error-text", "error-soft", 4.5, "error message on an alert"],
+  ["foreground", "error-soft", 4.5, "text on an alert"],
+  ["error", "background", 3, "invalid control border"],
+  ["error", "surface", 3, "invalid border on surface"],
+  ["error", "error-soft", 3, "alert edge on its own tint"],
 ];
 
 const toLinear = (c) =>
