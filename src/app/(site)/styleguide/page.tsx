@@ -17,10 +17,15 @@ const weights = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
 const roles = [
   { name: "background", note: "page canvas" },
-  { name: "surface", note: "placeholders, footer" },
+  { name: "surface", note: "cards, inputs, placeholders" },
+  { name: "surface-raised", note: "nav pill, menus" },
+  { name: "surface-sunken", note: "section bands, footer" },
   { name: "foreground", note: "text, solid ink fills" },
   { name: "muted", note: "secondary text" },
+  { name: "subtle", note: "third-tier text, photo labels" },
+  { name: "scrim", note: "fill behind text on photos" },
   { name: "outline", note: "interactive borders" },
+  { name: "border", note: "container edges" },
   { name: "line", note: "dividers" },
   { name: "hover", note: "hover fill" },
   { name: "accent", note: "fills: buttons, badges" },

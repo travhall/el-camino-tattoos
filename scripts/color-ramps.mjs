@@ -15,7 +15,7 @@ import { writeFile } from "node:fs/promises";
 
 const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
-// Primitives, named by color. Sailor Jerry style: aged paper, ink black, and the
+// Primitives, named by color. Sailor Jerry style: paper, ink black, and the
 // four flash colors. Pins are exact brand values; the rest is generated.
 //
 // Keep ramps smooth: pin as few steps as you can, and pin each brand color at
@@ -24,11 +24,11 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 // pins that are unevenly spaced in lightness make a ramp lurch. The report at
 // the end of `pnpm color-ramps` flags any ramp that does.
 const ramps = {
-  // Aged parchment: canvas, raised surfaces, dividers, and dark-mode text. Only
+  // Neutral paper: canvas, raised surfaces, dividers, and dark-mode text. Only
   // the two lightest steps are pinned; the rest steps evenly down to black.
-  paper: { pins: { 50: "#fef8e7", 100: "#f1e6c9" } },
+  paper: { pins: { 50: "#f7f7f5", 100: "#ebeae6" } },
   // Warm black: light-mode text, dark-mode canvas and surfaces.
-  ink: { pins: { 700: "#55483a", 950: "#12100e" } },
+  ink: { pins: { 700: "#55483a", 950: "#0b0a09" } },
   // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
   gold: { pins: { 300: "#e9ac1f" } },
   // Tattoo red: emphasis and state indicators.
@@ -106,7 +106,7 @@ function toHex({ L, C, h }) {
 // pin them) are a soft tint of the ramp's own color, at a fraction of its
 // chroma, so a ramp opens with a small step instead of jumping from
 // near-white to a full tint. Below 100, lightness runs evenly to the darkest.
-const DARKEST = 0.16;
+const DARKEST = 0.12;
 const LIGHT_END = [
   { index: 0, L: 0.98, chroma: 0.4 },
   { index: 1, L: 0.925, chroma: 0.65 },

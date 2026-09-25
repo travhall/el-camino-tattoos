@@ -14,8 +14,13 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
   --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-scrim: var(--scrim);
   --color-outline: var(--outline);
+  --color-border: var(--border);
   --color-line: var(--line);
   --color-hover: var(--hover);
   --color-accent: var(--accent);

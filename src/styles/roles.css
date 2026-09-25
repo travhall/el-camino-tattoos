@@ -21,7 +21,14 @@
  * reports, it never blocks. CI runs it. /styleguide shows the same numbers.
  *
  * Guidance:
+ *   background ........... the page
+ *   surface .............. the default raised element: cards, inputs
+ *   surface-raised ....... elements that float above the page: nav pill, menus
+ *   surface-sunken ....... recessed areas: section bands, the footer, wells
  *   foreground / muted ... text
+ *   subtle ............... third text tier: captions, footer links, labels on photos
+ *   scrim ................ base color for a translucent fill behind text on a
+ *                          photo (apply the opacity where it is used)
  *   accent ............... fills: buttons, badges, selection (gold)
  *   accent-foreground .... text on an accent fill
  *   accent-hover ......... accent fill while hovered
@@ -35,6 +42,8 @@
  *   error-text ........... error messages (4.5:1 on background, surface, error-soft)
  *   error-soft ........... tinted alert background, with foreground text on top
  *   outline .............. borders on interactive controls (3:1)
+ *   border ............... container edges (step cards, banners): decorative,
+ *                          stronger than line, lighter than outline
  *   line ................. decorative dividers
  *   focus ................ focus ring
  */
@@ -42,9 +51,15 @@
   /* Light */
   --background: var(--paper-50);
   --surface: var(--paper-100);
+  --surface-raised: var(--paper-50);
+  --surface-sunken: var(--paper-200);
   --foreground: var(--ink-950);
   --muted: var(--ink-700);
+  /* subtle starts equal to muted: no lighter ink step reads 4.5:1 on surface-sunken */
+  --subtle: var(--ink-700);
+  --scrim: var(--paper-50);
   --outline: var(--ink-600);
+  --border: var(--paper-400);
   --line: var(--paper-300);
   --hover: var(--paper-200);
   --accent: var(--gold-300);
@@ -67,9 +82,14 @@
   :root {
     --background: var(--paper-950);
     --surface: var(--paper-900);
+    --surface-raised: var(--paper-800);
+    --surface-sunken: var(--paper-950);
     --foreground: var(--ink-50);
     --muted: var(--ink-300);
+    --subtle: var(--ink-300);
+    --scrim: var(--paper-950);
     --outline: var(--ink-400);
+    --border: var(--paper-700);
     --line: var(--paper-800);
     --hover: var(--paper-800);
     --accent-hover: var(--gold-200);
