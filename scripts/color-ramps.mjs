@@ -24,11 +24,14 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 // pins that are unevenly spaced in lightness make a ramp lurch. The report at
 // the end of `pnpm color-ramps` flags any ramp that does.
 const ramps = {
-  // Neutral paper: canvas, raised surfaces, dividers, and dark-mode text. Only
-  // the two lightest steps are pinned; the rest steps evenly down to black.
-  paper: { pins: { 50: "#f7f7f5", 100: "#ebeae6" } },
-  // Warm black: light-mode text, dark-mode canvas and surfaces.
-  ink: { pins: { 700: "#55483a", 950: "#0b0a09" } },
+  // Cool paper: canvas, surfaces, dividers and hover fills in both modes. A
+  // faint navy undertone in the light steps; the dark end (950) is deep navy, so
+  // the dark-mode page reads navy without any role changing meaning. Three pins:
+  // the two lightest steps and the darkest; the steps between are generated.
+  paper: { pins: { 50: "#f4f7fb", 100: "#e6ebf1", 950: "#00041b" } },
+  // Neutral black: text and strokes in both modes (foreground, muted, outline).
+  // Only a trace of cool tint, so it sits quietly on the cool paper.
+  ink: { pins: { 700: "#484b4f", 950: "#090a0c" } },
   // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
   gold: { pins: { 300: "#e9ac1f" } },
   // Tattoo red: emphasis and state indicators.
