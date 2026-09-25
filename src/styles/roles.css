@@ -29,6 +29,9 @@
  *   subtle ............... third text tier: captions, footer links, labels on photos
  *   scrim ................ base color for a translucent fill behind text on a
  *                          photo (apply the opacity where it is used)
+ *   veil ................. base color for the page-dimming layer behind a modal
+ *                          dialog (dark in both themes; apply the opacity where
+ *                          it is used)
  *   accent ............... fills: buttons, badges, selection (gold)
  *   accent-foreground .... text on an accent fill
  *   accent-hover ......... accent fill while hovered
@@ -58,6 +61,7 @@
   /* subtle starts equal to muted: no lighter ink step reads 4.5:1 on surface-sunken */
   --subtle: var(--ink-700);
   --scrim: var(--paper-50);
+  --veil: var(--paper-950);
   --outline: var(--ink-600);
   --border: var(--paper-400);
   --line: var(--paper-300);
