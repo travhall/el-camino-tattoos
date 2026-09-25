@@ -24,6 +24,7 @@ const roles = [
   { name: "muted", note: "secondary text" },
   { name: "subtle", note: "third-tier text, photo labels" },
   { name: "scrim", note: "fill behind text on photos" },
+  { name: "veil", note: "dims the page behind dialogs" },
   { name: "outline", note: "interactive borders" },
   { name: "border", note: "container edges" },
   { name: "line", note: "dividers" },

@@ -196,7 +196,7 @@
 
   /* Piece viewer: native <dialog> */
   .viewer {
-    @apply m-auto max-h-[92dvh] w-[min(64rem,calc(100vw-1.5rem))] overflow-auto overscroll-contain bg-background text-foreground backdrop:bg-black/80;
+    @apply m-auto max-h-[92dvh] w-[min(64rem,calc(100vw-1.5rem))] overflow-auto overscroll-contain bg-background text-foreground backdrop:bg-veil/80;
   }
 
   .viewer__inner {
