@@ -12,12 +12,12 @@ honor its STOP conditions, and update your row when done.
 | ---- | ----------------------------------------------------------- | -------- | ------ | ---------- | ------------------------------------------------------------------------------- |
 | 001  | Disabled state inert + accessible `pending` state           | P1       | M      | —          | DONE (merged to main: `de1e0e8`, `dc8427a`, `397a10a`, plus test fix `0212bc7`) |
 | 002  | `ref` support and single class-merge point for Button       | P3       | S      | 001        | DONE (merged to main: `d367dd2`)                                                |
-| 003  | Give the paper ramp navy undertones and make ink neutral    | P1       | S      | —          | TODO                                                                            |
-| 004  | Warm the dark end of the gold ramp so it reads amber        | P2       | S      | 003        | TODO                                                                            |
-| 005  | Point `highlight` at gold, keep red for errors              | P2       | S      | 003, 004   | TODO                                                                            |
+| 003  | Give the paper ramp navy undertones and make ink neutral    | P1       | S      | —          | DONE (merged to main: `a9257b3`)                                                |
+| 004  | Warm the dark end of the gold ramp so it reads amber        | P2       | S      | 003        | DONE (merged to main: `a0c3f3a`, merge `13164d5`)                               |
+| 005  | Point `highlight` at gold, keep red for errors              | P2       | S      | 003, 004   | DONE (merged to main: `1a02a47`)                                                |
 | 006  | Teach the contrast checker about sunken and raised surfaces | P2       | S      | 005        | TODO                                                                            |
-| 007  | Replace the hard-coded dialog backdrop with a `veil` role   | P3       | S      | —          | TODO                                                                            |
-| 008  | Sync the favicon and logo SVG colors to the ink ramp        | P3       | S      | 003        | TODO                                                                            |
+| 007  | Replace the hard-coded dialog backdrop with a `veil` role   | P3       | S      | —          | DONE (merged to main: `73c43b1`, merge `02ad7bc`)                               |
+| 008  | Sync the favicon and logo SVG colors to the ink ramp        | P3       | S      | 003        | DONE (merged to main: `47a5c6a`, merge `7041754`)                               |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
