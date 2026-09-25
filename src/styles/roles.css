@@ -6,8 +6,8 @@
  * uses the other end of the ramp.
  *   paper ... backgrounds, surfaces, dividers, hover fills
  *   ink ..... text and strokes (foreground, muted, outline)
- *   gold .... accent fills and their labels
- *   red ..... highlight marks, and error feedback
+ *   gold .... accent fills, their labels, and highlight marks
+ *   red ..... error feedback (highlight moved to gold)
  *   navy .... focus ring
  * Never point a role at a ramp outside its job (no paper text, no ink
  * backgrounds), so a role reads the same in either mode.
@@ -38,9 +38,9 @@
  *   accent-edge .......... border around an accent fill, so it reads against paper (3:1)
  *   accent-text .......... the accent as readable text
  *   accent-soft .......... tinted backgrounds, with foreground text on top
- *   highlight ............ red marks: underlines, state indicators (3:1)
+ *   highlight ............ gold marks: underlines, state indicators (3:1)
  *   highlight-foreground . text on a highlight fill
- *   highlight-text ....... red as readable text
+ *   highlight-text ....... gold as readable text
  *   error ................ invalid-control borders and alert edges (3:1)
  *   error-text ........... error messages (4.5:1 on background, surface, error-soft)
  *   error-soft ........... tinted alert background, with foreground text on top
@@ -72,9 +72,9 @@
   --accent-edge: var(--gold-500);
   --accent-text: var(--gold-700);
   --accent-soft: var(--gold-100);
-  --highlight: var(--red-600);
-  --highlight-foreground: var(--ink-50);
-  --highlight-text: var(--red-700);
+  --highlight: var(--gold-500);
+  --highlight-foreground: var(--ink-950);
+  --highlight-text: var(--gold-700);
   --error: var(--red-600);
   --error-text: var(--red-700);
   --error-soft: var(--red-100);
@@ -99,10 +99,10 @@
     --accent-hover: var(--gold-200);
     --accent-edge: var(--gold-300);
     --accent-text: var(--gold-200);
-    --accent-soft: var(--gold-900);
-    --highlight: var(--red-500);
+    --accent-soft: var(--gold-800);
+    --highlight: var(--gold-300);
     --highlight-foreground: var(--ink-950);
-    --highlight-text: var(--red-400);
+    --highlight-text: var(--gold-200);
     --error: var(--red-500);
     --error-text: var(--red-400);
     --error-soft: var(--red-900);
