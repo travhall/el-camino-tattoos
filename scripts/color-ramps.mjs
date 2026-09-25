@@ -23,6 +23,9 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 // not 500). The generator spaces lightness evenly between and beyond pins, so
 // pins that are unevenly spaced in lightness make a ramp lurch. The report at
 // the end of `pnpm color-ramps` flags any ramp that does.
+//
+// A ramp may also set `darkHue` (degrees) to drift its hue toward that value
+// past its last pin; without it the hue is held.
 const ramps = {
   // Cool paper: canvas, surfaces, dividers and hover fills in both modes. A
   // faint navy undertone in the light steps; the dark end (950) is deep navy, so
@@ -33,7 +36,9 @@ const ramps = {
   // Only a trace of cool tint, so it sits quietly on the cool paper.
   ink: { pins: { 700: "#484b4f", 950: "#090a0c" } },
   // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
-  gold: { pins: { 300: "#e9ac1f" } },
+  // Its hue drifts toward amber (62) as it darkens, so hover, edge and text steps
+  // read as gold-brown rather than olive.
+  gold: { pins: { 300: "#e9ac1f" }, darkHue: 62 },
   // Tattoo red: emphasis and state indicators.
   red: { pins: { 600: "#bf2a2e" } },
   // Deep green. Not mapped to a role yet.
@@ -115,7 +120,7 @@ const LIGHT_END = [
   { index: 1, L: 0.925, chroma: 0.65 },
 ];
 
-function buildRamp({ pins }) {
+function buildRamp({ pins, darkHue }) {
   const pinned = Object.entries(pins)
     .map(([step, hex]) => ({
       index: STEPS.indexOf(Number(step)),
@@ -149,7 +154,12 @@ function buildRamp({ pins }) {
       const t = (index - last.index) / (lastIndex - last.index);
       L = last.L + (DARKEST - last.L) * t;
       C = last.C * (1 - 0.35 * t);
-      h = last.h;
+      // Optional: drift toward darkHue (degrees) as the ramp darkens, fast at
+      // first then settling, so darker steps warm instead of going olive.
+      h =
+        darkHue === undefined
+          ? last.h
+          : last.h + ((darkHue * Math.PI) / 180 - last.h) * (1 - (1 - t) ** 2);
     } else {
       const lower = [...pinned].reverse().find((p) => p.index < index);
       const upper = pinned.find((p) => p.index > index);
