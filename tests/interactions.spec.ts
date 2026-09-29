@@ -33,6 +33,25 @@ test("nav marks the current page and its section", async ({ page }) => {
   await expect(portfolio).toHaveAttribute("aria-current", "true");
 });
 
+test("faq page emits valid FAQPage structured data", async ({ page }) => {
+  await open(page, "/faq");
+  const raw = await page
+    .locator('script[type="application/ld+json"]')
+    .textContent();
+  const data = JSON.parse(raw ?? "");
+  expect(data["@type"]).toBe("FAQPage");
+  expect(data.mainEntity.length).toBeGreaterThan(0);
+
+  const deposit = data.mainEntity.find(
+    (q: { name: string }) => q.name === "How much is a deposit?",
+  );
+  expect(deposit.acceptedAnswer.text).toBe(
+    "A deposit holds your appointment. See the contact page to ask.",
+  );
+  // markdown syntax must not leak into the plain-text answer
+  expect(deposit.acceptedAnswer.text).not.toMatch(/[[\]()*_]/);
+});
+
 test.describe("piece viewer", () => {
   test("opens over the gallery, has no violations, closes with Escape", async ({
     page,
