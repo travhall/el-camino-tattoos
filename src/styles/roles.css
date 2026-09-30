@@ -102,7 +102,7 @@
   --success-text: var(--green-700);
   --success-soft: var(--green-100);
   /* One step deeper than accent-mark, so warning never reads as decoration. */
-  --warning: var(--gold-600);
+  --warning: var(--gold-700);
   --warning-text: var(--gold-700);
   --warning-soft: var(--gold-100);
   --focus: var(--navy-700);
@@ -159,7 +159,7 @@
     --success: var(--green-400);
     --success-text: var(--green-300);
     --success-soft: var(--green-900);
-    --warning: var(--gold-300);
+    --warning: var(--gold-400);
     --warning-text: var(--gold-200);
     --warning-soft: var(--gold-900);
     --focus: var(--navy-400);
@@ -194,7 +194,7 @@
   --success: var(--green-400);
   --success-text: var(--green-300);
   --success-soft: var(--green-900);
-  --warning: var(--gold-300);
+  --warning: var(--gold-400);
   --warning-text: var(--gold-200);
   --warning-soft: var(--gold-900);
   --focus: var(--navy-400);
