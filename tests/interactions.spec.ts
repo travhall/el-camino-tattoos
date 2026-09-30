@@ -487,3 +487,30 @@ test("theme defaults to dark regardless of OS preference, and the toggle persist
     .analyze();
   expect(violations.map((v) => v.id)).toEqual([]);
 });
+
+test.describe("artists page", () => {
+  test("splits residents from guests and shows the guest's visiting dates", async ({
+    page,
+  }) => {
+    await open(page, "/artists");
+    await expect(
+      page.getByRole("heading", { name: "Visiting artists" }),
+    ).toBeVisible();
+    await expect(page.getByText("Guest · Nov 14–16")).toBeVisible();
+  });
+
+  test("offers a match-me CTA and a traveling-tattooer contact", async ({
+    page,
+  }) => {
+    await open(page, "/artists");
+    await expect(
+      page.getByRole("heading", { name: "Not sure who’s right for you?" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Request an appointment" }),
+    ).toHaveAttribute("href", "/contact");
+    await expect(
+      page.getByRole("heading", { name: "Traveling tattooer?" }),
+    ).toBeVisible();
+  });
+});
