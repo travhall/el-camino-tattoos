@@ -31,6 +31,17 @@ export const fixtures = {
       instagram: "fixture_two",
       order: 2,
     },
+    {
+      slug: "zz-fixture-guest",
+      name: "Fixture Guest",
+      specialties: ["Illustrative"],
+      bio: "A visiting fixture artist used only by the test suite.",
+      instagram: "fixture_guest",
+      order: 3,
+      role: "guest",
+      visitDates: "Nov 14–16",
+      photo: { file: "photo.png", color: [180, 100, 140] },
+    },
   ],
   pieces: [
     {
@@ -138,6 +149,8 @@ export async function seedFixtures() {
       `instagram: ${artist.instagram}`,
       `order: ${artist.order}`,
     ];
+    if (artist.role) lines.push(`role: ${artist.role}`);
+    if (artist.visitDates) lines.push(`visitDates: ${artist.visitDates}`);
     if (artist.photo) {
       const dir = at("public/images/artists", artist.slug);
       await mkdir(dir, { recursive: true });
