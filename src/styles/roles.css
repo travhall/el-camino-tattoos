@@ -125,9 +125,12 @@
   --status-closed: var(--muted);
 }
 
-/* Dark: only what differs from light. */
+/* Dark: only what differs from light. Kept byte-identical to the
+   :root[data-theme="dark"] block below — a test in
+   tests/interactions.spec.ts asserts they match. If you change one, change
+   both, or the manual toggle and the OS-preference path will disagree. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --background: var(--paper-950);
     --surface: var(--paper-900);
     --surface-raised: var(--paper-800);
@@ -158,4 +161,38 @@
     /* UI tokens. The ink button is light here, so hover darkens it. */
     --button-primary-hover: var(--ink-200);
   }
+}
+
+/* Forced dark via the toggle (src/components/theme-toggle.tsx), regardless
+   of OS preference. Must stay byte-identical to the block above. */
+:root[data-theme="dark"] {
+  --background: var(--paper-950);
+  --surface: var(--paper-900);
+  --surface-raised: var(--paper-800);
+  --surface-sunken: var(--paper-950);
+  --foreground: var(--ink-50);
+  --muted: var(--ink-300);
+  --subtle: var(--ink-300);
+  --scrim: var(--paper-950);
+  --outline: var(--ink-400);
+  --border: var(--paper-700);
+  --line: var(--paper-800);
+  --hover: var(--paper-800);
+  --accent-hover: var(--gold-200);
+  --accent-text: var(--gold-200);
+  --accent-soft: var(--gold-800);
+  --accent-mark: var(--gold-300);
+  --error: var(--red-500);
+  --error-text: var(--red-400);
+  --error-soft: var(--red-900);
+  --success: var(--green-400);
+  --success-text: var(--green-300);
+  --success-soft: var(--green-900);
+  --warning: var(--gold-300);
+  --warning-text: var(--gold-200);
+  --warning-soft: var(--gold-900);
+  --focus: var(--navy-400);
+
+  /* UI tokens. The ink button is light here, so hover darkens it. */
+  --button-primary-hover: var(--ink-200);
 }
