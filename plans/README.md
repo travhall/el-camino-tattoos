@@ -27,7 +27,7 @@ honor its STOP conditions, and update your row when done.
 | 010  | Replace the two hand-rolled regex CSS parsers with one shared, real parser | P2 | S | — | TODO |
 | 011  | Fix `accent-mark`'s failing contrast on `surface-sunken` in light mode | P1 | S | — (shares `contrast.mjs` `PAIRS` with 012) | TODO |
 | 012  | Give `subtle` real differentiation from `muted` in dark mode | P2 | S | — (shares `contrast.mjs` `PAIRS` with 011) | TODO |
-| 013  | Add a manual light/dark theme toggle                         | P2       | M      | —          | TODO |
+| 013  | Add a manual light/dark theme toggle                         | P2       | M      | —          | DONE (branch `advisor/013-manual-theme-toggle`, not merged; pre-existing unrelated `pnpm test` failure noted below) |
 | 014  | Emit wide-gamut `oklch()` alongside sRGB hex in `palette.css` | P3      | M      | 011, 012 (recommended order, not a hard requirement) | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
@@ -44,6 +44,17 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 - 010 is independent of everything else, but 011 and 012 both edit `scripts/contrast.mjs`'s `PAIRS` array — land one before the other (either order) to avoid a merge overlap; if 010 lands first, its parser refactor is orthogonal to the `PAIRS` data and both apply cleanly on top.
 - 014 has no hard dependency, but it's recommended to run after 011 and 012 so its "contrast result must not change" verification step is checked against the final `PAIRS`/role state rather than an intermediate one.
 - 013 is fully independent of 010–012 and 014 — it adds a `:root[data-theme]` override, not a role or ramp change.
+
+## Known pre-existing test failure (unrelated to any plan above)
+
+- `pnpm test` currently fails `contact form › marks invalid fields inline and
+  clears each as it is fixed` with a `dark: color-contrast` axe violation on
+  `.button[href$="contact"]` and `button[type="submit"]` (disabled-state gray
+  text at 2.67:1, needs 4.5:1). Confirmed to reproduce identically on `main`
+  at commit `bea6c5a`, before plan 013 (or any of 010–014) touched anything —
+  it is not caused by the theme toggle or any role/ramp change. Out of scope
+  for plan 013 (`button.tsx`/`contact-form.tsx` aren't in its file list).
+  Needs its own fix.
 
 ## Findings considered and rejected
 
