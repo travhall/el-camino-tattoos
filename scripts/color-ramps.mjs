@@ -31,7 +31,10 @@ const ramps = {
   // faint cream hue the whole way down (about a third of the original cream's
   // chroma): light mode is warm off-white, dark mode a warm charcoal. 950 sits
   // at the lightness the old navy had, so dark-mode contrast barely moved.
-  paper: { pins: { 50: "#f9f7f1", 100: "#eeeae1", 950: "#090704" } },
+  // Only 50 and 950 are pinned - letting the light-end soft-tint formula
+  // derive 100 (like every other ramp does) instead of hand-picking it too
+  // keeps the opening step's rate consistent with the rest of the ramp.
+  paper: { pins: { 50: "#f9f7f1", 950: "#090704" } },
   // Neutral black: text and strokes in both modes (foreground, muted, outline).
   // Only a trace of cool tint, so it sits quietly on the paper.
   ink: { pins: { 700: "#484b4f", 950: "#090a0c" } },
@@ -135,6 +138,27 @@ const LIGHT_END = [
   { index: 0, L: 0.98, chroma: 0.4 },
   { index: 1, L: 0.925, chroma: 0.65 },
 ];
+// How much chroma a single-pin ramp gives up by 950 (0 = none, 1 = all the
+// way to gray). Only reachable past a ramp's last real pin - paper and ink
+// pin all the way to 950, so this never applies to them.
+const DARK_CHROMA_TAPER = 0.2;
+
+// 0 at t=0, 1 at t=1, zero derivative at both ends - classic smoothstep.
+const smoothstep = (t) => t * t * (3 - 2 * t);
+
+// Blends two straight lines: one continuing the incoming rate of change
+// (`fromSlope`, per index step, scaled by `span`), the other the direct
+// line to the target. Weighted by smoothstep, so t=0 matches the incoming
+// rate exactly (no kink at the pin) and t=1 lands exactly on target, with no
+// overshoot in between - unlike a true Hermite blend, which can swing past
+// both endpoints when the incoming rate and the average rate needed to
+// reach the target disagree by a lot (verified: it did, badly).
+const blendToTarget = (t, from, fromSlope, target, span) => {
+  const continued = from + fromSlope * span * t;
+  const direct = from + (target - from) * t;
+  const b = smoothstep(t);
+  return continued * (1 - b) + direct * b;
+};
 
 function buildRamp({ pins, darkHue }) {
   const pinned = Object.entries(pins)
@@ -156,6 +180,16 @@ function buildRamp({ pins, darkHue }) {
   const last = pinned[pinned.length - 1];
   const lastIndex = STEPS.length - 1;
 
+  // The rate of change (per index step) just before `last`, so the curve
+  // past it can continue at that same rate instead of switching to an
+  // unrelated formula right at the pin. `beforeLast` is undefined only if a
+  // ramp has a single pin at index 0, which none do.
+  const beforeLast = pinned[pinned.length - 2];
+  const span = last.index - (beforeLast?.index ?? last.index);
+  const lSlope = beforeLast ? (last.L - beforeLast.L) / span : 0;
+  const hSlopeIn = beforeLast ? (last.h - beforeLast.h) / span : 0;
+  const tailSpan = lastIndex - last.index;
+
   const ramp = {};
   const oklch = {};
   STEPS.forEach((step, index) => {
@@ -169,15 +203,22 @@ function buildRamp({ pins, darkHue }) {
     let C;
     let h;
     if (index > last.index) {
-      const t = (index - last.index) / (lastIndex - last.index);
-      L = last.L + (DARKEST - last.L) * t;
-      C = last.C * (1 - 0.35 * t);
-      // Optional: drift toward darkHue (degrees) as the ramp darkens, fast at
-      // first then settling, so darker steps warm instead of going olive.
+      const t = (index - last.index) / tailSpan;
+      // Starts at the pin's own rate of change, eases into landing exactly
+      // on DARKEST by 950 - continuous at the seam, no separate formula
+      // kicking in right at the pinned step.
+      L = blendToTarget(t, last.L, lSlope, DARKEST, tailSpan);
+      C = last.C * (1 - DARK_CHROMA_TAPER * t);
       h =
         darkHue === undefined
           ? last.h
-          : last.h + ((darkHue * Math.PI) / 180 - last.h) * (1 - (1 - t) ** 2);
+          : blendToTarget(
+              t,
+              last.h,
+              hSlopeIn,
+              (darkHue * Math.PI) / 180,
+              tailSpan,
+            );
     } else {
       const lower = [...pinned].reverse().find((p) => p.index < index);
       const upper = pinned.find((p) => p.index > index);
