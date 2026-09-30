@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { ThemeToggle } from "@/components/theme-toggle";
+import palette from "@/styles/palette.generated.json";
 import typeScale from "@/styles/type-scale.generated.json";
 import {
   checkContrast,
@@ -344,9 +345,11 @@ export default async function StyleGuidePage() {
         <div className="stack">
           <Label>
             Primitive ramps: brand colors pinned to steps, the rest generated in
-            OKLCH. Edit the pinned values in scripts/color-ramps.mjs, then run{" "}
-            <code>pnpm color-ramps</code>. Roles are hand-edited in{" "}
-            <code>src/styles/roles.css</code>, no build step.
+            OKLCH. Shipped as oklch() (hex fallback for browsers that
+            can&rsquo;t parse it) &mdash; edit the pinned values in
+            scripts/color-ramps.mjs, then run <code>pnpm color-ramps</code>.
+            Roles are hand-edited in <code>src/styles/roles.css</code>, no build
+            step.
           </Label>
           {Object.entries(ramps as Record<string, Record<string, string>>).map(
             ([name, ramp]) => (
@@ -361,6 +364,16 @@ export default async function StyleGuidePage() {
                       />
                       <p className="caption">{step}</p>
                       <p className="caption">{hex}</p>
+                      <p className="caption">
+                        {
+                          (
+                            palette.oklch as Record<
+                              string,
+                              Record<string, string>
+                            >
+                          )[name]?.[step]
+                        }
+                      </p>
                     </li>
                   ))}
                 </ul>

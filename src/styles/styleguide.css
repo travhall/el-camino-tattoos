@@ -100,8 +100,11 @@
      top. */
   .sg-scrim-demo {
     @apply relative flex h-40 items-end overflow-hidden rounded-md border border-line;
+    /* `in oklch`: without it, gradients interpolate in sRGB by default and
+       ink-to-gold runs through a muddy, desaturated gray midpoint. OKLCH
+       interpolation keeps the midpoint's own hue and chroma instead. */
     background: linear-gradient(
-      135deg,
+      in oklch 135deg,
       var(--ink-700),
       var(--gold-600) 55%,
       var(--ink-900)
