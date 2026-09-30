@@ -237,7 +237,7 @@ src/styles/palette.generated.json` is empty.
 Add near the top of the script:
 
 ```js
-import { displayable, clampChroma } from "culori";
+import { clampChroma } from "culori";
 ```
 
 Add a function that takes the same `{L, C, h}` shape already used elsewhere
@@ -250,25 +250,40 @@ and returns a P3-safe `oklch()` CSS string:
  * gold/red steps need little or no reduction here. Formats as a CSS oklch()
  * string. Browsers without oklch() support simply ignore this declaration
  * and keep the sRGB hex declared just before it (see the output section).
+ *
+ * culori's `clampChroma(color, mode, rgbGamut)` finds the closest in-gamut
+ * chroma at the same lightness/hue for the requested destination gamut, and
+ * is a no-op (returns the color unchanged) when it's already in that gamut
+ * — so a single call covers both the "fits already" and "needs reducing"
+ * cases; no separate displayable()-style pre-check is needed. (culori's
+ * displayable() always tests sRGB specifically — it has no gamut argument —
+ * so it cannot be used to test P3 at all.)
  */
 function toP3OklchString({ L, C, h }) {
   const color = { mode: "oklch", l: L, c: C, h: (h * 180) / Math.PI };
-  const mapped = displayable(color, "p3") ? color : clampChroma(color, "p3");
+  const mapped = clampChroma(color, "oklch", "p3");
   const round = (n, d) => Math.round(n * 10 ** d) / 10 ** d;
   return `oklch(${round(mapped.l * 100, 2)}% ${round(mapped.c, 4)} ${round(mapped.h ?? 0, 2)})`;
 }
 ```
 
 (`culori`'s hue is in degrees; this script's internal `h` is radians — the
-`(h * 180) / Math.PI` conversion matches that. Confirm against `culori`'s
-actual documented API for `displayable`/`clampChroma`'s exact signatures
-when you implement this — the plan describes the intended behavior; consult
-`node_modules/culori/README.md` or its TypeScript types for exact argument
-shapes and correct if they differ from what's sketched here.)
+`(h * 180) / Math.PI` conversion matches that.)
 
 **Verify**: run a one-off smoke test after wiring Step 4, e.g.
 `node --input-type=module -e "import('./scripts/color-ramps.mjs')"` and
 confirm it completes without error.
+
+**Correction log (2026-09-30)**: the executor running this plan hit this
+step's original code — `displayable(color, "p3")` and `clampChroma(color,
+"p3")` — which doesn't match culori@4.0.2's real signatures (`displayable()`
+takes one argument and only ever checks sRGB; `clampChroma`'s second
+argument is the intermediate `mode`, not the target gamut). It stopped per
+this plan's own STOP conditions instead of guessing, and reported the real
+API. Verified against culori's published docs (`clampChroma(color, mode =
+'lch', rgbGamut = 'rgb')`, `displayable()` = `inGamut('rgb')` exactly). The
+code above is corrected; if you're starting this plan fresh, ignore this log
+entry and just follow the corrected code.
 
 ### Step 4: emit both hex and `oklch()` per custom property
 
