@@ -2,22 +2,19 @@
 
 import { useEffect, useState } from "react";
 
-type Theme = "system" | "light" | "dark";
+type Theme = "dark" | "light";
 
 const next: Record<Theme, Theme> = {
-  system: "light",
+  dark: "light",
   light: "dark",
-  dark: "system",
 };
 
 const labels: Record<Theme, string> = {
-  system: "Use system theme",
   light: "Use light theme",
   dark: "Use dark theme",
 };
 
 const icons: Record<Theme, string> = {
-  system: "⚙",
   light: "☀",
   dark: "☾",
 };
@@ -28,19 +25,19 @@ const icons: Record<Theme, string> = {
 const THEME_CHANGE_EVENT = "elcamino:theme-change";
 
 /**
- * Cycles system -> light -> dark -> system. Persists to localStorage; the
- * inline script in src/app/layout.tsx applies the stored choice before
- * paint, so there is no flash on load. Reads the current value from the DOM
- * (set by that script) rather than localStorage directly, so it starts in
- * sync with whatever the blocking script already applied.
+ * Toggles dark (the default) <-> light ("Paper mode"). Persists to
+ * localStorage; the inline script in src/app/layout.tsx applies a stored
+ * "light" choice before paint, so there is no flash. Reads the current value
+ * from the DOM (set by that script) rather than localStorage directly, so it
+ * starts in sync with whatever the blocking script already applied.
  */
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("system");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     // One-time sync from the DOM: the inline blocking script in
     // src/app/layout.tsx already set data-theme (if any) before React
-    // mounted. The server render always assumes "system" (no document), so
+    // mounted. The server render always assumes "dark" (no document), so
     // this corrects local state to match reality post-hydration. Reading
     // document.documentElement in a lazy useState initializer instead would
     // cause a real hydration mismatch (server has no document); this effect
@@ -48,7 +45,7 @@ export function ThemeToggle() {
     // rule normally guards against.
     const attr = document.documentElement.getAttribute("data-theme");
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTheme(attr === "light" || attr === "dark" ? attr : "system");
+    setTheme(attr === "light" ? "light" : "dark");
 
     function onThemeChange(event: Event) {
       setTheme((event as CustomEvent<Theme>).detail);
@@ -60,12 +57,12 @@ export function ThemeToggle() {
   function cycle() {
     const value = next[theme];
     setTheme(value);
-    if (value === "system") {
+    if (value === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      localStorage.setItem("theme", "light");
+    } else {
       document.documentElement.removeAttribute("data-theme");
       localStorage.removeItem("theme");
-    } else {
-      document.documentElement.setAttribute("data-theme", value);
-      localStorage.setItem("theme", value);
     }
     window.dispatchEvent(
       new CustomEvent<Theme>(THEME_CHANGE_EVENT, { detail: value }),

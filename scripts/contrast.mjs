@@ -133,8 +133,9 @@ export function contrast(a, b) {
 }
 
 /**
- * Splits roles.css into light values and dark values. Dark is whatever the
- * `prefers-color-scheme: dark` block sets, on top of the light values.
+ * Splits roles.css into light values and dark values. Light is whatever the
+ * `:root[data-theme="light"]` block overrides, on top of the dark (default)
+ * values in the base `:root`.
  */
 export const parseRoles = parseCssVarRoles;
 
