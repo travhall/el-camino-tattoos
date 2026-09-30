@@ -27,31 +27,21 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 // A ramp may also set `darkHue` (degrees) to drift its hue toward that value
 // past its last pin; without it the hue is held.
 const ramps = {
-  // Warm paper: canvas, surfaces, dividers and hover fills in both modes. The
-  // light steps carry a faint cream (about a third of the original cream's
-  // chroma, at today's lightness); the dark end is deep navy, so the dark-mode
-  // page reads navy without any role changing meaning. 400 and 700 are pinned so
-  // the hue turns over in 500 and 600, which no role uses: light mode stays
-  // warm (50 to 400) and dark mode stays navy (700 to 950).
-  paper: {
-    pins: {
-      50: "#f9f7f1",
-      100: "#eeeae1",
-      400: "#98938c",
-      700: "#39475c",
-      950: "#00041b",
-    },
-  },
+  // Warm paper: canvas, surfaces, dividers and hover fills in both modes. One
+  // faint cream hue the whole way down (about a third of the original cream's
+  // chroma): light mode is warm off-white, dark mode a warm charcoal. 950 sits
+  // at the lightness the old navy had, so dark-mode contrast barely moved.
+  paper: { pins: { 50: "#f9f7f1", 100: "#eeeae1", 950: "#090704" } },
   // Neutral black: text and strokes in both modes (foreground, muted, outline).
   // Only a trace of cool tint, so it sits quietly on the paper.
   ink: { pins: { 700: "#484b4f", 950: "#090a0c" } },
-  // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
-  // Its hue drifts toward amber (62) as it darkens, so hover, edge and text steps
-  // read as gold-brown rather than olive.
+  // Mustard gold: the brand accent, and warning (its amber end). Sits high in
+  // lightness, so it lives at 300. Its hue drifts toward amber (62) as it
+  // darkens, so hover, mark and text steps read as gold-brown rather than olive.
   gold: { pins: { 300: "#e9ac1f" }, darkHue: 62 },
-  // Tattoo red: emphasis and state indicators.
+  // Tattoo red: error, and nothing else.
   red: { pins: { 600: "#bf2a2e" } },
-  // Deep green. Not mapped to a role yet.
+  // Deep green: success (open, available, done).
   green: { pins: { 400: "#4aa172" } },
   // Navy: focus ring.
   navy: { pins: { 400: "#7aa2d6" } },

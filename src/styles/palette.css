@@ -3,15 +3,15 @@
 :root {
   --paper-50: #f9f7f1;
   --paper-100: #eeeae1;
-  --paper-200: #d1ccc4;
-  --paper-300: #b4afa7;
-  --paper-400: #98938c;
-  --paper-500: #857474;
-  --paper-600: #665a6b;
-  --paper-700: #39475c;
-  --paper-800: #212f46;
-  --paper-900: #0b1830;
-  --paper-950: #00041b;
+  --paper-200: #d1cdc4;
+  --paper-300: #b4b0a8;
+  --paper-400: #98948d;
+  --paper-500: #7d7a72;
+  --paper-600: #636059;
+  --paper-700: #4a4741;
+  --paper-800: #33302a;
+  --paper-900: #1d1a15;
+  --paper-950: #090704;
   --ink-50: #f7f8fa;
   --ink-100: #e4e6ea;
   --ink-200: #c8cace;

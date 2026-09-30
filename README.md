@@ -20,7 +20,7 @@ Fonts: Being (variable, headings and display) via `next/font/local`, and Hanken 
 
 Markup uses semantic classes, and Tailwind utilities are applied inside them with `@apply`. See `src/styles/` and the conventions in `CLAUDE.md`. Browse everything at `/styleguide`.
 
-Color is primitives mapped to roles. `scripts/color-ramps.mjs` generates tonal ramps (`paper`, `ink`, `gold`, `red`, `green`, `navy`) from pinned brand values into `src/styles/palette.css`. Semantic roles (`background`, `foreground`, `accent`, `highlight`, ...) are hand-edited in `src/styles/roles.css`, for light and dark, and update live in the browser with no build step. To change a role, edit that file. To change a brand value, edit the pins in the generator and run:
+Color is primitives mapped to roles. `scripts/color-ramps.mjs` generates tonal ramps (`paper`, `ink`, `gold`, `red`, `green`, `navy`) from pinned brand values into `src/styles/palette.css`. Semantic roles (`background`, `foreground`, `accent`, `success`, ...) and the UI tokens components use (`button-primary-bg`, `chip-selected-bg`, ...) are hand-edited in `src/styles/roles.css`, for light and dark, and update live in the browser with no build step. To change a role, edit that file. To change a brand value, edit the pins in the generator and run:
 
 ```bash
 pnpm color-ramps
