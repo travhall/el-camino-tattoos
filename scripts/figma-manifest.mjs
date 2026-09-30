@@ -18,31 +18,13 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseCssVarRoles } from "./lib/parse-css-vars.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(root, p), "utf8");
 
 const palette = JSON.parse(read("src/styles/palette.generated.json"));
 const typeScale = JSON.parse(read("src/styles/type-scale.generated.json"));
-
-/** Roles from roles.css: a `:root` block, plus dark overrides in the media query. */
-function parseRoles(css) {
-  const declarations = (block) =>
-    Object.fromEntries(
-      [...block.matchAll(/--([a-z-]+):\s*([^;]+);/g)].map((m) => [
-        m[1],
-        m[2].trim(),
-      ]),
-    );
-  const dark = css.match(
-    /prefers-color-scheme:\s*dark\)\s*{\s*:root\s*{([^}]*)}/,
-  );
-  const light = css.replace(dark ? dark[0] : "", "").match(/:root\s*{([^}]*)}/);
-  if (!light) throw new Error("roles.css: no :root block found");
-  const lightRoles = declarations(light[1]);
-  const darkRoles = { ...lightRoles, ...(dark ? declarations(dark[1]) : {}) };
-  return { light: lightRoles, dark: darkRoles };
-}
 
 /**
  * `var(--gold-300)` or `#hex` to { ref, hex }. A UI token may point at another
@@ -64,7 +46,7 @@ function resolve(value, vars, depth = 0) {
   throw new Error(`roles.css: cannot resolve "${value}"`);
 }
 
-const parsed = parseRoles(read("src/styles/roles.css"));
+const parsed = parseCssVarRoles(read("src/styles/roles.css"));
 const roles = Object.fromEntries(
   Object.keys(parsed.light).map((name) => [
     name,
