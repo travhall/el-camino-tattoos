@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArtistGrid } from "@/components/artist-grid";
+import { HeroPhoto } from "@/components/hero-photo";
 import { PieceGrid } from "@/components/piece-grid";
 import { ShopNotes } from "@/components/shop-notes";
 import { getArtists, getPieces, getSite } from "@/lib/content";
@@ -18,11 +19,23 @@ export default async function Home() {
     getSite(),
   ]);
 
+  const heroPiece = pieces[0] ?? null;
+  const heroArtistName = heroPiece
+    ? artists.find((artist) => artist.slug === heroPiece.artistSlug)?.name
+    : undefined;
+
   return (
     <div className="stack stack--xl">
-      <div className="stack">
-        <h1 className="display">El Camino Tattoos</h1>
-        <ShopNotes site={site} />
+      <div className="home-hero">
+        <div className="home-hero__intro stack">
+          <h1 className="display">El Camino Tattoos</h1>
+          <ShopNotes site={site} />
+        </div>
+        <HeroPhoto
+          piece={heroPiece}
+          artistName={heroArtistName}
+          walkIns={site.walkIns}
+        />
       </div>
 
       <section aria-labelledby="artists-heading" className="stack stack--lg">
