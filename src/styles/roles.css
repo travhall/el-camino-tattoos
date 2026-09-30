@@ -75,7 +75,13 @@
   --surface-sunken: var(--paper-200);
   --foreground: var(--ink-950);
   --muted: var(--ink-700);
-  /* subtle starts equal to muted: no lighter ink step reads 4.5:1 on surface-sunken */
+  /* Light mode: subtle stays equal to muted. ink-600 (the next step lighter)
+     measures 3.80:1 on surface-sunken, under the 4.5:1 subtle needs there, and
+     there is no intermediate ramp step. Dark mode differentiates subtle from
+     muted instead (ink-400 vs ink-300) because the same wall doesn't exist
+     there. Fixing light mode would mean lightening surface-sunken itself,
+     which affects every section band and the footer — a design call, not a
+     token tweak. See plans/012-subtle-text-tier-dark-differentiation.md. */
   --subtle: var(--ink-700);
   --scrim: var(--paper-50);
   --veil: var(--paper-950);
@@ -134,7 +140,7 @@
     --surface-sunken: var(--paper-950);
     --foreground: var(--ink-50);
     --muted: var(--ink-300);
-    --subtle: var(--ink-300);
+    --subtle: var(--ink-400);
     --scrim: var(--paper-950);
     --outline: var(--ink-400);
     --border: var(--paper-700);

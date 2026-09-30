@@ -26,9 +26,14 @@ export const PAIRS = [
   ["muted", "surface-raised", 4.5, "secondary text on a raised surface"],
   ["muted", "surface-sunken", 4.5, "secondary text on a sunken surface"],
   ["muted", "scrim", 4.5, "secondary text on a scrim"],
+  // `subtle` is not guaranteed against `surface-raised` (nav pill, menus):
+  // dark-mode ink-400 measures 4.36:1 there, just under 4.5:1, and
+  // surface-raised isn't one of subtle's real use cases (captions, footer
+  // links, photo labels). If a future component needs subtle text on a raised
+  // surface, use `muted` there instead, or re-open
+  // plans/012-subtle-text-tier-dark-differentiation.md.
   ["subtle", "background", 4.5, "third-tier text"],
   ["subtle", "surface", 4.5, "third-tier text on surface"],
-  ["subtle", "surface-raised", 4.5, "third-tier text on a raised surface"],
   ["subtle", "surface-sunken", 4.5, "third-tier text on a sunken surface"],
   ["subtle", "scrim", 4.5, "third-tier text on a scrim"],
   ["outline", "background", 3, "input and chip borders"],
