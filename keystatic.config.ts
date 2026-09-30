@@ -88,7 +88,7 @@ export default config({
       slugField: "name",
       path: "content/artists/*",
       format: { data: "yaml" },
-      columns: ["name", "order"],
+      columns: ["name", "role", "order"],
       schema: {
         name: fields.slug({ name: { label: "Name" } }),
         photo: fields.image({
@@ -108,6 +108,22 @@ export default config({
           label: "Order",
           description: "Lower numbers appear first.",
           defaultValue: 100,
+        }),
+        role: fields.select({
+          label: "Role",
+          description:
+            "Resident (own chair, regular schedule), apprentice, or guest (visiting for a limited window).",
+          options: [
+            { label: "Resident", value: "resident" },
+            { label: "Apprentice", value: "apprentice" },
+            { label: "Guest", value: "guest" },
+          ],
+          defaultValue: "resident",
+        }),
+        visitDates: fields.text({
+          label: "Visiting dates",
+          description:
+            'Guest artists only — e.g. "Nov 14–16". Leave blank for residents and apprentices.',
         }),
       },
     }),

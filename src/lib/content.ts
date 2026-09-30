@@ -13,6 +13,8 @@ export type Artist = {
   bio: string;
   instagram: string;
   order: number;
+  role: "resident" | "apprentice" | "guest";
+  visitDates: string;
 };
 
 export type Piece = {
@@ -50,6 +52,8 @@ export const getArtists = cache(async (): Promise<Artist[]> => {
       bio: entry.bio,
       instagram: normalizeInstagramHandle(entry.instagram),
       order: entry.order ?? 100,
+      role: entry.role ?? "resident",
+      visitDates: entry.visitDates,
     }))
     .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
 });
