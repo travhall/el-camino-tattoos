@@ -466,7 +466,7 @@ Machine-checkable. ALL must hold:
 - [ ] `pnpm check:contrast` exits 0, still reports `69 pairings x 2 themes, all pass.`
 - [ ] `pnpm test` exits 0, including the two new tests from Step 6
 - [ ] `grep -n 'data-theme="dark"' src/styles/roles.css` and `grep -n
-    'prefers-color-scheme: dark' src/styles/roles.css` both match
+  'prefers-color-scheme: dark' src/styles/roles.css` both match
 - [ ] `grep -n "suppressHydrationWarning" src/app/layout.tsx` matches
 - [ ] `grep -n "ThemeToggle" src/components/site-header.tsx` matches
 - [ ] No browser console hydration-mismatch warning when loading any page in `pnpm dev`
