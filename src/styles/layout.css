@@ -11,7 +11,7 @@
   }
 
   .skip-link:focus {
-    @apply not-sr-only fixed top-fluid-sm left-fluid-sm z-50 rounded-full bg-foreground px-fluid-md py-fluid-xs font-medium text-background;
+    @apply not-sr-only fixed top-fluid-sm left-fluid-sm z-50 rounded-none bg-foreground px-fluid-md py-fluid-xs font-medium text-background;
   }
 
   /* Text for assistive tech only. */

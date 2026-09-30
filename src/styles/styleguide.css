@@ -3,7 +3,7 @@
   /* Jump nav + a page-local theme toggle, so checking a value in both themes
      doesn't mean scrolling all the way back to the site header every time. */
   .sg-toc {
-    @apply sticky top-2 z-10 flex flex-wrap items-center justify-between gap-4 rounded-md border border-line bg-surface-raised px-4 py-2;
+    @apply sticky top-2 z-10 flex flex-wrap items-center justify-between gap-4 rounded-none border border-line bg-surface-raised px-4 py-2;
   }
 
   .sg-toc__list {
@@ -37,7 +37,7 @@
   }
 
   .sg-swatch {
-    @apply h-20 rounded-md border border-line;
+    @apply h-20 rounded-none border border-line;
   }
 
   .sg-ramp {
@@ -70,7 +70,7 @@
   }
 
   .sg-space-bar {
-    @apply block h-3 rounded-full bg-accent;
+    @apply block h-3 rounded-none bg-accent;
   }
 
   .sg-tile {
@@ -99,7 +99,7 @@
      applied here, the way every real caller must), and readable text on
      top. */
   .sg-scrim-demo {
-    @apply relative flex h-40 items-end overflow-hidden rounded-md border border-line;
+    @apply relative flex h-40 items-end overflow-hidden rounded-none border border-line;
     /* `in oklch`: without it, gradients interpolate in sRGB by default and
        ink-to-gold runs through a muddy, desaturated gray midpoint. OKLCH
        interpolation keeps the midpoint's own hue and chroma instead. */

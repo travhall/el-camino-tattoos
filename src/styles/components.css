@@ -73,7 +73,7 @@
      the button's shape needs, and keeps an edge in forced-colors (high
      contrast) mode, where the fill is removed. Every other variant resets it. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-medium text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-none border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-medium text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -102,7 +102,7 @@
   /* Theme toggle: a small standalone control, not a call-to-action, so it
      does not reuse .button. 44px minimum hit area per CLAUDE.md. */
   .theme-toggle {
-    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none;
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-none border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -143,7 +143,7 @@
   }
 
   .filter-chip {
-    @apply inline-flex min-h-11 items-center rounded-full border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
+    @apply inline-flex min-h-11 items-center rounded-none border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
   }
 
   /* Selected state is fill AND weight, not color alone. */
@@ -228,7 +228,7 @@
   }
 
   .field__control {
-    @apply min-h-11 w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
+    @apply min-h-11 w-full rounded-none border border-outline bg-background px-3 py-2 placeholder:text-muted;
   }
 
   /* Grouped controls (radios, related file inputs). */
@@ -265,7 +265,7 @@
   }
 
   .form-status {
-    @apply rounded-md border border-error bg-error-soft px-3 py-2;
+    @apply rounded-none border border-error bg-error-soft px-3 py-2;
   }
 
   /* FAQ: one section per question, each linkable by its slug. */

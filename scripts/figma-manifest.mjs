@@ -70,11 +70,11 @@ const layout = {
   "max-width/form": { px: 576, source: ".contact-form (max-w-xl)" },
   "max-width/viewer": { px: 1024, source: ".viewer (64rem)" },
   "size/target-min": { px: 44, source: "min-h-11, the touch target minimum" },
-  "radius/control": {
-    px: 6,
-    source: ".field__control, .form-status (rounded-md)",
+  "radius/sharp": {
+    px: 0,
+    source:
+      ".button, .theme-toggle, .filter-chip, .field__control, .form-status, .skip-link (rounded-none, site-wide)",
   },
-  "radius/pill": { px: 9999, source: ".filter-chip, .button (rounded-full)" },
   "border/width": { px: 1, source: "controls (border)" },
   "focus/ring-width": { px: 2, source: ":focus-visible outline" },
   "focus/ring-offset": { px: 2, source: ":focus-visible outline-offset" },
