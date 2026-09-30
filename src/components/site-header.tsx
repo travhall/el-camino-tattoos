@@ -4,7 +4,7 @@ import { NavLink } from "@/components/nav-link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ButtonLink } from "@/components/ui/button";
 
-const links = [
+export const navLinks = [
   { href: "/artists", label: "Artists" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/aftercare", label: "Aftercare" },
@@ -21,7 +21,7 @@ export function SiteHeader() {
           <span className="visually-hidden">El Camino Tattoos</span>
         </Link>
         <nav aria-label="Primary" className="site-nav">
-          {links.map(({ href, label }) => (
+          {navLinks.map(({ href, label }) => (
             <NavLink key={href} href={href} className="site-nav__link">
               {label}
             </NavLink>

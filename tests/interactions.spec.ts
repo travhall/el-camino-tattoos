@@ -507,7 +507,9 @@ test.describe("artists page", () => {
       page.getByRole("heading", { name: "Not sure who’s right for you?" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Request an appointment" }),
+      page
+        .getByRole("main")
+        .getByRole("link", { name: "Request an appointment" }),
     ).toHaveAttribute("href", "/contact");
     await expect(
       page.getByRole("heading", { name: "Traveling tattooer?" }),
