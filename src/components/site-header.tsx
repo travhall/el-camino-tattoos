@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
 import { NavLink } from "@/components/nav-link";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ButtonLink } from "@/components/ui/button";
 
 const links = [
@@ -25,6 +26,7 @@ export function SiteHeader() {
               {label}
             </NavLink>
           ))}
+          <ThemeToggle />
           {/* Persistent booking slot; points at /contact until a booking flow exists. */}
           <ButtonLink href="/contact">Request</ButtonLink>
         </nav>

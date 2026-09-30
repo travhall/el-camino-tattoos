@@ -451,3 +451,51 @@ test.describe("touch targets on a phone", () => {
     });
   }
 });
+
+test("dark-mode role block in roles.css matches its data-theme twin", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile("src/styles/roles.css", "utf8");
+  const media = css.match(
+    /@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-theme="light"\]\) \{([^}]*)\}/,
+  );
+  const attr = css.match(/:root\[data-theme="dark"\] \{([^}]*)\}/);
+  // The two blocks nest at different levels (one inside @media, one at the
+  // top), so their indentation legitimately differs; normalize per-line
+  // whitespace so this asserts the declarations themselves are identical,
+  // not that the raw text (including indentation) matches byte-for-byte.
+  const declarations = (block: string | undefined) =>
+    block
+      ?.split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .join("\n");
+  expect(declarations(media?.[1])).toBeTruthy();
+  expect(declarations(attr?.[1])).toBe(declarations(media?.[1]));
+});
+
+test("theme toggle overrides OS preference and persists", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await open(page, "/");
+
+  const background = () =>
+    page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--background",
+      ),
+    );
+  const lightBackground = await background();
+
+  const toggle = page.getByRole("button", { name: /theme/i });
+  await toggle.click(); // system -> light (no visible change, still light)
+  await toggle.click(); // light -> dark
+  await expect.poll(background).not.toBe(lightBackground);
+
+  await page.reload();
+  await page.locator(hydrated).waitFor({ state: "attached" });
+  expect(await background()).not.toBe(lightBackground); // persisted
+
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(violations.map((v) => v.id)).toEqual([]);
+});

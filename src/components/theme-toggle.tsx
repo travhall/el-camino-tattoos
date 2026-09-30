@@ -1,0 +1,73 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+type Theme = "system" | "light" | "dark";
+
+const next: Record<Theme, Theme> = {
+  system: "light",
+  light: "dark",
+  dark: "system",
+};
+
+const labels: Record<Theme, string> = {
+  system: "Use system theme",
+  light: "Use light theme",
+  dark: "Use dark theme",
+};
+
+const icons: Record<Theme, string> = {
+  system: "⚙",
+  light: "☀",
+  dark: "☾",
+};
+
+/**
+ * Cycles system -> light -> dark -> system. Persists to localStorage; the
+ * inline script in src/app/layout.tsx applies the stored choice before
+ * paint, so there is no flash on load. Reads the current value from the DOM
+ * (set by that script) rather than localStorage directly, so it starts in
+ * sync with whatever the blocking script already applied.
+ */
+export function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>("system");
+
+  useEffect(() => {
+    // One-time sync from the DOM: the inline blocking script in
+    // src/app/layout.tsx already set data-theme (if any) before React
+    // mounted. The server render always assumes "system" (no document), so
+    // this corrects local state to match reality post-hydration. Reading
+    // document.documentElement in a lazy useState initializer instead would
+    // cause a real hydration mismatch (server has no document); this effect
+    // avoids that at the cost of one extra render, which is what this lint
+    // rule normally guards against.
+    const attr = document.documentElement.getAttribute("data-theme");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTheme(attr === "light" || attr === "dark" ? attr : "system");
+  }, []);
+
+  function cycle() {
+    const value = next[theme];
+    setTheme(value);
+    if (value === "system") {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.removeItem("theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", value);
+      localStorage.setItem("theme", value);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      className="theme-toggle"
+      aria-label={labels[theme]}
+      onClick={cycle}
+    >
+      <span aria-hidden="true" className="theme-toggle__icon">
+        {icons[theme]}
+      </span>
+    </button>
+  );
+}
