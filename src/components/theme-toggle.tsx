@@ -22,6 +22,11 @@ const icons: Record<Theme, string> = {
   dark: "☾",
 };
 
+// Lets more than one <ThemeToggle> be mounted at once (the site header's,
+// plus a page-local one) without the instances disagreeing about the
+// current theme: each one broadcasts on change and listens for the others.
+const THEME_CHANGE_EVENT = "elcamino:theme-change";
+
 /**
  * Cycles system -> light -> dark -> system. Persists to localStorage; the
  * inline script in src/app/layout.tsx applies the stored choice before
@@ -44,6 +49,12 @@ export function ThemeToggle() {
     const attr = document.documentElement.getAttribute("data-theme");
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(attr === "light" || attr === "dark" ? attr : "system");
+
+    function onThemeChange(event: Event) {
+      setTheme((event as CustomEvent<Theme>).detail);
+    }
+    window.addEventListener(THEME_CHANGE_EVENT, onThemeChange);
+    return () => window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange);
   }, []);
 
   function cycle() {
@@ -56,6 +67,9 @@ export function ThemeToggle() {
       document.documentElement.setAttribute("data-theme", value);
       localStorage.setItem("theme", value);
     }
+    window.dispatchEvent(
+      new CustomEvent<Theme>(THEME_CHANGE_EVENT, { detail: value }),
+    );
   }
 
   return (

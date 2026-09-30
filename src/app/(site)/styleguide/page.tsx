@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { ThemeToggle } from "@/components/theme-toggle";
 import typeScale from "@/styles/type-scale.generated.json";
 import {
   checkContrast,
@@ -108,6 +109,18 @@ const roleGroups = [
   },
 ] as const;
 
+// Mirrors each <Section id="..." title="..."> below, for the jump nav.
+const sectionNav = [
+  { id: "typography", title: "Typography" },
+  { id: "spacing", title: "Spacing" },
+  { id: "color", title: "Color" },
+  { id: "buttons", title: "Buttons" },
+  { id: "forms", title: "Form fields" },
+  { id: "filters", title: "Filter chips" },
+  { id: "richtext", title: "Rich text" },
+  { id: "cards", title: "Cards and grid" },
+] as const;
+
 function Section({
   id,
   title,
@@ -152,6 +165,17 @@ export default async function StyleGuidePage() {
           the brand is settled. Not indexed.
         </p>
       </header>
+
+      <nav className="sg-toc" aria-label="Style guide sections">
+        <ul className="sg-toc__list">
+          {sectionNav.map(({ id, title }) => (
+            <li key={id}>
+              <a href={`#${id}`}>{title}</a>
+            </li>
+          ))}
+        </ul>
+        <ThemeToggle />
+      </nav>
 
       <Section id="typography" title="Typography">
         <div className="sg-split">
@@ -300,6 +324,21 @@ export default async function StyleGuidePage() {
               </ul>
             </div>
           ))}
+        </div>
+
+        <div className="stack stack--sm">
+          <h3>scrim, in context</h3>
+          <Label>
+            A flat swatch can&rsquo;t show what scrim is for: opacity applied
+            where it&rsquo;s used, over a photo, so text on top stays readable.
+            This is <code>bg-scrim/60</code> over a placeholder image with{" "}
+            <code>text-foreground</code> on top.
+          </Label>
+          <div className="sg-scrim-demo">
+            <p className="sg-scrim-demo__caption">
+              Fine line &middot; Traditional
+            </p>
+          </div>
         </div>
 
         <div className="stack">

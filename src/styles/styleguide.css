@@ -1,5 +1,19 @@
 /* Layout for /styleguide only. Everything else there uses the real classes. */
 @layer components {
+  /* Jump nav + a page-local theme toggle, so checking a value in both themes
+     doesn't mean scrolling all the way back to the site header every time. */
+  .sg-toc {
+    @apply sticky top-2 z-10 flex flex-wrap items-center justify-between gap-4 rounded-md border border-line bg-surface-raised px-4 py-2;
+  }
+
+  .sg-toc__list {
+    @apply flex list-none flex-wrap gap-x-4 text-sm;
+  }
+
+  .sg-toc__list a {
+    @apply inline-flex min-h-11 items-center text-muted hover:text-foreground;
+  }
+
   .sg-section {
     @apply grid gap-6 border-t border-line pt-8;
   }
@@ -77,5 +91,24 @@
 
   .sg-gallery {
     @apply grid grid-cols-2 gap-3 md:grid-cols-4;
+  }
+
+  /* scrim's whole point (a translucent fill behind text on a photo) is
+     invisible as a flat swatch, so it gets its own demo: a placeholder
+     "photo" gradient, the scrim as an actual translucent overlay (opacity
+     applied here, the way every real caller must), and readable text on
+     top. */
+  .sg-scrim-demo {
+    @apply relative flex h-40 items-end overflow-hidden rounded-md border border-line;
+    background: linear-gradient(
+      135deg,
+      var(--ink-700),
+      var(--gold-600) 55%,
+      var(--ink-900)
+    );
+  }
+
+  .sg-scrim-demo__caption {
+    @apply w-full bg-scrim/60 px-3 py-2 text-foreground;
   }
 }
