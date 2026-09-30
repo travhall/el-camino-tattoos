@@ -15,56 +15,97 @@ export const metadata: Metadata = {
 
 const weights = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
-const roles = [
-  { name: "background", note: "page canvas" },
-  { name: "surface", note: "cards, inputs, placeholders" },
-  { name: "surface-raised", note: "nav pill, menus" },
-  { name: "surface-sunken", note: "section bands, footer" },
-  { name: "foreground", note: "text, solid ink fills" },
-  { name: "muted", note: "secondary text" },
-  { name: "subtle", note: "third-tier text, photo labels" },
-  { name: "scrim", note: "fill behind text on photos" },
-  { name: "veil", note: "dims the page behind dialogs" },
-  { name: "outline", note: "interactive borders" },
-  { name: "border", note: "container edges" },
-  { name: "line", note: "dividers" },
-  { name: "hover", note: "hover fill" },
-  { name: "accent", note: "gold fills: badges, details" },
-  { name: "accent-foreground", note: "text on accent" },
-  { name: "accent-hover", note: "accent fill, hovered" },
-  { name: "accent-text", note: "gold as readable text" },
-  { name: "accent-soft", note: "tinted backgrounds" },
-  { name: "accent-mark", note: "gold marks: underlines, states, edges" },
-  { name: "error", note: "invalid borders, alert edges" },
-  { name: "error-text", note: "error messages" },
-  { name: "error-soft", note: "alert background" },
-  { name: "success", note: "open, success marks" },
-  { name: "success-text", note: "success messages" },
-  { name: "success-soft", note: "success tint" },
-  { name: "warning", note: "waitlist, warning marks" },
-  { name: "warning-text", note: "warning messages" },
-  { name: "warning-soft", note: "warning tint" },
-  { name: "focus", note: "focus ring" },
-  { name: "button-primary-bg", note: "UI: primary button fill" },
-  { name: "button-primary-fg", note: "UI: primary button label" },
-  { name: "button-primary-hover", note: "UI: primary button, hovered" },
-  { name: "button-primary-border", note: "UI: primary button edge" },
-  { name: "button-secondary-border", note: "UI: secondary button edge" },
-  { name: "button-secondary-fg", note: "UI: secondary button label" },
-  { name: "button-secondary-hover", note: "UI: secondary button, hovered" },
-  { name: "link-text", note: "UI: link text" },
-  { name: "link-underline", note: "UI: link underline" },
-  { name: "nav-current", note: "UI: current nav indicator" },
-  { name: "chip-border", note: "UI: filter chip edge" },
-  { name: "chip-hover", note: "UI: filter chip, hovered" },
-  { name: "chip-selected-bg", note: "UI: selected chip fill" },
-  { name: "chip-selected-fg", note: "UI: selected chip label" },
-  { name: "selection-bg", note: "UI: selected text fill" },
-  { name: "selection-fg", note: "UI: selected text" },
-  { name: "focus-ring", note: "UI: keyboard focus outline" },
-  { name: "status-open", note: "UI: open, books open" },
-  { name: "status-waitlist", note: "UI: waitlist" },
-  { name: "status-closed", note: "UI: closed" },
+// Grouped the way roles.css's own header comment groups them, so a
+// maintainer scans one theme (surfaces, text, accent, status, ...) instead
+// of all 49 in declaration order.
+const roleGroups = [
+  {
+    title: "Surfaces",
+    roles: [
+      { name: "background", note: "page canvas" },
+      { name: "surface", note: "cards, inputs, placeholders" },
+      { name: "surface-raised", note: "nav pill, menus" },
+      { name: "surface-sunken", note: "section bands, footer" },
+    ],
+  },
+  {
+    title: "Text",
+    roles: [
+      { name: "foreground", note: "text, solid ink fills" },
+      { name: "muted", note: "secondary text" },
+      { name: "subtle", note: "third-tier text, photo labels" },
+    ],
+  },
+  {
+    title: "Overlays",
+    roles: [
+      { name: "scrim", note: "fill behind text on photos" },
+      { name: "veil", note: "dims the page behind dialogs" },
+    ],
+  },
+  {
+    title: "Borders & focus",
+    roles: [
+      { name: "outline", note: "interactive borders" },
+      { name: "border", note: "container edges" },
+      { name: "line", note: "dividers" },
+      { name: "hover", note: "hover fill" },
+      { name: "focus", note: "focus ring" },
+    ],
+  },
+  {
+    title: "Accent",
+    roles: [
+      { name: "accent", note: "gold fills: badges, details" },
+      { name: "accent-foreground", note: "text on accent" },
+      { name: "accent-hover", note: "accent fill, hovered" },
+      { name: "accent-text", note: "gold as readable text" },
+      { name: "accent-soft", note: "tinted backgrounds" },
+      { name: "accent-mark", note: "gold marks: underlines, states, edges" },
+    ],
+  },
+  {
+    title: "Status",
+    roles: [
+      { name: "error", note: "invalid borders, alert edges" },
+      { name: "error-text", note: "error messages" },
+      { name: "error-soft", note: "alert background" },
+      { name: "success", note: "open, success marks" },
+      { name: "success-text", note: "success messages" },
+      { name: "success-soft", note: "success tint" },
+      { name: "warning", note: "waitlist, warning marks" },
+      { name: "warning-text", note: "warning messages" },
+      { name: "warning-soft", note: "warning tint" },
+    ],
+  },
+  {
+    title: "UI tokens",
+    roles: [
+      { name: "button-primary-bg", note: "UI: primary button fill" },
+      { name: "button-primary-fg", note: "UI: primary button label" },
+      { name: "button-primary-hover", note: "UI: primary button, hovered" },
+      { name: "button-primary-border", note: "UI: primary button edge" },
+      { name: "button-secondary-border", note: "UI: secondary button edge" },
+      { name: "button-secondary-fg", note: "UI: secondary button label" },
+      {
+        name: "button-secondary-hover",
+        note: "UI: secondary button, hovered",
+      },
+      { name: "link-text", note: "UI: link text" },
+      { name: "link-underline", note: "UI: link underline" },
+      { name: "nav-current", note: "UI: current nav indicator" },
+      { name: "chip-border", note: "UI: filter chip edge" },
+      { name: "chip-hover", note: "UI: filter chip, hovered" },
+      { name: "chip-selected-bg", note: "UI: selected chip fill" },
+      { name: "chip-selected-fg", note: "UI: selected chip label" },
+      { name: "selection-bg", note: "UI: selected text fill" },
+      { name: "selection-fg", note: "UI: selected text" },
+      { name: "focus-ring", note: "UI: keyboard focus outline" },
+      { name: "status-open", note: "UI: open, books open" },
+      { name: "status-waitlist", note: "UI: waitlist" },
+      { name: "status-closed", note: "UI: closed" },
+    ],
+  },
 ] as const;
 
 function Section({
@@ -85,7 +126,7 @@ function Section({
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <p className="small muted">{children}</p>;
+  return <p className="small muted measure">{children}</p>;
 }
 
 type Pairing = ReturnType<typeof checkContrast>[number];
@@ -242,18 +283,23 @@ export default async function StyleGuidePage() {
             Roles, live in the current light or dark theme. Components use
             roles, never ramp steps directly.
           </Label>
-          <ul className="sg-swatches">
-            {roles.map(({ name, note }) => (
-              <li key={name} className="stack stack--sm">
-                <div
-                  className="sg-swatch"
-                  style={{ backgroundColor: `var(--${name})` }}
-                />
-                <p className="small">{name}</p>
-                <p className="caption">{note}</p>
-              </li>
-            ))}
-          </ul>
+          {roleGroups.map((group) => (
+            <div key={group.title} className="stack stack--sm">
+              <h3>{group.title}</h3>
+              <ul className="sg-swatches">
+                {group.roles.map(({ name, note }) => (
+                  <li key={name} className="stack stack--sm">
+                    <div
+                      className="sg-swatch"
+                      style={{ backgroundColor: `var(--${name})` }}
+                    />
+                    <p className="small">{name}</p>
+                    <p className="caption">{note}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         <div className="stack">
