@@ -30,9 +30,14 @@ export const PAIRS = [
   ["muted", "surface-raised", 4.5, "secondary text on a raised surface"],
   ["muted", "surface-sunken", 4.5, "secondary text on a sunken surface"],
   ["muted", "scrim", 4.5, "secondary text on a scrim"],
+  // `subtle` is not guaranteed against `surface-raised` (nav pill, menus):
+  // dark-mode ink-400 measures 4.36:1 there, just under 4.5:1, and
+  // surface-raised isn't one of subtle's real use cases (captions, footer
+  // links, photo labels). If a future component needs subtle text on a raised
+  // surface, use `muted` there instead, or re-open
+  // plans/012-subtle-text-tier-dark-differentiation.md.
   ["subtle", "background", 4.5, "third-tier text"],
   ["subtle", "surface", 4.5, "third-tier text on surface"],
-  ["subtle", "surface-raised", 4.5, "third-tier text on a raised surface"],
   ["subtle", "surface-sunken", 4.5, "third-tier text on a sunken surface"],
   ["subtle", "scrim", 4.5, "third-tier text on a scrim"],
   ["outline", "background", 3, "input and chip borders"],
@@ -86,7 +91,12 @@ export const PAIRS = [
   ["error", "error-soft", 3, "alert edge on its own tint"],
   ["success-text", "background", 4.5, "success message"],
   ["success-text", "surface", 4.5, "success message on surface"],
-  ["success-text", "surface-sunken", 4.5, "success message on a sunken surface"],
+  [
+    "success-text",
+    "surface-sunken",
+    4.5,
+    "success message on a sunken surface",
+  ],
   ["success-text", "success-soft", 4.5, "success message on its tint"],
   ["foreground", "success-soft", 4.5, "text on a success tint"],
   ["success", "background", 3, "open / success marks"],
@@ -95,7 +105,12 @@ export const PAIRS = [
   ["success", "success-soft", 3, "success edge on its own tint"],
   ["warning-text", "background", 4.5, "warning message"],
   ["warning-text", "surface", 4.5, "warning message on surface"],
-  ["warning-text", "surface-sunken", 4.5, "warning message on a sunken surface"],
+  [
+    "warning-text",
+    "surface-sunken",
+    4.5,
+    "warning message on a sunken surface",
+  ],
   ["warning-text", "warning-soft", 4.5, "warning message on its tint"],
   ["foreground", "warning-soft", 4.5, "text on a warning tint"],
   ["warning", "background", 3, "waitlist / warning marks"],
