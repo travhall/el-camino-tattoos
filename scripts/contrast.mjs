@@ -157,6 +157,20 @@ function resolve(name, vars, ramps, depth = 0) {
 /** One row per pairing: ratios for light and dark, or null if a role is missing. */
 export function checkContrast(rolesCss, ramps) {
   const modes = parseRoles(rolesCss);
+  // Regression guard for the exact bug class fixed in parse-css-vars.mjs: if
+  // every role's light and dark value collapses to the same thing, the dark
+  // override selectors (`:root:not([data-theme="light"])`,
+  // `:root[data-theme="dark"]`) failed to parse, and this whole check would
+  // silently measure light mode twice instead of catching a real dark-mode
+  // contrast regression.
+  const anyRoleDiffers = Object.keys(modes.light).some(
+    (k) => modes.light[k] !== modes.dark[k],
+  );
+  if (!anyRoleDiffers) {
+    throw new Error(
+      "checkContrast: light and dark resolved to identical role values — the dark-mode override selectors in roles.css did not parse. This would hide every real dark-mode contrast regression.",
+    );
+  }
   return PAIRS.map(([fg, bg, min, note]) => {
     const row = { fg, bg, min, note, light: null, dark: null };
     for (const mode of ["light", "dark"]) {
