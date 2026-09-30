@@ -345,8 +345,8 @@ export default async function StyleGuidePage() {
         <div className="stack">
           <Label>
             Primitive ramps: brand colors pinned to steps, the rest generated in
-            OKLCH. Shipped as oklch() (hex fallback for browsers that
-            can&rsquo;t parse it) &mdash; edit the pinned values in
+            OKLCH. Ships as a single oklch() declaration, no hex (see
+            package.json&rsquo;s browserslist) &mdash; edit the pinned values in
             scripts/color-ramps.mjs, then run <code>pnpm color-ramps</code>.
             Roles are hand-edited in <code>src/styles/roles.css</code>, no build
             step.
@@ -360,7 +360,7 @@ export default async function StyleGuidePage() {
                     <li key={step}>
                       <div
                         className="sg-swatch"
-                        style={{ backgroundColor: hex }}
+                        style={{ backgroundColor: `var(--${name}-${step})` }}
                       />
                       <p className="caption">{step}</p>
                       <p className="caption">{hex}</p>
