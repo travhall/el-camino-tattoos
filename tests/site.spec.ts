@@ -25,6 +25,19 @@ test.describe("shop info", () => {
     ).toBeVisible();
   });
 
+  test("the homepage hero shows a photo with a decorative walk-ins stamp", async ({
+    page,
+  }) => {
+    await open(page, "/");
+    const hero = page.locator(".home-hero__photo");
+    await expect(hero.getByRole("img")).toBeVisible();
+    // The stamp duplicates the walk-ins note ShopNotes already states as real
+    // text, so it must stay out of the accessibility tree.
+    const stamp = page.locator(".stamp");
+    await expect(stamp).toBeVisible();
+    await expect(stamp).toHaveAttribute("aria-hidden", "true");
+  });
+
   test("the footer shows the address", async ({ page }) => {
     await open(page, "/");
     const footer = page.getByRole("contentinfo");
