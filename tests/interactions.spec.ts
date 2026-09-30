@@ -270,9 +270,13 @@ test.describe("contact form", () => {
     );
 
     // The error state has to pass axe (contrast of the red text and border),
-    // in both themes.
+    // in both themes. Pair with reduced motion: buttons transition-colors
+    // over --duration-fast, so switching colorScheme on an already-loaded
+    // page (unlike the dedicated per-route sweep, which sets colorScheme
+    // before navigating) can catch axe mid-transition and flag a real but
+    // momentary low-contrast frame that never reflects the settled colors.
     for (const colorScheme of ["light", "dark"] as const) {
-      await page.emulateMedia({ colorScheme });
+      await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
       const { violations } = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
         .analyze();
