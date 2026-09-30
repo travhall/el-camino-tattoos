@@ -24,7 +24,7 @@ honor its STOP conditions, and update your row when done.
 | 007  | Replace the hard-coded dialog backdrop with a `veil` role   | P3       | S      | —          | DONE (merged to main: `73c43b1`, merge `02ad7bc`)                               |
 | 008  | Sync the favicon and logo SVG colors to the ink ramp        | P3       | S      | 003        | DONE (merged to main: `47a5c6a`, merge `7041754`)                               |
 | 009  | Add FAQPage structured data (JSON-LD) to `/faq`             | P3       | S      | —          | DONE (branch `advisor/009-faq-jsonld`: `6c6e3fe`, not merged)                   |
-| 010  | Replace the two hand-rolled regex CSS parsers with one shared, real parser | P2 | S | — | TODO |
+| 010  | Replace the two hand-rolled regex CSS parsers with one shared, real parser | P2 | S | — | DONE (branch `advisor/010-shared-css-var-parser`: `449501b`, `ab1f61e`, `c71682b`, not merged) |
 | 011  | Fix `accent-mark`'s failing contrast on `surface-sunken` in light mode | P1 | S | — (shares `contrast.mjs` `PAIRS` with 012) | TODO |
 | 012  | Give `subtle` real differentiation from `muted` in dark mode | P2 | S | — (shares `contrast.mjs` `PAIRS` with 011) | TODO |
 | 013  | Add a manual light/dark theme toggle                         | P2       | M      | —          | TODO |

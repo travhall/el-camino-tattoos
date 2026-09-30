@@ -6,6 +6,7 @@
 // nothing here blocks the build or the dev server. `pnpm check:contrast` prints
 // the result and exits 1 on a failure (CI runs it), and /styleguide shows it.
 import { readFile } from "node:fs/promises";
+import { parseCssVarRoles } from "./lib/parse-css-vars.mjs";
 
 // Known gap, deliberately not listed: in light mode `accent-mark` on
 // `surface-sunken` measures 2.63:1, under the 3:1 it needs. Nothing sits on
@@ -120,37 +121,11 @@ export function contrast(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const declarations = (text) =>
-  Object.fromEntries(
-    [...text.matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/g)].map((m) => [
-      m[1],
-      m[2].trim(),
-    ]),
-  );
-
 /**
  * Splits roles.css into light values and dark values. Dark is whatever the
  * `prefers-color-scheme: dark` block sets, on top of the light values.
  */
-export function parseRoles(css) {
-  const media = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/.exec(css);
-  let light = css;
-  let dark = "";
-  if (media) {
-    const start = media.index + media[0].length;
-    let depth = 1;
-    let end = start;
-    while (end < css.length && depth > 0) {
-      if (css[end] === "{") depth++;
-      if (css[end] === "}") depth--;
-      end++;
-    }
-    dark = css.slice(start, end - 1);
-    light = css.slice(0, media.index) + css.slice(end);
-  }
-  const lightVars = declarations(light);
-  return { light: lightVars, dark: { ...lightVars, ...declarations(dark) } };
-}
+export const parseRoles = parseCssVarRoles;
 
 /** Resolves `var(--paper-50)`, `var(--other-role)` or a #hex to a #rrggbb. */
 function resolve(name, vars, ramps, depth = 0) {
