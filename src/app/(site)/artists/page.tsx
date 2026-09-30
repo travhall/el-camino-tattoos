@@ -21,8 +21,8 @@ export default async function ArtistsPage() {
       <div className="stack">
         <h1>Artists</h1>
         <p className="lead measure">
-          Pick an artist you connect with. Every inquiry comes through the
-          same studio inbox, so you can&rsquo;t go wrong asking.
+          Pick an artist you connect with. Every inquiry comes through the same
+          studio inbox, so you can&rsquo;t go wrong asking.
         </p>
       </div>
 
@@ -39,8 +39,8 @@ export default async function ArtistsPage() {
         <h2>Not sure who&rsquo;s right for you?</h2>
         <p className="measure">
           Tell us what you&rsquo;re thinking and we&rsquo;ll match your idea
-          with the right hands. Each artist keeps their own book, but you
-          only need to knock on one door.
+          with the right hands. Each artist keeps their own book, but you only
+          need to knock on one door.
         </p>
         <div>
           <ButtonLink href="/contact">Request an appointment</ButtonLink>
@@ -51,9 +51,9 @@ export default async function ArtistsPage() {
         <h2>Traveling tattooer?</h2>
         <p className="measure">
           We&rsquo;re open to the occasional guest artist who shares our
-          approach to tattooing. Our resident crew is full and we
-          aren&rsquo;t taking apprentice or new-resident applications right
-          now, but if you&rsquo;re passing through, send over your portfolio.
+          approach to tattooing. Our resident crew is full and we aren&rsquo;t
+          taking apprentice or new-resident applications right now, but if
+          you&rsquo;re passing through, send over your portfolio.
         </p>
         {site.email && (
           <p>
