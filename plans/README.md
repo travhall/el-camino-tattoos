@@ -26,7 +26,7 @@ honor its STOP conditions, and update your row when done.
 | 009  | Add FAQPage structured data (JSON-LD) to `/faq`             | P3       | S      | —          | DONE (branch `advisor/009-faq-jsonld`: `6c6e3fe`, not merged)                   |
 | 010  | Replace the two hand-rolled regex CSS parsers with one shared, real parser | P2 | S | — | TODO |
 | 011  | Fix `accent-mark`'s failing contrast on `surface-sunken` in light mode | P1 | S | — (shares `contrast.mjs` `PAIRS` with 012) | TODO |
-| 012  | Give `subtle` real differentiation from `muted` in dark mode | P2 | S | — (shares `contrast.mjs` `PAIRS` with 011) | TODO |
+| 012  | Give `subtle` real differentiation from `muted` in dark mode | P2 | S | — (shares `contrast.mjs` `PAIRS` with 011) | DONE (branch `advisor/012-subtle-text-tier-dark-differentiation`: `b1cdc54`, not merged) |
 | 013  | Add a manual light/dark theme toggle                         | P2       | M      | —          | TODO |
 | 014  | Emit wide-gamut `oklch()` alongside sRGB hex in `palette.css` | P3      | M      | 011, 012 (recommended order, not a hard requirement) | TODO |
 
