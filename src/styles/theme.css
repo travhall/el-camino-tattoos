@@ -27,14 +27,39 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-hover: var(--accent-hover);
-  --color-accent-edge: var(--accent-edge);
   --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
-  --color-highlight: var(--highlight);
-  --color-highlight-foreground: var(--highlight-foreground);
-  --color-highlight-text: var(--highlight-text);
+  --color-accent-mark: var(--accent-mark);
   --color-error: var(--error);
   --color-error-text: var(--error-text);
   --color-error-soft: var(--error-soft);
+  --color-success: var(--success);
+  --color-success-text: var(--success-text);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-text: var(--warning-text);
+  --color-warning-soft: var(--warning-soft);
   --color-focus: var(--focus);
+
+  /* UI tokens (see roles.css). Utilities: bg-button-primary-bg, and so on. */
+  --color-button-primary-bg: var(--button-primary-bg);
+  --color-button-primary-fg: var(--button-primary-fg);
+  --color-button-primary-hover: var(--button-primary-hover);
+  --color-button-primary-border: var(--button-primary-border);
+  --color-button-secondary-border: var(--button-secondary-border);
+  --color-button-secondary-fg: var(--button-secondary-fg);
+  --color-button-secondary-hover: var(--button-secondary-hover);
+  --color-link-text: var(--link-text);
+  --color-link-underline: var(--link-underline);
+  --color-nav-current: var(--nav-current);
+  --color-chip-border: var(--chip-border);
+  --color-chip-hover: var(--chip-hover);
+  --color-chip-selected-bg: var(--chip-selected-bg);
+  --color-chip-selected-fg: var(--chip-selected-fg);
+  --color-selection-bg: var(--selection-bg);
+  --color-selection-fg: var(--selection-fg);
+  --color-focus-ring: var(--focus-ring);
+  --color-status-open: var(--status-open);
+  --color-status-waitlist: var(--status-waitlist);
+  --color-status-closed: var(--status-closed);
 }

@@ -6,26 +6,28 @@
 @layer components {
   h1,
   .heading-1 {
-    @apply font-display text-3xl font-semibold;
+    @apply font-display text-4xl font-semibold;
   }
 
   h2,
   .heading-2 {
-    @apply font-display text-2xl font-semibold;
+    @apply font-display text-3xl font-semibold;
   }
 
   h3,
   .heading-3 {
-    @apply font-display text-xl font-semibold;
+    @apply font-display text-2xl font-semibold;
   }
 
   h4,
   .heading-4 {
-    @apply font-display text-lg font-semibold;
+    @apply font-display text-xl font-semibold;
   }
 
   .display {
-    @apply font-display text-5xl font-semibold;
+    @apply font-display text-6xl font-semibold;
+    /* Being's ink-trap cut. Only the trap axis: weight stays on font-weight. */
+    font-variation-settings: "trap" 1;
   }
 
   .lead {
@@ -57,7 +59,7 @@
   }
 
   .link {
-    @apply underline decoration-highlight decoration-2 underline-offset-4 hover:no-underline;
+    @apply text-link-text underline decoration-link-underline decoration-2 underline-offset-4 hover:no-underline;
   }
 
   /* Text an editor wrote in Keystatic (Aftercare, FAQ answers). The editor
@@ -84,7 +86,7 @@
   }
 
   .richtext a {
-    @apply underline decoration-highlight decoration-2 underline-offset-4 hover:no-underline;
+    @apply text-link-text underline decoration-link-underline decoration-2 underline-offset-4 hover:no-underline;
   }
 
   .richtext strong {

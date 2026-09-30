@@ -31,7 +31,7 @@
   }
 
   .site-nav__link[aria-current] {
-    @apply underline decoration-highlight decoration-2 underline-offset-8;
+    @apply underline decoration-nav-current decoration-2 underline-offset-8;
   }
 
   .site-footer {
@@ -67,22 +67,22 @@
     @apply font-medium text-foreground;
   }
 
-  /* Button: primary (gold) by default; combine with a variant and/or size. */
-  /* 44px minimum height. The gold fill is 1.9:1 against paper, so the deeper
-     accent-edge border carries the 3:1 the button's shape needs. Every other
-     variant resets it. A border also keeps an edge in forced-colors (high
-     contrast) mode, where the fill is removed. */
+  /* Button: primary by default; combine with a variant and/or size. Colors
+     come from the button-* UI tokens in roles.css, so the button can change
+     without touching accent. 44px minimum height. The border carries the 3:1
+     the button's shape needs, and keeps an edge in forced-colors (high
+     contrast) mode, where the fill is removed. Every other variant resets it. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-accent-edge bg-accent px-4 py-1.5 font-medium text-accent-foreground transition-colors not-disabled:not-aria-disabled:hover:bg-accent-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-medium text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
   .button--secondary {
-    @apply border border-outline bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
+    @apply border border-button-secondary-border bg-transparent text-button-secondary-fg not-disabled:not-aria-disabled:hover:bg-button-secondary-hover;
   }
 
-  /* Solid ink: for use beside or on top of gold, where a second gold button
-     would compete. */
+  /* Solid ink. Matches the primary today (both ink); use it where a screen
+     must stay ink even if the primary button's tokens change. */
   .button--ink {
     @apply border-transparent bg-foreground text-background not-disabled:not-aria-disabled:hover:bg-foreground/85;
   }
@@ -132,12 +132,12 @@
   }
 
   .filter-chip {
-    @apply inline-flex min-h-11 items-center rounded-full border border-outline px-4 py-1.5 text-sm hover:bg-hover;
+    @apply inline-flex min-h-11 items-center rounded-full border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
   }
 
   /* Selected state is fill AND weight, not color alone. */
   .filter-chip[aria-current="page"] {
-    @apply bg-foreground font-semibold text-background;
+    @apply bg-chip-selected-bg font-semibold text-chip-selected-fg;
   }
 
   /* Artists */

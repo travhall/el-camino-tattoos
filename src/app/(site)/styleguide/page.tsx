@@ -29,19 +29,42 @@ const roles = [
   { name: "border", note: "container edges" },
   { name: "line", note: "dividers" },
   { name: "hover", note: "hover fill" },
-  { name: "accent", note: "fills: buttons, badges" },
+  { name: "accent", note: "gold fills: badges, details" },
   { name: "accent-foreground", note: "text on accent" },
   { name: "accent-hover", note: "accent fill, hovered" },
-  { name: "accent-edge", note: "border around an accent fill" },
-  { name: "accent-text", note: "accent as readable text" },
+  { name: "accent-text", note: "gold as readable text" },
   { name: "accent-soft", note: "tinted backgrounds" },
-  { name: "highlight", note: "gold marks: underlines, states" },
-  { name: "highlight-foreground", note: "text on highlight" },
-  { name: "highlight-text", note: "gold as readable text" },
+  { name: "accent-mark", note: "gold marks: underlines, states, edges" },
   { name: "error", note: "invalid borders, alert edges" },
   { name: "error-text", note: "error messages" },
   { name: "error-soft", note: "alert background" },
+  { name: "success", note: "open, success marks" },
+  { name: "success-text", note: "success messages" },
+  { name: "success-soft", note: "success tint" },
+  { name: "warning", note: "waitlist, warning marks" },
+  { name: "warning-text", note: "warning messages" },
+  { name: "warning-soft", note: "warning tint" },
   { name: "focus", note: "focus ring" },
+  { name: "button-primary-bg", note: "UI: primary button fill" },
+  { name: "button-primary-fg", note: "UI: primary button label" },
+  { name: "button-primary-hover", note: "UI: primary button, hovered" },
+  { name: "button-primary-border", note: "UI: primary button edge" },
+  { name: "button-secondary-border", note: "UI: secondary button edge" },
+  { name: "button-secondary-fg", note: "UI: secondary button label" },
+  { name: "button-secondary-hover", note: "UI: secondary button, hovered" },
+  { name: "link-text", note: "UI: link text" },
+  { name: "link-underline", note: "UI: link underline" },
+  { name: "nav-current", note: "UI: current nav indicator" },
+  { name: "chip-border", note: "UI: filter chip edge" },
+  { name: "chip-hover", note: "UI: filter chip, hovered" },
+  { name: "chip-selected-bg", note: "UI: selected chip fill" },
+  { name: "chip-selected-fg", note: "UI: selected chip label" },
+  { name: "selection-bg", note: "UI: selected text fill" },
+  { name: "selection-fg", note: "UI: selected text" },
+  { name: "focus-ring", note: "UI: keyboard focus outline" },
+  { name: "status-open", note: "UI: open, books open" },
+  { name: "status-waitlist", note: "UI: waitlist" },
+  { name: "status-closed", note: "UI: closed" },
 ] as const;
 
 function Section({
@@ -92,7 +115,7 @@ export default async function StyleGuidePage() {
       <Section id="typography" title="Typography">
         <div className="sg-split">
           <div className="stack stack--sm">
-            <Label>Display: Cosmic (headings)</Label>
+            <Label>Display: Being (headings)</Label>
             <p className="display">El Camino Tattoos</p>
           </div>
           <div className="stack stack--sm">
@@ -145,7 +168,7 @@ export default async function StyleGuidePage() {
 
         <div className="sg-split">
           <div className="stack stack--sm">
-            <Label>Cosmic weights (variable, 100 to 900)</Label>
+            <Label>Being weights (variable, 100 to 900)</Label>
             {weights.map((weight) => (
               <p
                 key={weight}

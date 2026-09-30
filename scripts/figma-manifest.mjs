@@ -44,14 +44,21 @@ function parseRoles(css) {
   return { light: lightRoles, dark: darkRoles };
 }
 
-/** `var(--gold-300)` or `#hex` to { ref, hex }. */
-function resolve(value) {
+/**
+ * `var(--gold-300)` or `#hex` to { ref, hex }. A UI token may point at another
+ * role (`var(--accent-mark)`): that resolves through the role for the same
+ * mode and adds `alias`, so the Figma variable can alias the role variable.
+ */
+function resolve(value, vars, depth = 0) {
   const ref = value.match(/^var\(--([a-z]+)-(\d+)\)$/);
   if (ref) {
     const hex = palette.ramps[ref[1]]?.[ref[2]];
     if (!hex) throw new Error(`roles.css points at a missing step: ${value}`);
     return { ref: `${ref[1]}-${ref[2]}`, hex };
   }
+  const role = value.match(/^var\(--([a-z-]+)\)$/);
+  if (role && vars[role[1]] && depth < 5)
+    return { ...resolve(vars[role[1]], vars, depth + 1), alias: role[1] };
   if (/^#[0-9a-f]{6}$/i.test(value))
     return { ref: null, hex: value.toLowerCase() };
   throw new Error(`roles.css: cannot resolve "${value}"`);
@@ -61,7 +68,10 @@ const parsed = parseRoles(read("src/styles/roles.css"));
 const roles = Object.fromEntries(
   Object.keys(parsed.light).map((name) => [
     name,
-    { light: resolve(parsed.light[name]), dark: resolve(parsed.dark[name]) },
+    {
+      light: resolve(parsed.light[name], parsed.light),
+      dark: resolve(parsed.dark[name], parsed.dark),
+    },
   ]),
 );
 
@@ -91,13 +101,13 @@ const layout = {
 
 /**
  * Fonts (src/lib/fonts.ts) and the weight scale. Both fonts are variable
- * (100 to 900), so a weight is a number, not a style name: Cosmic spells 600
+ * (100 to 900), so a weight is a number, not a style name: Being spells 600
  * "Semi Bold" and Hanken "SemiBold". The scale is all nine of Tailwind's
  * font-* classes (regular is font-normal), so any of them can be used in code
  * and in Figma without changing this file.
  */
 const fonts = {
-  display: { family: "Cosmic", axis: "100 900" },
+  display: { family: "Being", axis: "100 900" },
   body: { family: "Hanken Grotesk", axis: "100 900" },
   weights: {
     thin: 100,
@@ -114,10 +124,10 @@ const fonts = {
 const fontsSource = read("src/lib/fonts.ts");
 if (
   !fontsSource.includes("Hanken_Grotesk") ||
-  !fontsSource.includes("Cosmic-VF")
+  !fontsSource.includes("Being-VF")
 ) {
   throw new Error(
-    "src/lib/fonts.ts no longer loads Hanken Grotesk and Cosmic; update fonts in figma-manifest.mjs",
+    "src/lib/fonts.ts no longer loads Hanken Grotesk and Being; update fonts in figma-manifest.mjs",
   );
 }
 

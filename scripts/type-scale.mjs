@@ -29,10 +29,10 @@ const steps = [
   { name: "lg", step: 1, lineHeight: 1.45 },
   { name: "xl", step: 2, lineHeight: 1.3 },
   { name: "2xl", step: 3, lineHeight: 1.2 },
-  { name: "3xl", step: 4, lineHeight: 1.1, tracking: "-0.01em" },
-  { name: "4xl", step: 5, lineHeight: 1.05, tracking: "-0.02em" },
-  { name: "5xl", step: 6, lineHeight: 1, tracking: "-0.02em" },
-  { name: "6xl", step: 7, lineHeight: 1, tracking: "-0.03em" },
+  { name: "3xl", step: 4, lineHeight: 1.1 },
+  { name: "4xl", step: 5, lineHeight: 1.05 },
+  { name: "5xl", step: 6, lineHeight: 1 },
+  { name: "6xl", step: 7, lineHeight: 1 },
 ];
 
 // name -> Tailwind spacing utility (`p-fluid-md`, `gap-fluid-lg`, ...),

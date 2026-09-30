@@ -14,7 +14,7 @@ pnpm check:images
 pnpm build
 ```
 
-Fonts: Cosmic (variable, headings and display) via `next/font/local`, and Hanken Grotesk (variable, body) via `next/font/google`.
+Fonts: Being (variable, headings and display) via `next/font/local`, and Hanken Grotesk (variable, body) via `next/font/google`.
 
 ## Styling
 

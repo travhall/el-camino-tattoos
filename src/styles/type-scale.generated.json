@@ -62,7 +62,7 @@
       "name": "3xl",
       "step": 4,
       "lineHeight": 1.1,
-      "tracking": "-0.01em",
+      "tracking": null,
       "minPx": 33.1776,
       "maxPx": 56.832
     },
@@ -70,7 +70,7 @@
       "name": "4xl",
       "step": 5,
       "lineHeight": 1.05,
-      "tracking": "-0.02em",
+      "tracking": null,
       "minPx": 39.8131,
       "maxPx": 75.7571
     },
@@ -78,7 +78,7 @@
       "name": "5xl",
       "step": 6,
       "lineHeight": 1,
-      "tracking": "-0.02em",
+      "tracking": null,
       "minPx": 47.7757,
       "maxPx": 100.9842
     },
@@ -86,7 +86,7 @@
       "name": "6xl",
       "step": 7,
       "lineHeight": 1,
-      "tracking": "-0.03em",
+      "tracking": null,
       "minPx": 57.3309,
       "maxPx": 134.6119
     }

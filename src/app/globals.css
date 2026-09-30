@@ -12,7 +12,7 @@
 @theme inline {
   --font-sans: var(--font-hanken-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-display:
-    var(--font-cosmic), var(--font-hanken-grotesk), ui-sans-serif, system-ui,
+    var(--font-being), var(--font-hanken-grotesk), ui-sans-serif, system-ui,
     sans-serif;
 }
 
@@ -51,11 +51,11 @@
   }
 
   ::selection {
-    @apply bg-accent text-accent-foreground;
+    @apply bg-selection-bg text-selection-fg;
   }
 
   :focus-visible {
-    outline: 2px solid var(--focus);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
   }
 

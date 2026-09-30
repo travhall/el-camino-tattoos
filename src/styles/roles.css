@@ -5,12 +5,15 @@
  * The model: each primitive has one job in BOTH modes, and dark mode just
  * uses the other end of the ramp.
  *   paper ... backgrounds, surfaces, dividers, hover fills
- *   ink ..... text and strokes (foreground, muted, outline)
- *   gold .... accent fills, their labels, and highlight marks
- *   red ..... error feedback (highlight moved to gold)
+ *   ink ..... text and strokes (foreground, muted, outline), and the primary
+ *             button, which is the foreground color as a fill
+ *   gold .... the accent (fills, gold text, marks), and warning (its amber end)
+ *   red ..... error, and nothing else
+ *   green ... success: open, available, done
  *   navy .... focus ring
- * Never point a role at a ramp outside its job (no paper text, no ink
- * backgrounds), so a role reads the same in either mode.
+ * Never point a role at a ramp outside its job (no paper text, no ink page or
+ * surface backgrounds; ink fills are only for controls), so a role reads the
+ * same in either mode.
  *
  * Each role points at a step of a primitive ramp from palette.css (generated
  * by scripts/color-ramps.mjs, which is where the ramps and their pinned brand
@@ -32,23 +35,37 @@
  *   veil ................. base color for the page-dimming layer behind a modal
  *                          dialog (dark in both themes; apply the opacity where
  *                          it is used)
- *   accent ............... fills: buttons, badges, selection (gold)
+ *   accent ............... gold fills: badges, tags, decorative details (not buttons)
  *   accent-foreground .... text on an accent fill
  *   accent-hover ......... accent fill while hovered
- *   accent-edge .......... border around an accent fill, so it reads against paper (3:1)
- *   accent-text .......... the accent as readable text
+ *   accent-text .......... gold as readable text
  *   accent-soft .......... tinted backgrounds, with foreground text on top
- *   highlight ............ gold marks: underlines, state indicators (3:1)
- *   highlight-foreground . text on a highlight fill
- *   highlight-text ....... gold as readable text
+ *   accent-mark .......... gold marks that must read at 3:1: underlines, state
+ *                          indicators, edges around an accent fill
  *   error ................ invalid-control borders and alert edges (3:1)
  *   error-text ........... error messages (4.5:1 on background, surface, error-soft)
  *   error-soft ........... tinted alert background, with foreground text on top
+ *   success / -text / -soft  same shape as error, in green: open, sent, done
+ *   warning / -text / -soft  same shape as error, in amber gold: waitlist, heads-up
  *   outline .............. borders on interactive controls (3:1)
  *   border ............... container edges (step cards, banners): decorative,
  *                          stronger than line, lighter than outline
  *   line ................. decorative dividers
  *   focus ................ focus ring
+ *
+ * UI tokens (the second block in each theme): what a component uses, so a
+ * component can be recolored without changing a role. Each one points at a
+ * role by default; point it at a ramp step to break away (the primary button's
+ * hover does). Recolor the button here, not by changing a role.
+ *   button-primary-* ..... bg, fg (label), hover, border (3:1 edge)
+ *   button-secondary-* ... border, fg, hover
+ *   link-* ............... text, underline
+ *   nav-current .......... indicator under the current nav item
+ *   chip-* ............... border, hover, selected-bg, selected-fg
+ *   selection-* .......... selected text: bg, fg
+ *   focus-ring ........... keyboard focus outline
+ *   status-* ............. open, waitlist, closed: dots and labels for shop
+ *                          hours and artists' books (pair with text, not color alone)
  */
 :root {
   /* Light */
@@ -69,16 +86,43 @@
   --accent: var(--gold-300);
   --accent-foreground: var(--ink-950);
   --accent-hover: var(--gold-400);
-  --accent-edge: var(--gold-500);
   --accent-text: var(--gold-700);
   --accent-soft: var(--gold-100);
-  --highlight: var(--gold-500);
-  --highlight-foreground: var(--ink-950);
-  --highlight-text: var(--gold-700);
+  --accent-mark: var(--gold-500);
   --error: var(--red-600);
   --error-text: var(--red-700);
   --error-soft: var(--red-100);
+  --success: var(--green-600);
+  --success-text: var(--green-700);
+  --success-soft: var(--green-100);
+  /* One step deeper than accent-mark, so warning never reads as decoration. */
+  --warning: var(--gold-600);
+  --warning-text: var(--gold-700);
+  --warning-soft: var(--gold-100);
   --focus: var(--navy-700);
+
+  /* UI tokens */
+  /* Ink: the foreground as a fill, so it never collides with a status color. */
+  --button-primary-bg: var(--foreground);
+  --button-primary-fg: var(--background);
+  --button-primary-hover: var(--ink-800);
+  --button-primary-border: var(--foreground);
+  --button-secondary-border: var(--outline);
+  --button-secondary-fg: var(--foreground);
+  --button-secondary-hover: var(--hover);
+  --link-text: var(--foreground);
+  --link-underline: var(--accent-mark);
+  --nav-current: var(--accent-mark);
+  --chip-border: var(--outline);
+  --chip-hover: var(--hover);
+  --chip-selected-bg: var(--foreground);
+  --chip-selected-fg: var(--background);
+  --selection-bg: var(--accent);
+  --selection-fg: var(--accent-foreground);
+  --focus-ring: var(--focus);
+  --status-open: var(--success);
+  --status-waitlist: var(--warning);
+  --status-closed: var(--muted);
 }
 
 /* Dark: only what differs from light. */
@@ -97,15 +141,21 @@
     --line: var(--paper-800);
     --hover: var(--paper-800);
     --accent-hover: var(--gold-200);
-    --accent-edge: var(--gold-300);
     --accent-text: var(--gold-200);
     --accent-soft: var(--gold-800);
-    --highlight: var(--gold-300);
-    --highlight-foreground: var(--ink-950);
-    --highlight-text: var(--gold-200);
+    --accent-mark: var(--gold-300);
     --error: var(--red-500);
     --error-text: var(--red-400);
     --error-soft: var(--red-900);
+    --success: var(--green-400);
+    --success-text: var(--green-300);
+    --success-soft: var(--green-900);
+    --warning: var(--gold-300);
+    --warning-text: var(--gold-200);
+    --warning-soft: var(--gold-900);
     --focus: var(--navy-400);
+
+    /* UI tokens. The ink button is light here, so hover darkens it. */
+    --button-primary-hover: var(--ink-200);
   }
 }

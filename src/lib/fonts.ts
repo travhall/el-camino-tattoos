@@ -9,12 +9,12 @@ export const hankenGrotesk = Hanken_Grotesk({
 });
 
 // Headings and display type. Variable weight axis: 100-900.
-export const cosmic = localFont({
-  src: "../../public/fonts/Cosmic-VF.woff2",
-  variable: "--font-cosmic",
+export const being = localFont({
+  src: "../../public/fonts/Being-VF.woff2",
+  variable: "--font-being",
   weight: "100 900",
   display: "swap",
 });
 
 /** Class names that define both font CSS variables; put them on <html>. */
-export const fontClasses = `${hankenGrotesk.variable} ${cosmic.variable}`;
+export const fontClasses = `${hankenGrotesk.variable} ${being.variable}`;

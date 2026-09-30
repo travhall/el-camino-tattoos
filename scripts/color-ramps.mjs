@@ -27,13 +27,23 @@ const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 // A ramp may also set `darkHue` (degrees) to drift its hue toward that value
 // past its last pin; without it the hue is held.
 const ramps = {
-  // Cool paper: canvas, surfaces, dividers and hover fills in both modes. A
-  // faint navy undertone in the light steps; the dark end (950) is deep navy, so
-  // the dark-mode page reads navy without any role changing meaning. Three pins:
-  // the two lightest steps and the darkest; the steps between are generated.
-  paper: { pins: { 50: "#f4f7fb", 100: "#e6ebf1", 950: "#00041b" } },
+  // Warm paper: canvas, surfaces, dividers and hover fills in both modes. The
+  // light steps carry a faint cream (about a third of the original cream's
+  // chroma, at today's lightness); the dark end is deep navy, so the dark-mode
+  // page reads navy without any role changing meaning. 400 and 700 are pinned so
+  // the hue turns over in 500 and 600, which no role uses: light mode stays
+  // warm (50 to 400) and dark mode stays navy (700 to 950).
+  paper: {
+    pins: {
+      50: "#f9f7f1",
+      100: "#eeeae1",
+      400: "#98938c",
+      700: "#39475c",
+      950: "#00041b",
+    },
+  },
   // Neutral black: text and strokes in both modes (foreground, muted, outline).
-  // Only a trace of cool tint, so it sits quietly on the cool paper.
+  // Only a trace of cool tint, so it sits quietly on the paper.
   ink: { pins: { 700: "#484b4f", 950: "#090a0c" } },
   // Mustard gold: primary actions. Sits high in lightness, so it lives at 300.
   // Its hue drifts toward amber (62) as it darkens, so hover, edge and text steps
