@@ -7,11 +7,6 @@
 // the result and exits 1 on a failure (CI runs it), and /styleguide shows it.
 import { readFile } from "node:fs/promises";
 
-// Known gap, deliberately not listed: in light mode `accent-mark` on
-// `surface-sunken` measures 2.63:1, under the 3:1 it needs. Nothing sits on
-// `surface-sunken` yet. Add that row, and fix the surface or the role, before
-// the first component sits on it.
-//
 // UI tokens that only repeat a role (link-text is foreground, chip-border is
 // outline, ...) are covered by that role's rows; rows are listed only where a
 // token makes a new pairing.
@@ -51,6 +46,7 @@ export const PAIRS = [
   ["accent-mark", "background", 3, "gold underlines, marks, accent-fill edges"],
   ["accent-mark", "surface", 3, "gold marks on surface"],
   ["accent-mark", "surface-raised", 3, "gold marks on a raised surface"],
+  ["accent-mark", "surface-sunken", 3, "gold marks on a sunken surface"],
   ["foreground", "accent-soft", 4.5, "text on soft accent"],
   ["button-primary-fg", "button-primary-bg", 4.5, "primary button label"],
   [
