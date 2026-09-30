@@ -109,6 +109,56 @@ function toHex({ L, C, h }) {
   return rgbToHex(rgb.map(fromLinear));
 }
 
+// Display P3 has a wider gamut than sRGB, so a step whose OKLCH chroma got
+// clipped to fit sRGB (gold and red especially — see the P3 report below)
+// can render more saturated on a P3 screen. Chain through XYZ (D65, standard
+// matrices) rather than deriving an OKLab->P3 matrix directly: oklchToRgb
+// already gives linear sRGB, and both sRGB->XYZ and XYZ->linear-P3 are
+// well-known constants. Display P3 shares sRGB's transfer function, so the
+// same `fromLinear` gamma-encodes it.
+const srgbLinearToXyz = ([r, g, b]) => [
+  0.4124564 * r + 0.3575761 * g + 0.1804375 * b,
+  0.2126729 * r + 0.7151522 * g + 0.072175 * b,
+  0.0193339 * r + 0.119192 * g + 0.9503041 * b,
+];
+const xyzToP3Linear = ([x, y, z]) => [
+  2.4934969119 * x - 0.9313836179 * y - 0.4027107845 * z,
+  -0.8294889696 * x + 1.7626640603 * y + 0.0236246858 * z,
+  0.0358458302 * x - 0.0761723893 * y + 0.956884524 * z,
+];
+const oklchToP3Linear = (oklch) =>
+  xyzToP3Linear(srgbLinearToXyz(oklchToRgb(oklch)));
+
+// Same binary-search chroma reduction as toHex, gamut-checked against P3
+// instead of sRGB. Returns [r, g, b] in 0-1, gamma-encoded.
+function toP3({ L, C, h }) {
+  let lo = 0;
+  let hi = C;
+  let rgb = oklchToP3Linear({ L, C, h });
+  if (!inGamut(rgb)) {
+    for (let i = 0; i < 30; i++) {
+      const mid = (lo + hi) / 2;
+      if (inGamut(oklchToP3Linear({ L, C: mid, h }))) lo = mid;
+      else hi = mid;
+    }
+    rgb = oklchToP3Linear({ L, C: lo, h });
+  }
+  return rgb.map(fromLinear).map((v) => Math.min(1, Math.max(0, v)));
+}
+
+const fmt = (v) => {
+  const s = v.toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
+  return s === "" || s === "-0" ? "0" : s;
+};
+const toP3Literal = (oklch) =>
+  `color(display-p3 ${toP3(oklch).map(fmt).join(" ")})`;
+
+// True (unclipped) test of whether toHex would have had to reduce this
+// color's chroma to fit sRGB — i.e. whether P3 has any extra saturation to
+// offer here at all. Comparing rendered literals instead would misfire on
+// sub-quantum rounding noise from hex's 8-bit round-trip.
+const neededSrgbClip = ({ L, C, h }) => !inGamut(oklchToRgb({ L, C, h }));
+
 // ---- ramp generation -----------------------------------------------------
 // The ends of every ramp. Step 950 is the darkest. Steps 50 and 100 (unless you
 // pin them) are a soft tint of the ramp's own color, at a fraction of its
@@ -141,10 +191,12 @@ function buildRamp({ pins, darkHue }) {
   const lastIndex = STEPS.length - 1;
 
   const ramp = {};
+  const oklch = {};
   STEPS.forEach((step, index) => {
     const exact = pinned.find((p) => p.index === index);
     if (exact) {
       ramp[step] = exact.hex ?? toHex(exact);
+      oklch[step] = { L: exact.L, C: exact.C, h: exact.h };
       return;
     }
     let L;
@@ -169,8 +221,9 @@ function buildRamp({ pins, darkHue }) {
       h = lower.h + (upper.h - lower.h) * t;
     }
     ramp[step] = toHex({ L, C, h });
+    oklch[step] = { L, C, h };
   });
-  return ramp;
+  return { ramp, oklch };
 }
 
 const built = Object.fromEntries(
@@ -185,7 +238,7 @@ const stepsOf = (ramp) => {
   const l = STEPS.map((step) => rgbToOklch(hexToRgb(ramp[step])).L);
   return l.slice(1).map((v, i) => l[i] - v);
 };
-for (const [name, ramp] of Object.entries(built)) {
+for (const [name, { ramp }] of Object.entries(built)) {
   const d = stepsOf(ramp).slice(1);
   const ratio = Math.max(...d) / Math.min(...d);
   if (ratio > 1.5) {
@@ -196,8 +249,20 @@ for (const [name, ramp] of Object.entries(built)) {
 }
 
 // ---- output --------------------------------------------------------------
-const rampVars = Object.entries(built).flatMap(([name, ramp]) =>
+const rampVars = Object.entries(built).flatMap(([name, { ramp }]) =>
   Object.entries(ramp).map(([step, hex]) => `  --${name}-${step}: ${hex};`),
+);
+
+// A step's un-clipped OKLCH chroma may exceed sRGB's gamut but still fit
+// Display P3's wider one — that step gets a P3 override with more
+// saturation than its hex. Steps that never needed sRGB clipping have
+// nothing extra to gain from P3, so they're skipped.
+const p3Vars = Object.entries(built).flatMap(([name, { oklch }]) =>
+  STEPS.flatMap((step) =>
+    neededSrgbClip(oklch[step])
+      ? [`    --${name}-${step}: ${toP3Literal(oklch[step])};`]
+      : [],
+  ),
 );
 
 const css = [
@@ -206,10 +271,34 @@ const css = [
   ":root {",
   ...rampVars,
   "}",
+  ...(p3Vars.length === 0
+    ? []
+    : [
+        "",
+        "/* Display P3 override: only the steps whose un-clipped OKLCH chroma",
+        "   exceeds sRGB's gamut but fits P3's, so a wide-gamut screen shows a",
+        "   more saturated color than the hex above. Same palette, wider gamut. */",
+        "@supports (color: color(display-p3 1 1 1)) {",
+        "  @media (color-gamut: p3) {",
+        "    :root {",
+        ...p3Vars,
+        "    }",
+        "  }",
+        "}",
+      ]),
   "",
 ].join("\n");
 
-const json = { steps: STEPS, ramps: built };
+const json = {
+  steps: STEPS,
+  ramps: Object.fromEntries(
+    Object.entries(built).map(([name, { ramp }]) => [name, ramp]),
+  ),
+};
+
+console.log(
+  `color-ramps: ${p3Vars.length} step(s) gain extra saturation on Display P3.`,
+);
 
 await writeFile("src/styles/palette.css", css);
 await writeFile(

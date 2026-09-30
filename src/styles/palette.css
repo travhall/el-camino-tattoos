@@ -68,3 +68,36 @@
   --navy-900: #031a36;
   --navy-950: #00041b;
 }
+
+/* Display P3 override: only the steps whose un-clipped OKLCH chroma
+   exceeds sRGB's gamut but fits P3's, so a wide-gamut screen shows a
+   more saturated color than the hex above. Same palette, wider gamut. */
+@supports (color: color(display-p3 1 1 1)) {
+  @media (color-gamut: p3) {
+    :root {
+      --gold-50: color(display-p3 1 0.9711 0.9126);
+      --gold-100: color(display-p3 1 0.8871 0.6614);
+      --gold-400: color(display-p3 0.7662 0.5585 0.1726);
+      --gold-500: color(display-p3 0.6519 0.4399 0.0713);
+      --gold-600: color(display-p3 0.5305 0.3319 0);
+      --gold-700: color(display-p3 0.402 0.237 0);
+      --gold-800: color(display-p3 0.2769 0.1506 0);
+      --gold-900: color(display-p3 0.1594 0.0721 0);
+      --gold-950: color(display-p3 0.0613 0.0082 0);
+      --red-50: color(display-p3 1 0.9638 0.9583);
+      --red-100: color(display-p3 1 0.8623 0.8427);
+      --red-200: color(display-p3 1 0.7072 0.671);
+      --red-300: color(display-p3 0.9527 0.5694 0.5294);
+      --red-800: color(display-p3 0.3885 0 0.0324);
+      --red-900: color(display-p3 0.2239 0 0.0082);
+      --red-950: color(display-p3 0.0828 0 0);
+      --green-50: color(display-p3 0.9238 1 0.9443);
+      --green-700: color(display-p3 0.1221 0.311 0.1943);
+      --green-800: color(display-p3 0.0349 0.2159 0.1145);
+      --green-900: color(display-p3 0 0.1241 0.0456);
+      --green-950: color(display-p3 0 0.0386 0.0062);
+      --navy-50: color(display-p3 0.9597 0.9756 1);
+      --navy-100: color(display-p3 0.8489 0.908 1);
+    }
+  }
+}
