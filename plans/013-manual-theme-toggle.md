@@ -18,7 +18,7 @@
 - **Effort**: M
 - **Risk**: LOW-MED (new client component, new inline script in the root
   layout, and a CSS structure change to `roles.css` — none of it touches
-  existing role *values*, only adds a new trigger for the dark set that
+  existing role _values_, only adds a new trigger for the dark set that
   already exists)
 - **Depends on**: none
 - **Category**: dx / feature
@@ -76,7 +76,7 @@ unchanged for anyone who never touches the toggle.
   (matching the existing pattern: `src/components/nav-link.tsx` is a small
   `"use client"` component embedded in the otherwise-server `SiteHeader`).
 - No `data-theme` attribute exists anywhere in `src/` today (`grep -rn
-  "data-theme" src/` returns nothing) — this plan introduces it from scratch.
+"data-theme" src/` returns nothing) — this plan introduces it from scratch.
 - Repo convention for small interactive client components: `src/components/nav-link.tsx`
   (full file):
   ```tsx
@@ -150,18 +150,19 @@ unchanged for anyone who never touches the toggle.
 
 ## Commands you will need
 
-| Purpose | Command | Expected on success |
-|---|---|---|
-| Contrast check | `pnpm check:contrast` | `69 pairings x 2 themes, all pass.` (unaffected — this plan adds no new role values) |
-| Test suite | `pnpm test` | all pass, including the new toggle tests |
-| Format | `pnpm format` | exits 0 |
-| Lint | `pnpm lint` | exits 0 |
-| Build | `pnpm build` | exits 0 |
-| Manual check | `pnpm dev`, open any page, click the toggle | theme changes immediately, persists across a manual reload, and (with OS set to the opposite scheme) still shows the manually-chosen theme, not the OS one |
+| Purpose        | Command                                     | Expected on success                                                                                                                                        |
+| -------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Contrast check | `pnpm check:contrast`                       | `69 pairings x 2 themes, all pass.` (unaffected — this plan adds no new role values)                                                                       |
+| Test suite     | `pnpm test`                                 | all pass, including the new toggle tests                                                                                                                   |
+| Format         | `pnpm format`                               | exits 0                                                                                                                                                    |
+| Lint           | `pnpm lint`                                 | exits 0                                                                                                                                                    |
+| Build          | `pnpm build`                                | exits 0                                                                                                                                                    |
+| Manual check   | `pnpm dev`, open any page, click the toggle | theme changes immediately, persists across a manual reload, and (with OS set to the opposite scheme) still shows the manually-chosen theme, not the OS one |
 
 ## Scope
 
 **In scope**:
+
 - `src/components/theme-toggle.tsx` (new) — the client component.
 - `src/components/site-header.tsx` — render `<ThemeToggle />` in the header.
 - `src/styles/components.css` — new `.theme-toggle` block.
@@ -176,7 +177,8 @@ unchanged for anyone who never touches the toggle.
 - `tests/interactions.spec.ts` — new test(s) for the toggle.
 
 **Out of scope** (do NOT touch):
-- Any role's light or dark *value* — this plan only adds a second trigger for
+
+- Any role's light or dark _value_ — this plan only adds a second trigger for
   values that already exist; it does not change what any role means.
 - `scripts/contrast.mjs` / `scripts/figma-manifest.mjs` — per
   `plans/010-shared-css-var-parser.md`'s maintenance note, the new
@@ -195,7 +197,7 @@ unchanged for anyone who never touches the toggle.
 
 - Branch: `advisor/013-manual-theme-toggle`
 - Commit per step. Message style: conventional commits, e.g. `feat(theme):
-  add manual light/dark toggle with data-theme override`.
+add manual light/dark toggle with data-theme override`.
 - Do NOT push or open a PR unless the operator instructed it.
 
 ## Steps
@@ -464,7 +466,7 @@ Machine-checkable. ALL must hold:
 - [ ] `pnpm check:contrast` exits 0, still reports `69 pairings x 2 themes, all pass.`
 - [ ] `pnpm test` exits 0, including the two new tests from Step 6
 - [ ] `grep -n 'data-theme="dark"' src/styles/roles.css` and `grep -n
-      'prefers-color-scheme: dark' src/styles/roles.css` both match
+    'prefers-color-scheme: dark' src/styles/roles.css` both match
 - [ ] `grep -n "suppressHydrationWarning" src/app/layout.tsx` matches
 - [ ] `grep -n "ThemeToggle" src/components/site-header.tsx` matches
 - [ ] No browser console hydration-mismatch warning when loading any page in `pnpm dev`
@@ -494,7 +496,7 @@ Stop and report back (do not improvise) if:
 
 ## Maintenance notes
 
-- If a future change adds a *third* variant of the dark declarations (e.g. a
+- If a future change adds a _third_ variant of the dark declarations (e.g. a
   high-contrast mode), extend both the `@media` and `data-theme` blocks
   together, and extend Step 6's byte-identical test accordingly — don't let
   a third variant reintroduce the drift risk this plan closes for two.

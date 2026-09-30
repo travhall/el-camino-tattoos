@@ -29,7 +29,7 @@
 
 `scripts/color-ramps.mjs` already computes every ramp step **in OKLCH**
 (`rgbToOklch`/`oklchToRgb`, lines 70-92) — the primitives are OKLCH-native
-today. What it does *not* do is emit OKLCH to the browser: `toHex` (lines
+today. What it does _not_ do is emit OKLCH to the browser: `toHex` (lines
 97-110) gamut-clips every color to sRGB (binary-searching chroma until the
 result fits in `[0,1]` sRGB, lines 101-107) and writes only a hex string to
 `palette.css`. That sRGB clip is throwing away color the two most saturated
@@ -40,7 +40,7 @@ allows. `oklch()` as a CSS value has broad browser support in 2026 (Chrome
 111+, Safari 15.4+, Firefox 113+), so shipping it is not a compatibility risk
 for a small business site with no stated legacy-browser requirement. This
 plan adds a P3-gamut-mapped `oklch()` declaration for every ramp value,
-written *after* the existing sRGB hex declaration for the same custom
+written _after_ the existing sRGB hex declaration for the same custom
 property — a browser that doesn't understand `oklch()` silently keeps the
 earlier hex value (CSS drops an unparseable declaration rather than falling
 back to it or erroring), so this is a strict progressive enhancement, not a
@@ -104,13 +104,14 @@ await writeFile(
 ```
 
 Key facts:
+
 - `built` (line 176-178) is `{ [rampName]: { [step]: hex } }` — only hex, the
   `{L, C, h}` values computed inside `buildRamp` are not retained after
   `toHex` converts them. This plan needs the `{L, C, h}` too, so `buildRamp`
   must be changed to also return them (see Step 2 — this is the one place a
   function's return shape changes, and it's internal to this script, not
   exported or imported elsewhere: `grep -rn "buildRamp\|from.*color-ramps"
-  scripts/ src/` shows `color-ramps.mjs` is only ever run as
+scripts/ src/` shows `color-ramps.mjs` is only ever run as
   `node scripts/color-ramps.mjs`, never imported).
 - This script has **no existing dependency on an npm color library** —
   `rgbToOklch`/`oklchToRgb` (lines 70-92) are hand-written matrix math for
@@ -123,28 +124,29 @@ Key facts:
   OKLCH conversions and gamut-mapping utilities (`converter`, `displayable`,
   `clampChroma`) built in. `culori` is not currently resolvable
   (`node --input-type=module -e "import('culori')"` fails with `Cannot find
-  package 'culori'` — it is not even a transitive dependency today) —
+package 'culori'` — it is not even a transitive dependency today) —
   install it as a `devDependency` (this script only runs at build/dev time
   via `pnpm color-ramps`, never shipped to the browser).
 - `pnpm-lock.yaml`/`package.json` currently list no `culori` anywhere.
 
 ## Commands you will need
 
-| Purpose | Command | Expected on success |
-|---|---|---|
-| Install | `pnpm add -D culori` | exits 0, added to `devDependencies` |
-| Regenerate | `pnpm color-ramps` | prints `color-ramps: 6 ramps written.` (unchanged message) with no smoothness warnings beyond any that already print today |
-| Diff the JSON | `git diff src/styles/palette.generated.json` | **empty** — the JSON's hex values must not change at all (same sRGB gamut-clip logic, untouched) |
-| Contrast check | `pnpm check:contrast` | reports the same pass/fail result as whatever plans 011/012 left it at (69 or 70, all pass) — this plan must not change it, since it reads the untouched JSON |
-| Figma manifest | `pnpm figma-manifest` then `git diff figma/manifest.json` | **empty** diff — same reasoning as the JSON |
-| Format | `pnpm format` | exits 0 |
-| Lint | `pnpm lint` | exits 0 |
-| Build | `pnpm build` | exits 0 |
-| Visual check | `pnpm dev`, open `/styleguide` in a P3-capable browser/display if available, and in a normal sRGB one | sRGB display: no visible change at all. P3 display: `gold` and `red` swatches read more saturated than before; nothing else visibly different |
+| Purpose        | Command                                                                                               | Expected on success                                                                                                                                           |
+| -------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Install        | `pnpm add -D culori`                                                                                  | exits 0, added to `devDependencies`                                                                                                                           |
+| Regenerate     | `pnpm color-ramps`                                                                                    | prints `color-ramps: 6 ramps written.` (unchanged message) with no smoothness warnings beyond any that already print today                                    |
+| Diff the JSON  | `git diff src/styles/palette.generated.json`                                                          | **empty** — the JSON's hex values must not change at all (same sRGB gamut-clip logic, untouched)                                                              |
+| Contrast check | `pnpm check:contrast`                                                                                 | reports the same pass/fail result as whatever plans 011/012 left it at (69 or 70, all pass) — this plan must not change it, since it reads the untouched JSON |
+| Figma manifest | `pnpm figma-manifest` then `git diff figma/manifest.json`                                             | **empty** diff — same reasoning as the JSON                                                                                                                   |
+| Format         | `pnpm format`                                                                                         | exits 0                                                                                                                                                       |
+| Lint           | `pnpm lint`                                                                                           | exits 0                                                                                                                                                       |
+| Build          | `pnpm build`                                                                                          | exits 0                                                                                                                                                       |
+| Visual check   | `pnpm dev`, open `/styleguide` in a P3-capable browser/display if available, and in a normal sRGB one | sRGB display: no visible change at all. P3 display: `gold` and `red` swatches read more saturated than before; nothing else visibly different                 |
 
 ## Scope
 
 **In scope**:
+
 - `package.json` / `pnpm-lock.yaml` — add `culori` as a `devDependency`.
 - `scripts/color-ramps.mjs` — add a P3 gamut-mapping path using `culori`;
   change `palette.css`'s output to include an `oklch()` line after each hex
@@ -153,6 +155,7 @@ Key facts:
   `pnpm color-ramps`).
 
 **Out of scope** (do NOT touch):
+
 - `src/styles/palette.generated.json` — must be byte-for-byte identical
   after this change (verified by the empty-diff check above). If your change
   causes this file to differ, you have changed the sRGB path; STOP (see
@@ -162,19 +165,19 @@ Key facts:
   show zero diff after this plan (the Figma manifest command in the table
   above is a verification step, not a change — if it produces a diff, STOP).
 - `src/styles/roles.css` — no role changes; this plan only affects how
-  primitive ramp *values* are serialized to CSS, not what any role points at.
+  primitive ramp _values_ are serialized to CSS, not what any role points at.
 - The existing sRGB `toHex`/`inGamut`/`rgbToOklch`/`oklchToRgb` functions —
   leave them exactly as they are; this plan adds a second, parallel code
   path for the CSS-facing P3 output, it does not modify or replace the
   sRGB-facing one.
 - Any ramp pin (the `ramps` object, lines 29-48) — this plan changes gamut
-  mapping for *output*, not the brand color inputs.
+  mapping for _output_, not the brand color inputs.
 
 ## Git workflow
 
 - Branch: `advisor/014-oklch-p3-color-output`
 - Commit per step. Message style: conventional commits, e.g. `feat(color):
-  emit P3-gamut oklch() alongside sRGB hex in palette.css`.
+emit P3-gamut oklch() alongside sRGB hex in palette.css`.
 - Do NOT push or open a PR unless the operator instructed it.
 
 ## Steps
@@ -318,6 +321,7 @@ src/styles/palette.css` shows a `--paper-50` line pair (hex then `oklch(...)`).
 ### Step 5: verify the untouched paths stay untouched
 
 Run, in order:
+
 1. `git diff src/styles/palette.generated.json` → empty.
 2. `pnpm check:contrast` → same pass/fail result as before this plan (do not
    proceed if the count or pass/fail status changed at all).

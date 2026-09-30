@@ -48,7 +48,7 @@ all right now. This plan computes an exact fix (verified by hand below, not
 guessed) and closes the gap before it can be hit by accident: darkening
 `accent-mark` from `gold-500` to `gold-600` in light mode clears 3:1 on
 `surface-sunken` with room to spare, while every pairing `accent-mark`
-currently *does* pass stays passing with more margin than before (numbers
+currently _does_ pass stays passing with more margin than before (numbers
 below). The visible effect is that gold underlines/marks read a shade more
 amber/brown in light mode — a real, if subtle, design change, which is why
 this is flagged MED risk and worth a human eyeballing `/styleguide` before
@@ -85,11 +85,11 @@ merge, not just a green contrast check.
   uses — relative luminance `L`, contrast `= (max(L1,L2)+0.05)/(min(L1,L2)+0.05)`),
   computed by hand against the values above:
 
-  | Pairing (light mode) | `gold-500` (current) | `gold-600` (proposed) | Needs |
-  |---|---|---|---|
-  | `accent-mark` on `background`/`surface-raised`/`scrim` (`paper-50`) | 3.89 : 1 | 5.79 : 1 | 3 : 1 |
-  | `accent-mark` on `surface` (`paper-100`) | ~3.4 : 1 | 5.18 : 1 | 3 : 1 |
-  | `accent-mark` on `surface-sunken` (`paper-200`) | **2.63 : 1 (FAIL)** | **3.91 : 1 (PASS)** | 3 : 1 |
+  | Pairing (light mode)                                                | `gold-500` (current) | `gold-600` (proposed) | Needs |
+  | ------------------------------------------------------------------- | -------------------- | --------------------- | ----- |
+  | `accent-mark` on `background`/`surface-raised`/`scrim` (`paper-50`) | 3.89 : 1             | 5.79 : 1              | 3 : 1 |
+  | `accent-mark` on `surface` (`paper-100`)                            | ~3.4 : 1             | 5.18 : 1              | 3 : 1 |
+  | `accent-mark` on `surface-sunken` (`paper-200`)                     | **2.63 : 1 (FAIL)**  | **3.91 : 1 (PASS)**   | 3 : 1 |
 
   Every pairing that passes today keeps passing after the change, with more
   margin, and the one that fails today passes after the change. This is why
@@ -98,23 +98,24 @@ merge, not just a green contrast check.
   failures introduced.
 
 - Repo convention for adding a covered pairing once it passes: `git log
-  --oneline -- scripts/contrast.mjs` shows `5719ac6 test(color): measure
-  edge, marks and errors on raised and sunken surfaces` added rows for
+--oneline -- scripts/contrast.mjs` shows `5719ac6 test(color): measure
+edge, marks and errors on raised and sunken surfaces` added rows for
   newly-supported surfaces the same way this plan does — follow that pattern.
 
 ## Commands you will need
 
-| Purpose | Command | Expected on success |
-|---|---|---|
-| Contrast check | `pnpm check:contrast` | `check-contrast: 70 pairings x 2 themes, all pass.` (69 today + 1 new row = 70) |
-| Format | `pnpm format` | exits 0 |
-| Lint | `pnpm lint` | exits 0 |
-| Build | `pnpm build` | exits 0 |
-| Visual check | `pnpm dev`, then open `/styleguide` at both a light and dark OS setting | gold marks/underlines/nav-current indicator are visibly present, slightly deeper/more amber in light mode than before; unchanged in dark mode |
+| Purpose        | Command                                                                 | Expected on success                                                                                                                           |
+| -------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Contrast check | `pnpm check:contrast`                                                   | `check-contrast: 70 pairings x 2 themes, all pass.` (69 today + 1 new row = 70)                                                               |
+| Format         | `pnpm format`                                                           | exits 0                                                                                                                                       |
+| Lint           | `pnpm lint`                                                             | exits 0                                                                                                                                       |
+| Build          | `pnpm build`                                                            | exits 0                                                                                                                                       |
+| Visual check   | `pnpm dev`, then open `/styleguide` at both a light and dark OS setting | gold marks/underlines/nav-current indicator are visibly present, slightly deeper/more amber in light mode than before; unchanged in dark mode |
 
 ## Scope
 
 **In scope**:
+
 - `src/styles/roles.css` — change `--accent-mark: var(--gold-500);` to
   `--accent-mark: var(--gold-600);` in the **light** block only. Do not touch
   the dark block's `--accent-mark: var(--gold-300);`.
@@ -123,12 +124,13 @@ merge, not just a green contrast check.
   closed and tested.
 
 **Out of scope** (do NOT touch):
+
 - Any other role or ramp pin. In particular, do not touch `--warning`, which
   is separately pinned to `gold-600` already (`--warning: var(--gold-600);`,
   light block) — that's a coincidence of value, not a shared token; leave it
   exactly as is, don't try to "unify" it with `accent-mark`.
 - `scripts/color-ramps.mjs` or `palette.css`/`palette.generated.json` — this
-  plan repoints a role at an *existing* ramp step; it does not add, remove,
+  plan repoints a role at an _existing_ ramp step; it does not add, remove,
   or change any ramp value, so no regeneration is needed or wanted.
 - `figma/manifest.json` — it mirrors `roles.css`, so it **does** need
   regenerating (`pnpm figma-manifest`) as part of landing this, but that's a
@@ -203,7 +205,7 @@ amber than before and nothing looks visually broken.
 
 ## Test plan
 
-No new automated test is needed: `pnpm check:contrast` (Step 2's verify) *is*
+No new automated test is needed: `pnpm check:contrast` (Step 2's verify) _is_
 the regression test for this exact class of bug, and the new `PAIRS` row
 means this specific pairing is now covered by CI (`ci.yml` runs
 `pnpm check:contrast`) permanently. Do not add a Playwright test for this —
@@ -237,7 +239,7 @@ Stop and report back (do not improvise) if:
   drifted from the values hand-computed in "Current state" above. Report the
   actual reported ratio; do not pick a different gold step by trial and
   error without checking why the math disagrees first.
-- Any *other* `PAIRS` row starts failing after this change — that would mean
+- Any _other_ `PAIRS` row starts failing after this change — that would mean
   `accent-mark` is used somewhere this plan didn't account for; report which
   row and its ratio.
 - `pnpm test` (Playwright/axe) reports a new violation anywhere — the axe

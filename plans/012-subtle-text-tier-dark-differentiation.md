@@ -44,8 +44,8 @@ silent placeholder.
 
 - `src/styles/roles.css` today:
   - Light block: `--subtle: var(--ink-700);` with the comment `/* subtle
-    starts equal to muted: no lighter ink step reads 4.5:1 on surface-sunken
-    */` (line 78-79). `--muted: var(--ink-700);` is the same value.
+starts equal to muted: no lighter ink step reads 4.5:1 on surface-sunken
+*/` (line 78-79). `--muted: var(--ink-700);` is the same value.
   - Dark block: `--muted: var(--ink-300);` and `--subtle: var(--ink-300);` —
     also identical.
   - `subtle` appears in `scripts/contrast.mjs`'s `PAIRS` array against five
@@ -53,9 +53,9 @@ silent placeholder.
     `scrim` (all at 4.5:1, "third-tier text").
 - Nobody in `src/` uses `text-subtle` or the `subtle` role in a real
   component today (`grep -rn "text-subtle\|subtle" src/styles/components.css
-  src/app` returns exactly one hit: `src/app/(site)/styleguide/page.tsx:25`,
+src/app` returns exactly one hit: `src/app/(site)/styleguide/page.tsx:25`,
   the documentation table `{ name: "subtle", note: "third-tier text, photo
-  labels" }`). This is a token being designed before its first real use, not
+labels" }`). This is a token being designed before its first real use, not
   a live regression risk.
 - Ramp values (`src/styles/palette.css`, unchanged by this plan):
   - `--ink-300: #adafb3;` (current dark `muted`/`subtle`)
@@ -63,19 +63,19 @@ silent placeholder.
   - `--paper-800: #33302a;` (dark `surface-raised`)
   - `--paper-900: #1d1a15;` (dark `surface`)
   - `--paper-950: #090704;` (dark `background`, `surface-sunken`, `scrim` —
-    all three are the *same* pinned value in dark mode today, a separate,
+    all three are the _same_ pinned value in dark mode today, a separate,
     already-documented gap: see `plans/README.md`'s "Not planned" section,
     "Dark-mode `surface-sunken` equals `background`")
 - Contrast math (WCAG relative luminance, same formula as `scripts/contrast.mjs`),
   computed by hand:
 
-  | Candidate for dark `subtle` | vs `surface-raised` (`paper-800`, hardest dark surface) | vs `surface`/`background`/`surface-sunken`/`scrim` | Needs |
-  |---|---|---|---|
-  | `ink-300` (current, = `muted`) | 5.99 : 1 | 6.7–9.2 : 1 | 4.5 : 1 |
-  | `ink-400` (proposed) | **4.36 : 1 (FAIL, just under)** | 6.7–6.9 : 1 (pass) | 4.5 : 1 |
-  | `ink-500` | 3.09 : 1 (fail) | fails on multiple surfaces | 4.5 : 1 |
+  | Candidate for dark `subtle`    | vs `surface-raised` (`paper-800`, hardest dark surface) | vs `surface`/`background`/`surface-sunken`/`scrim` | Needs   |
+  | ------------------------------ | ------------------------------------------------------- | -------------------------------------------------- | ------- |
+  | `ink-300` (current, = `muted`) | 5.99 : 1                                                | 6.7–9.2 : 1                                        | 4.5 : 1 |
+  | `ink-400` (proposed)           | **4.36 : 1 (FAIL, just under)**                         | 6.7–6.9 : 1 (pass)                                 | 4.5 : 1 |
+  | `ink-500`                      | 3.09 : 1 (fail)                                         | fails on multiple surfaces                         | 4.5 : 1 |
 
-  `ink-400` is the *only* step darker than `muted`'s `ink-300` that comes
+  `ink-400` is the _only_ step darker than `muted`'s `ink-300` that comes
   close: it passes against every dark surface `subtle` needs to support
   **except** `surface-raised` (4.36:1, just under 4.5:1). There is no ramp
   step between `ink-300` and `ink-400` to split the difference (the ramp's
@@ -108,16 +108,17 @@ silent placeholder.
 
 ## Commands you will need
 
-| Purpose | Command | Expected on success |
-|---|---|---|
+| Purpose        | Command               | Expected on success                                                                                                                                                                                                              |
+| -------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Contrast check | `pnpm check:contrast` | reports `69 pairings x 2 themes, all pass.` (70 rows minus the 1 dropped `surface-raised` row = 69 — coincidentally the same count as before this plan; if you land plan 011 first, start from 70 and expect 69 after this plan) |
-| Format | `pnpm format` | exits 0 |
-| Lint | `pnpm lint` | exits 0 |
-| Build | `pnpm build` | exits 0 |
+| Format         | `pnpm format`         | exits 0                                                                                                                                                                                                                          |
+| Lint           | `pnpm lint`           | exits 0                                                                                                                                                                                                                          |
+| Build          | `pnpm build`          | exits 0                                                                                                                                                                                                                          |
 
 ## Scope
 
 **In scope**:
+
 - `src/styles/roles.css` — dark block only: change `--subtle: var(--ink-300);`
   to `--subtle: var(--ink-400);`. Replace the light-mode comment on line 78
   with a more precise one (see Step 1). Leave light `--subtle: var(--ink-700);`
@@ -130,6 +131,7 @@ silent placeholder.
   says "third-tier text, photo labels", which stays accurate).
 
 **Out of scope** (do NOT touch):
+
 - Light mode's `--subtle` value — this plan does not attempt to differentiate
   it from `muted`; see "Why this matters" for the documented reason
   (`surface-sunken` would need to change, which is a design decision for the
@@ -147,7 +149,7 @@ silent placeholder.
 
 - Branch: `advisor/012-subtle-text-tier-dark-differentiation`
 - One commit. Message style: conventional commits, e.g. `fix(color): give
-  dark-mode subtle its own ink step, separate from muted`.
+dark-mode subtle its own ink step, separate from muted`.
 - Do NOT push or open a PR unless the operator instructed it.
 
 ## Steps

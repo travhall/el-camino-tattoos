@@ -53,7 +53,7 @@ this class of bug for good, in a small, mechanical, low-risk change.
   The only thing that may change internally is `parseRoles`'s implementation
   (it is not imported anywhere outside this file, so its internals are free
   to change, but keep its exported shape `{ light: Record<string,string>,
-  dark: Record<string,string> }` identical — `checkContrast` depends on it).
+dark: Record<string,string> }` identical — `checkContrast` depends on it).
 
   Current `parseRoles` (lines 135–153):
 
@@ -92,7 +92,7 @@ this class of bug for good, in a small, mechanical, low-risk change.
   different variable-name regex (`[a-z-]+`, no digits) and no brace-depth
   walk (it uses a single non-greedy regex `/prefers-color-scheme:\s*dark\)\s*{\s*:root\s*{([^}]*)}/`
   instead, which is even more fragile — it assumes the dark block's `:root`
-  is the *only* nested `{...}` and would truncate at the first inner `}` if
+  is the _only_ nested `{...}` and would truncate at the first inner `}` if
   one ever appeared):
 
   ```js
@@ -107,7 +107,9 @@ this class of bug for good, in a small, mechanical, low-risk change.
     const dark = css.match(
       /prefers-color-scheme:\s*dark\)\s*{\s*:root\s*{([^}]*)}/,
     );
-    const light = css.replace(dark ? dark[0] : "", "").match(/:root\s*{([^}]*)}/);
+    const light = css
+      .replace(dark ? dark[0] : "", "")
+      .match(/:root\s*{([^}]*)}/);
     if (!light) throw new Error("roles.css: no :root block found");
     const lightRoles = declarations(light[1]);
     const darkRoles = { ...lightRoles, ...(dark ? declarations(dark[1]) : {}) };
@@ -123,7 +125,7 @@ this class of bug for good, in a small, mechanical, low-risk change.
   `parsed.light[name]` / `parsed.dark[name]` by key.
 
 - `postcss` is not currently a direct dependency (`node --input-type=module -e
-  "import('postcss')"` fails with `Cannot find package 'postcss'`), only a
+"import('postcss')"` fails with `Cannot find package 'postcss'`), only a
   transitive one via `@tailwindcss/postcss`. It must be added as a direct
   `devDependency` since these scripts import it directly.
 
@@ -138,19 +140,20 @@ this class of bug for good, in a small, mechanical, low-risk change.
 
 ## Commands you will need
 
-| Purpose | Command | Expected on success |
-|---|---|---|
-| Install new dep | `pnpm add -D postcss` | exits 0, `postcss` added to `devDependencies` in `package.json`, `pnpm-lock.yaml` updated |
-| Contrast check | `pnpm check:contrast` | `check-contrast: 69 pairings x 2 themes, all pass.` (same count as before this change — if the count changes, something broke parsing) |
-| Figma manifest | `pnpm figma-manifest` | prints `figma/manifest.json  hash <10-hex-chars>  (N roles, 10 layout tokens)` |
+| Purpose           | Command                        | Expected on success                                                                                                                                   |
+| ----------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Install new dep   | `pnpm add -D postcss`          | exits 0, `postcss` added to `devDependencies` in `package.json`, `pnpm-lock.yaml` updated                                                             |
+| Contrast check    | `pnpm check:contrast`          | `check-contrast: 69 pairings x 2 themes, all pass.` (same count as before this change — if the count changes, something broke parsing)                |
+| Figma manifest    | `pnpm figma-manifest`          | prints `figma/manifest.json  hash <10-hex-chars>  (N roles, 10 layout tokens)`                                                                        |
 | Diff the manifest | `git diff figma/manifest.json` | **no diff** — the hash and every value must be byte-identical to before this change, since no role or ramp value changed, only how the file is parsed |
-| Format | `pnpm format` | exits 0 |
-| Lint | `pnpm lint` | exits 0 |
-| Full build | `pnpm build` | exits 0 (this is the repo's type-check gate — there is no separate `tsc`/`typecheck` script) |
+| Format            | `pnpm format`                  | exits 0                                                                                                                                               |
+| Lint              | `pnpm lint`                    | exits 0                                                                                                                                               |
+| Full build        | `pnpm build`                   | exits 0 (this is the repo's type-check gate — there is no separate `tsc`/`typecheck` script)                                                          |
 
 ## Scope
 
 **In scope**:
+
 - `package.json` / `pnpm-lock.yaml` — add `postcss` as a `devDependency`.
 - `scripts/lib/parse-css-vars.mjs` (new file) — the shared parser.
 - `scripts/contrast.mjs` — replace `parseRoles`'s internals to use the shared
@@ -159,13 +162,14 @@ this class of bug for good, in a small, mechanical, low-risk change.
   the same way.
 
 **Out of scope** (do NOT touch):
+
 - `PAIRS`, `contrast`, `checkContrast`, `loadInputs`, `passes` in
   `scripts/contrast.mjs` — no behavior change to any of these in this plan.
   (A different plan, 011, edits `PAIRS`. If you land this plan first, 011
   applies cleanly on top; do not pre-emptively touch `PAIRS` here.)
 - `scripts/color-ramps.mjs` — unrelated (it does not parse `roles.css`).
 - Any value in `src/styles/roles.css` itself — this plan changes how CSS is
-  *read*, never what it says.
+  _read_, never what it says.
 - `resolve()` in `scripts/figma-manifest.mjs` (lines 52–65) — it consumes the
   `{ light, dark }` output, not the parsing itself; leave it as is.
 
@@ -175,8 +179,8 @@ this class of bug for good, in a small, mechanical, low-risk change.
 - Commit per step (e.g. one commit adding the dependency + shared module,
   one per script migrated). Message style: conventional commits, matching
   recent history — e.g. `fix(palette): update color values for improved
-  contrast and consistency`, `test(color): measure edge, marks and errors on
-  raised and sunken surfaces`. Use `refactor(scripts): ...` for this work.
+contrast and consistency`, `test(color): measure edge, marks and errors on
+raised and sunken surfaces`. Use `refactor(scripts): ...` for this work.
 - Do NOT push or open a PR unless the operator instructed it.
 
 ## Steps
@@ -266,6 +270,7 @@ and change the call site at (previously) line 67 from `parseRoles(...)` to
 `parseCssVarRoles(...)`.
 
 **Verify**:
+
 1. `pnpm figma-manifest` → prints the hash line with no error.
 2. `git diff figma/manifest.json` → **empty**. This is the load-bearing
    check: the manifest's `hash` field is a SHA-256 of the whole resolved
@@ -284,6 +289,7 @@ There is no existing unit-test harness for `scripts/*.mjs` (verification is
 via the scripts' own exit codes and the Playwright suite in `pnpm test`,
 which does not exercise these scripts directly). This plan does not add one —
 matching the repo's existing pattern, correctness is verified by:
+
 - `pnpm check:contrast` reporting the same pairing count and all-pass result
   as before this change (Step 2's verify).
 - `git diff figma/manifest.json` being empty after regenerating it (Step 3's
@@ -330,7 +336,7 @@ Stop and report back (do not improvise) if:
 - Any future script that needs to read `roles.css` (or a similarly-shaped
   hand-edited CSS file) should import `parseCssVarRoles` from
   `scripts/lib/parse-css-vars.mjs` rather than writing a third regex parser.
-- If `roles.css` ever gains a *second* dark-mode-shaped override (e.g. the
+- If `roles.css` ever gains a _second_ dark-mode-shaped override (e.g. the
   manual light/dark toggle in `plans/013-manual-theme-toggle.md`, which adds
   `:root[data-theme="dark"]` rules outside the `@media` block),
   `parseCssVarRoles` as written here only merges the
