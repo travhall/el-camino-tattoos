@@ -28,6 +28,9 @@ export function ArtistCard({
       {artist.specialties.length > 0 && (
         <p className="artist-card__meta">{artist.specialties.join(", ")}</p>
       )}
+      {artist.role === "guest" && artist.visitDates && (
+        <p className="artist-card__meta">Guest · {artist.visitDates}</p>
+      )}
     </Link>
   );
 }
