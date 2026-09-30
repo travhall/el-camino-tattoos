@@ -18,9 +18,7 @@ export function HeroPhoto({
         <div className="photo-frame__media">
           <Image
             src={piece.image}
-            alt={
-              artistName ? `${piece.title} by ${artistName}` : piece.title
-            }
+            alt={artistName ? `${piece.title} by ${artistName}` : piece.title}
             fill
             sizes="(min-width: 768px) 40vw, 90vw"
             className="image-cover"
