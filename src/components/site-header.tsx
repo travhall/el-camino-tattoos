@@ -18,7 +18,7 @@ export async function SiteHeader() {
   const cityLine = [site.city, site.region].filter(Boolean).join(", ");
 
   return (
-    <>
+    <header className="site-header">
       {(site.walkInNote || cityLine) && (
         <div className="site-topbar">
           <div className="site-topbar__inner">
@@ -38,24 +38,22 @@ export async function SiteHeader() {
           </div>
         </div>
       )}
-      <header className="site-header">
-        <div className="site-header__inner">
-          <Link href="/" className="site-header__brand">
-            <SiteLogo className="site-header__logo" />
-            <span className="visually-hidden">El Camino Tattoos</span>
-          </Link>
-          <nav aria-label="Primary" className="site-nav">
-            {navLinks.map(({ href, label }) => (
-              <NavLink key={href} href={href} className="site-nav__link">
-                {label}
-              </NavLink>
-            ))}
-            {!(site.walkInNote || cityLine) && <ThemeToggle />}
-            {/* Persistent booking slot; points at /contact until a booking flow exists. */}
-            <ButtonLink href="/contact">Request</ButtonLink>
-          </nav>
-        </div>
-      </header>
-    </>
+      <div className="site-header__inner">
+        <Link href="/" className="site-header__brand">
+          <SiteLogo className="site-header__logo" />
+          <span className="visually-hidden">El Camino Tattoos</span>
+        </Link>
+        <nav aria-label="Primary" className="site-nav">
+          {navLinks.map(({ href, label }) => (
+            <NavLink key={href} href={href} className="site-nav__link">
+              {label}
+            </NavLink>
+          ))}
+          {!(site.walkInNote || cityLine) && <ThemeToggle />}
+          {/* Persistent booking slot; points at /contact until a booking flow exists. */}
+          <ButtonLink href="/contact">Request</ButtonLink>
+        </nav>
+      </div>
+    </header>
   );
 }
