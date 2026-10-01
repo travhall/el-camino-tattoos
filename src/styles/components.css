@@ -20,6 +20,26 @@
     @apply h-5 w-auto md:h-6;
   }
 
+  .site-topbar {
+    @apply border-b border-line bg-surface-sunken text-sm text-subtle;
+  }
+
+  .site-topbar__inner {
+    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs px-fluid-sm py-fluid-2xs;
+  }
+
+  .site-topbar__walkin {
+    @apply inline-flex min-h-11 items-center hover:underline;
+  }
+
+  .site-topbar__right {
+    @apply flex items-center gap-fluid-sm;
+  }
+
+  .site-topbar__location {
+    @apply hidden sm:inline;
+  }
+
   .site-nav {
     @apply flex flex-wrap items-center gap-x-fluid-md gap-y-fluid-3xs;
   }

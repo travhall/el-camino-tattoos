@@ -488,6 +488,24 @@ test("theme defaults to dark regardless of OS preference, and the toggle persist
   expect(violations.map((v) => v.id)).toEqual([]);
 });
 
+test("the topbar shows the walk-in note and persists through theme toggle", async ({
+  page,
+}) => {
+  await open(page, "/");
+
+  const topbar = page.locator(".site-topbar");
+  await expect(topbar).toBeVisible();
+  await expect(topbar.getByRole("link", { name: /walk-in/i })).toHaveAttribute(
+    "href",
+    "/contact",
+  );
+
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(violations.map((v) => v.id)).toEqual([]);
+});
+
 test.describe("artists page", () => {
   test("splits residents from guests and shows the guest's visiting dates", async ({
     page,
