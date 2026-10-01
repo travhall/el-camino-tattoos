@@ -170,9 +170,24 @@ export default config({
     aftercare: singleton({
       label: "Aftercare",
       path: "content/aftercare",
-      format: { contentField: "content" },
+      format: { contentField: "warning" },
       schema: {
-        content: richText("Aftercare instructions", { headings: true }),
+        intro: fields.text({
+          label: "Intro",
+          description: "One short line under the page heading.",
+        }),
+        steps: fields.array(
+          fields.object({
+            title: fields.text({ label: "Title" }),
+            body: fields.text({ label: "Body", multiline: true }),
+          }),
+          {
+            label: "Care steps",
+            description: "Shown in order, numbered automatically on the page.",
+            itemLabel: (props) => props.fields.title.value || "Step",
+          },
+        ),
+        warning: richText("When to get help", { headings: false }),
       },
     }),
 
