@@ -66,6 +66,8 @@
  *   focus-ring ........... keyboard focus outline
  *   status-* ............. open, waitlist, closed: dots and labels for shop
  *                          hours and artists' books (pair with text, not color alone)
+ *   frame-shadow-color ... hard offset shadow behind the hero photo frame (dark
+ *                          only; matches the page background in light, so invisible)
  */
 :root {
   /* Dark — the default theme. No data-theme attribute and no
@@ -128,6 +130,7 @@
   --status-open: var(--success);
   --status-waitlist: var(--warning);
   --status-closed: var(--muted);
+  --frame-shadow-color: var(--paper-950);
 }
 
 /* Light ("Paper mode"): opt-in only, via the toggle. A partial override —
@@ -172,4 +175,5 @@
 
   /* UI tokens. The ink button is dark text here, so hover lightens toward background. */
   --button-primary-hover: var(--ink-800);
+  --frame-shadow-color: var(--background);
 }

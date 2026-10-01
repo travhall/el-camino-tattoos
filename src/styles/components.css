@@ -391,20 +391,71 @@
   /* Homepage hero: intro text beside a framed, "pinned" photo with a
      decorative ink-stamp badge. */
   .home-hero {
-    @apply grid items-center gap-fluid-lg md:grid-cols-2;
+    @apply grid items-center gap-fluid-xl md:grid-cols-[1.04fr_1.12fr];
+  }
+
+  .home-hero__intro {
+    @apply grid justify-items-start gap-fluid-sm;
+  }
+
+  .home-hero__kicker {
+    @apply text-lg text-muted italic;
+  }
+
+  .home-hero__title {
+    @apply font-display text-4xl font-semibold uppercase;
+    /* Being's ink-trap cut, as in .display. */
+    font-variation-settings: "trap" 1;
+  }
+
+  .home-hero__title-line {
+    @apply block whitespace-nowrap;
+  }
+
+  /* Hand-drawn underline under the headline. Decorative. */
+  .home-hero__underline {
+    @apply -mt-1 h-3 w-[94%] text-accent-mark;
+  }
+
+  .home-hero__description {
+    @apply max-w-[28rem] text-base text-muted;
+  }
+
+  .home-hero__cta {
+    @apply mt-fluid-2xs;
+  }
+
+  .home-hero__note {
+    @apply text-sm text-subtle;
   }
 
   .home-hero__photo {
     @apply relative;
   }
 
-  /* A bordered mat around the photo, like a pinned-up print. */
+  /* A bordered mat around the photo, like a pinned-up print, with a hard
+     offset shadow and a slight tilt from md up. */
   .photo-frame {
-    @apply relative border border-line bg-surface p-fluid-2xs;
+    @apply relative border border-border bg-surface p-2 pb-0 md:rotate-[1.3deg];
+    box-shadow: 8px 8px 0 var(--frame-shadow-color);
   }
 
   .photo-frame__media {
-    @apply relative aspect-[4/5] bg-surface-sunken;
+    @apply relative aspect-[4/3] bg-surface-sunken md:aspect-[5/4];
+  }
+
+  /* Black-and-white print look, as in the design mock. Delete this rule to
+     show the photo in colour. */
+  .photo-frame__media img {
+    @apply brightness-95 contrast-[1.08] grayscale;
+  }
+
+  .photo-frame__caption {
+    @apply flex items-center justify-between gap-fluid-xs px-2 py-fluid-xs text-xs tracking-widest text-muted uppercase;
+  }
+
+  .photo-frame__star {
+    @apply size-4 shrink-0 text-accent-mark;
   }
 
   /* A strip of "tape" pinning the photo down. Decorative only. */
@@ -418,7 +469,7 @@
      round: stays inside the site's sharp-corner shape language (plan 015)
      while still reading as a stamp via the rotation and double ring. */
   .stamp {
-    @apply absolute right-[-1rem] bottom-[-1rem] flex aspect-square w-24 -rotate-12 flex-col items-center justify-center gap-0.5 border-2 border-accent-mark text-center text-[10px] leading-tight font-medium tracking-[0.08em] text-accent-mark uppercase;
+    @apply absolute right-[-1.6rem] bottom-3 flex aspect-square w-32 rotate-[11deg] flex-col items-center justify-center gap-0.5 border-2 border-accent-mark text-center text-xs leading-tight font-medium tracking-[0.08em] text-accent-mark uppercase;
     box-shadow:
       inset 0 0 0 3px var(--background),
       inset 0 0 0 4px var(--accent-mark);
@@ -426,5 +477,26 @@
 
   .stamp__line {
     @apply block;
+  }
+
+  .stamp__star {
+    @apply my-0.5 size-4 text-accent-mark;
+  }
+
+  .stamp__small {
+    @apply text-[9px] tracking-widest;
+  }
+
+  /* The shop's short promises, in a ruled strip under the hero. */
+  .shop-promises {
+    @apply flex flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-2xs border-y border-border py-fluid-sm text-lg tracking-wide uppercase;
+  }
+
+  .shop-promises__item {
+    @apply flex items-center gap-fluid-md;
+  }
+
+  .shop-promises__star {
+    @apply size-5 shrink-0 text-accent-mark;
   }
 }

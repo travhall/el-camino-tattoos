@@ -55,6 +55,34 @@ test.describe("shop info", () => {
     }
   });
 
+  test("the hero shows the editable headline, description and promises strip", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, "/");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      /GOOD TATTOOS\.\s*GOOD PEOPLE\./,
+    );
+    await expect(page.getByText("Classic roots. Original work.")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Request an appointment" }).first(),
+    ).toHaveAttribute("href", "/contact");
+    const promises = page
+      .getByRole("list", { name: "What to expect" })
+      .getByRole("listitem");
+    await expect(promises).toHaveCount(3);
+    // Each headline line must fit inside the hero's text column.
+    const fits = await page.evaluate(() => {
+      const column = document
+        .querySelector(".home-hero__intro")!
+        .getBoundingClientRect().width;
+      return [...document.querySelectorAll(".home-hero__title-line")].every(
+        (line) => line.getBoundingClientRect().width <= column,
+      );
+    });
+    expect(fits).toBe(true);
+  });
+
   test("the footer shows the address", async ({ page }) => {
     await open(page, "/");
     const footer = page.getByRole("contentinfo");

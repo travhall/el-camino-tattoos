@@ -253,6 +253,30 @@ export default config({
           label: "Consultation note",
           description: "e.g. Free consultations.",
         }),
+        heroKicker: fields.text({
+          label: "Hero kicker",
+          description: "A short italic line above the headline.",
+        }),
+        heroHeadline: fields.text({
+          label: "Hero headline",
+          description:
+            "Shown as the page's main heading. Put each line on its own line.",
+          multiline: true,
+        }),
+        heroDescription: fields.text({
+          label: "Hero description",
+          description: "One or two sentences under the headline.",
+          multiline: true,
+        }),
+        heroPhotoCaption: fields.text({
+          label: "Hero photo caption",
+          description: "A short line under the hero photo.",
+        }),
+        shopPromises: fields.array(fields.text({ label: "Promise" }), {
+          label: "Shop promises",
+          description: "Three short lines shown in a strip under the hero.",
+          itemLabel: (props) => props.value || "Promise",
+        }),
         depositAmount: fields.integer({
           label: "Deposit (USD)",
           description: "Shown on the contact page. Leave empty to hide.",

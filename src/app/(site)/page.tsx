@@ -4,8 +4,11 @@ import { ArtistGrid } from "@/components/artist-grid";
 import { HeroPhoto } from "@/components/hero-photo";
 import { PieceGrid } from "@/components/piece-grid";
 import { ShopNotes } from "@/components/shop-notes";
+import { ShopPromises } from "@/components/shop-promises";
+import { ButtonLink } from "@/components/ui/button";
 import { getArtists, getPieces, getSite } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
+import { siteName } from "@/lib/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { description } = await getSite();
@@ -27,16 +30,47 @@ export default async function Home() {
   return (
     <div className="stack stack--xl">
       <div className="home-hero">
-        <div className="home-hero__intro stack">
-          <h1 className="display">El Camino Tattoos</h1>
-          <ShopNotes site={site} />
+        <div className="home-hero__intro">
+          {site.heroKicker && (
+            <p className="home-hero__kicker">{site.heroKicker}</p>
+          )}
+          <h1 className="home-hero__title">
+            {(site.heroHeadline || siteName).split("\n").map((line) => (
+              <span key={line} className="home-hero__title-line">
+                {line}
+              </span>
+            ))}
+          </h1>
+          <svg
+            className="home-hero__underline"
+            viewBox="0 0 460 12"
+            fill="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M2 7C82 2 178 9 258 5S399 6 456 3M18 10c129-3 280 1 427-2"
+              stroke="currentColor"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+            />
+          </svg>
+          {site.heroDescription && (
+            <p className="home-hero__description">{site.heroDescription}</p>
+          )}
+          <ButtonLink href="/contact" size="lg" className="home-hero__cta">
+            Request an appointment
+          </ButtonLink>
+          <ShopNotes site={site} className="home-hero__note" />
         </div>
         <HeroPhoto
           piece={heroPiece}
           artistName={heroArtistName}
           walkIns={site.walkIns}
+          caption={site.heroPhotoCaption}
         />
       </div>
+      <ShopPromises promises={site.shopPromises} />
 
       <section aria-labelledby="artists-heading" className="stack stack--lg">
         <h2 id="artists-heading">Artists</h2>

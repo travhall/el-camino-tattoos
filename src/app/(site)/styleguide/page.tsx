@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { FlashStar } from "@/components/flash-star";
+import { ShopPromises } from "@/components/shop-promises";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -120,6 +122,7 @@ const sectionNav = [
   { id: "filters", title: "Filter chips" },
   { id: "richtext", title: "Rich text" },
   { id: "cards", title: "Cards and grid" },
+  { id: "hero", title: "Hero" },
 ] as const;
 
 function Section({
@@ -564,6 +567,62 @@ export default async function StyleGuidePage() {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section id="hero" title="Hero">
+        <div className="home-hero">
+          <div className="home-hero__intro">
+            <p className="home-hero__kicker">A good place to get tattooed.</p>
+            <p className="home-hero__title">
+              <span className="home-hero__title-line">GOOD TATTOOS.</span>
+              <span className="home-hero__title-line">GOOD PEOPLE.</span>
+            </p>
+            <svg
+              className="home-hero__underline"
+              viewBox="0 0 460 12"
+              fill="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M2 7C82 2 178 9 258 5S399 6 456 3M18 10c129-3 280 1 427-2"
+                stroke="currentColor"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+              />
+            </svg>
+            <p className="home-hero__description">
+              Classic roots. Original work. A small, welcoming studio.
+            </p>
+            <ButtonLink href="/contact" size="lg" className="home-hero__cta">
+              Request an appointment
+            </ButtonLink>
+            <p className="home-hero__note">Walk-ins welcome when available.</p>
+          </div>
+          <div className="home-hero__photo">
+            <div className="photo-frame">
+              <div className="photo-frame__media sg-tile">Hero photo</div>
+              <p className="photo-frame__caption">
+                <span>Tradition at heart. Everyone welcome.</span>
+                <FlashStar className="photo-frame__star" />
+              </p>
+              <span aria-hidden="true" className="photo-frame__tape" />
+            </div>
+            <div aria-hidden="true" className="stamp">
+              <span className="stamp__line">Walk-ins</span>
+              <span className="stamp__line">Welcome</span>
+              <FlashStar className="stamp__star" />
+              <span className="stamp__small">When available</span>
+            </div>
+          </div>
+        </div>
+        <ShopPromises
+          promises={[
+            "Rooted in American traditional",
+            "Walk-ins & appointments",
+            "Free consultations. Always.",
+          ]}
+        />
       </Section>
     </div>
   );
