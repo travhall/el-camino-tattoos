@@ -54,6 +54,8 @@ honor its STOP conditions, and update your row when done.
 | 019  | Split the Artists page into resident/apprentice and guest artists         | P2       | M      | 018                                                   | DONE (merged to main: `6813b8a`..`9b80b78`)                                                                                                                                                                                           |
 | 020  | Repeat the nav and add a booking CTA in the footer                        | P3       | S      | —                                                    | DONE (merged to main: `f3511d3` — scope expanded mid-execution to fix a cross-plan test collision with plan 019, see plan file)                                                                                                      |
 | 021  | Replace free-form Aftercare rich text with structured steps + a warning   | P2       | M      | —                                                    | DONE (merged to main: `ed1696d`)                                                                                                                                                                                                       |
+| 022  | Add a header topbar (walk-ins note, location, theme toggle)               | P3       | S      | —                                                    | TODO                                                                                                                                                                                                                                   |
+| 023  | Restructure the footer into labeled columns                               | P3       | M      | —                                                    | TODO                                                                                                                                                                                                                                   |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -72,6 +74,7 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 - 015, 016 and 017 are mutually independent (each has its own scope: shape language, theme default, one new homepage component) and can run in any order or in parallel. The only soft note: 017's stamp badge is deliberately built without `rounded-full` so it doesn't undo 015's outcome if 015 hasn't landed yet — see 017's header note. None of the three touch `scripts/color-ramps.mjs`, `palette.css`, or any ramp value, so they're independent of 003–014 too.
 - 019 requires 018: it reads `Artist.role`/`Artist.visitDates`, which don't exist until 018 lands.
 - 020 is independent of 018 and 019 — it touches `site-header.tsx`/`site-footer.tsx`, neither of which 018/019 touch.
+- 022 and 023 are mutually independent — 022 touches `site-header.tsx` only, 023 touches `site-footer.tsx`/`shop-info.tsx` only, and neither edits shared CSS rules the other depends on. Land in either order.
 
 ## Resolved: `pnpm test` flake in the contact-form axe check
 
