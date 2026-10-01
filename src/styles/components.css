@@ -4,12 +4,26 @@
  */
 @layer components {
   /* Site shell */
+  /* Sticky, with the topbar scrolling off: the header is pulled up by the
+     topbar's height so only the nav row stays pinned. --topbar-height is the
+     one source for that offset and for the topbar's own height. */
   .site-header {
-    @apply border-b border-line;
+    @apply sticky top-0 z-40 border-b border-line bg-background;
+    --topbar-height: 2.75rem;
+  }
+
+  @media (min-width: 48rem) {
+    .site-header {
+      --topbar-height: 2.25rem;
+    }
+  }
+
+  .site-header:has(.site-topbar) {
+    top: calc(-1 * var(--topbar-height));
   }
 
   .site-header__inner {
-    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs py-fluid-sm;
+    @apply mx-auto flex min-h-20 w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs py-0 md:min-h-[5.3rem] xl:min-h-[6.125rem];
   }
 
   .site-header__brand {
@@ -21,15 +35,20 @@
   }
 
   .site-topbar {
-    @apply border-b border-line bg-surface-sunken text-sm text-subtle;
+    @apply border-b border-line bg-surface-sunken text-xs tracking-widest text-subtle uppercase;
+    height: var(--topbar-height);
   }
 
   .site-topbar__inner {
-    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs py-fluid-2xs;
+    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs py-0 md:min-h-9;
   }
 
   .site-topbar__walkin {
-    @apply inline-flex min-h-11 items-center hover:underline;
+    @apply inline-flex min-h-11 items-center gap-2 hover:underline md:min-h-9;
+  }
+
+  .site-topbar__star {
+    @apply size-4 shrink-0 text-accent-mark;
   }
 
   .site-topbar__right {
@@ -47,7 +66,7 @@
   /* 44px tall hit area; current page/section is marked by an underline as
      well as aria-current, so it isn't conveyed by color alone. */
   .site-nav__link {
-    @apply inline-flex min-h-11 items-center hover:underline;
+    @apply inline-flex min-h-11 items-center text-sm font-medium tracking-wide uppercase hover:underline;
   }
 
   .site-nav__link[aria-current] {
@@ -159,12 +178,18 @@
   /* Theme toggle: a small standalone control, not a call-to-action, so it
      does not reuse .button. 44px minimum hit area per CLAUDE.md. */
   .theme-toggle {
-    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-none border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none;
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-none border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none md:min-h-9 md:gap-2 md:px-3;
     transition-duration: var(--duration-fast);
   }
 
   .theme-toggle__icon {
     @apply text-base leading-none;
+  }
+
+  /* Visible only from md up; phones keep the icon-only 44px control, whose
+     accessible name is the same. */
+  .theme-toggle__label {
+    @apply hidden md:inline;
   }
 
   /* Portfolio grid and tiles */

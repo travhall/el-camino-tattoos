@@ -9,9 +9,17 @@ const next: Record<Theme, Theme> = {
   light: "dark",
 };
 
+// Both maps are keyed by the CURRENT theme and name the mode the button
+// switches to. The visible text is contained in the accessible name
+// (aria-label), so the two agree (WCAG 2.5.3).
 const labels: Record<Theme, string> = {
-  light: "Use light theme",
-  dark: "Use dark theme",
+  dark: "Switch to paper mode",
+  light: "Switch to dark mode",
+};
+
+const visibleLabels: Record<Theme, string> = {
+  dark: "Paper mode",
+  light: "Dark mode",
 };
 
 const icons: Record<Theme, string> = {
@@ -79,6 +87,7 @@ export function ThemeToggle() {
       <span aria-hidden="true" className="theme-toggle__icon">
         {icons[theme]}
       </span>
+      <span className="theme-toggle__label">{visibleLabels[theme]}</span>
     </button>
   );
 }

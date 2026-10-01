@@ -470,7 +470,7 @@ test("theme defaults to dark regardless of OS preference, and the toggle persist
     );
   const darkBackground = await background();
 
-  const toggle = page.getByRole("button", { name: /theme/i });
+  const toggle = page.getByRole("button", { name: /mode/i });
   await toggle.click(); // dark -> light
   const lightBackground = await background();
   expect(lightBackground).not.toBe(darkBackground);
@@ -504,6 +504,18 @@ test("the topbar shows the walk-in note and persists through theme toggle", asyn
     .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
     .analyze();
   expect(violations.map((v) => v.id)).toEqual([]);
+});
+
+test("header: compact topbar and a sticky nav row on desktop", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, "/");
+  const topbar = await page.locator(".site-topbar").boundingBox();
+  expect(topbar?.height).toBe(36);
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  const row = await page.locator(".site-header__inner").boundingBox();
+  expect(row?.y).toBe(0);
 });
 
 test.describe("artists page", () => {

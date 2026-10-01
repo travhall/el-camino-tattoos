@@ -42,6 +42,11 @@
     }
   }
 
+  /* Anchored links (/faq#...) land below the sticky header row. */
+  html {
+    scroll-padding-top: 7rem;
+  }
+
   .page {
     @apply mx-auto w-(--page-width) flex-1 py-fluid-xl;
   }

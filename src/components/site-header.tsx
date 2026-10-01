@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FlashStar } from "@/components/flash-star";
 import { SiteLogo } from "@/components/site-logo";
 import { NavLink } from "@/components/nav-link";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -24,6 +25,7 @@ export async function SiteHeader() {
           <div className="site-topbar__inner">
             {site.walkInNote ? (
               <Link href="/contact" className="site-topbar__walkin">
+                <FlashStar className="site-topbar__star" />
                 {site.walkInNote}
               </Link>
             ) : (
