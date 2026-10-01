@@ -162,6 +162,8 @@ export type Site = {
   heroDescription: string;
   heroPhotoCaption: string;
   shopPromises: readonly string[];
+  footerTagline: string;
+  footerSignoff: string;
   depositAmount: number | null;
   instagram: string;
 };
@@ -186,6 +188,8 @@ export const getSite = cache(async (): Promise<Site> => {
     heroDescription: entry?.heroDescription ?? "",
     heroPhotoCaption: entry?.heroPhotoCaption ?? "",
     shopPromises: entry?.shopPromises ?? [],
+    footerTagline: entry?.footerTagline ?? "",
+    footerSignoff: entry?.footerSignoff ?? "",
     depositAmount: entry?.depositAmount ?? null,
     instagram: normalizeInstagramHandle(entry?.instagram ?? ""),
   };

@@ -277,6 +277,14 @@ export default config({
           description: "Three short lines shown in a strip under the hero.",
           itemLabel: (props) => props.value || "Promise",
         }),
+        footerTagline: fields.text({
+          label: "Footer tagline",
+          description: "A short line next to the logo in the footer.",
+        }),
+        footerSignoff: fields.text({
+          label: "Footer sign-off",
+          description: "A short line at the bottom right of the footer.",
+        }),
         depositAmount: fields.integer({
           label: "Deposit (USD)",
           description: "Shown on the contact page. Leave empty to hide.",

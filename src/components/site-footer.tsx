@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { NavLink } from "@/components/nav-link";
 import { navLinks } from "@/components/site-header";
 import { ShopAddress, ShopContact, ShopHours } from "@/components/shop-info";
+import { SiteLogo } from "@/components/site-logo";
 import { ButtonLink } from "@/components/ui/button";
 import { getSite } from "@/lib/content";
 import { siteName } from "@/lib/site";
@@ -11,7 +13,22 @@ export async function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="site-footer__top">
-        <p className="site-footer__name">{siteName}</p>
+        <Link href="/" className="site-footer__brand">
+          <SiteLogo className="site-footer__logo" />
+          <span className="visually-hidden">{siteName}</span>
+        </Link>
+        {site.footerTagline && (
+          <p className="site-footer__tagline">{site.footerTagline}</p>
+        )}
+        {site.instagram && (
+          <a
+            href={`https://instagram.com/${site.instagram}`}
+            rel="noopener noreferrer"
+            className="link site-footer__social"
+          >
+            Find us on Instagram (@{site.instagram})
+          </a>
+        )}
       </div>
       <div className="site-footer__grid">
         <div className="site-footer__col">
@@ -27,7 +44,7 @@ export async function SiteFooter() {
         </div>
         <div className="site-footer__col">
           <h2 className="eyebrow">Get in touch</h2>
-          <ShopContact site={site} />
+          <ShopContact site={site} showInstagram={false} />
           <ButtonLink href="/contact" className="site-footer__cta">
             Request an appointment
           </ButtonLink>
@@ -43,9 +60,14 @@ export async function SiteFooter() {
           </div>
         </nav>
       </div>
-      <p className="site-footer__copyright">
-        © {new Date().getFullYear()} {siteName}
-      </p>
+      <div className="site-footer__bottom">
+        <p>
+          © {new Date().getFullYear()} {siteName}
+        </p>
+        {site.footerSignoff && (
+          <p className="site-footer__signoff">{site.footerSignoff}</p>
+        )}
+      </div>
     </footer>
   );
 }

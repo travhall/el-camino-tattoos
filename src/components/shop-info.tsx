@@ -23,8 +23,15 @@ export function ShopAddress({ site }: { site: Site }) {
 }
 
 /** Phone, email and Instagram, each only if set. */
-export function ShopContact({ site }: { site: Site }) {
-  if (!site.phone && !site.email && !site.instagram) return null;
+export function ShopContact({
+  site,
+  showInstagram = true,
+}: {
+  site: Site;
+  showInstagram?: boolean;
+}) {
+  const instagram = showInstagram ? site.instagram : "";
+  if (!site.phone && !site.email && !instagram) return null;
 
   return (
     <address className="shop-info__contact">
@@ -38,13 +45,13 @@ export function ShopContact({ site }: { site: Site }) {
           {site.email}
         </a>
       )}
-      {site.instagram && (
+      {instagram && (
         <a
-          href={`https://instagram.com/${site.instagram}`}
+          href={`https://instagram.com/${instagram}`}
           rel="noopener noreferrer"
           className="link shop-info__link"
         >
-          @{site.instagram}
+          @{instagram}
         </a>
       )}
     </address>

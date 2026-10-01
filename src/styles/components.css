@@ -78,15 +78,27 @@
   }
 
   .site-footer__top {
-    @apply mx-auto w-(--page-width) pt-fluid-lg;
+    @apply mx-auto flex w-(--page-width) flex-wrap items-center gap-x-fluid-xl gap-y-fluid-sm border-b border-line pt-fluid-xl pb-fluid-md;
   }
 
-  .site-footer__name {
-    @apply font-medium text-foreground;
+  .site-footer__brand {
+    @apply inline-flex min-h-11 items-center text-foreground;
+  }
+
+  .site-footer__logo {
+    @apply h-6 w-auto;
+  }
+
+  .site-footer__tagline {
+    @apply text-sm text-muted;
+  }
+
+  .site-footer__social {
+    @apply inline-flex min-h-11 items-center text-sm md:ml-auto;
   }
 
   .site-footer__grid {
-    @apply mx-auto grid w-(--page-width) gap-fluid-lg pt-fluid-md text-sm text-muted md:grid-cols-4;
+    @apply mx-auto grid w-(--page-width) gap-fluid-lg py-fluid-lg text-sm text-muted md:grid-cols-[1.03fr_1.2fr_1.34fr_1fr];
   }
 
   .site-footer__col {
@@ -94,7 +106,7 @@
   }
 
   .site-footer__nav {
-    @apply grid gap-fluid-2xs;
+    @apply grid grid-cols-2 gap-x-fluid-md gap-y-fluid-3xs;
   }
 
   /* Mirrors .site-nav__link's state styling (44px hit area; current page is
@@ -117,8 +129,12 @@
     @apply justify-self-start;
   }
 
-  .site-footer__copyright {
-    @apply mx-auto w-(--page-width) py-fluid-sm text-sm text-muted;
+  .site-footer__bottom {
+    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-fluid-xs border-t border-line py-fluid-sm text-sm text-muted;
+  }
+
+  .site-footer__signoff {
+    @apply italic;
   }
 
   /* Shop address and contact details: each an <address> block, used inside

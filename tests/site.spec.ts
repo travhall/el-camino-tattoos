@@ -112,6 +112,20 @@ test.describe("shop info", () => {
     ).toHaveAttribute("href", "/contact");
   });
 
+  test("the footer has a brand row and a bottom bar", async ({ page }) => {
+    await open(page, "/");
+    const footer = page.getByRole("contentinfo");
+    await expect(footer.locator(".site-footer__brand")).toHaveAttribute(
+      "href",
+      "/",
+    );
+    await expect(footer.getByText("Good work. Good company.")).toBeVisible();
+    await expect(footer.getByText("Made to last.")).toBeVisible();
+    await expect(
+      footer.getByText(`© ${new Date().getFullYear()} El Camino Tattoos`),
+    ).toBeVisible();
+  });
+
   test("the contact page says what a deposit is, and leaves out a missing phone", async ({
     page,
   }) => {
