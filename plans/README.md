@@ -7,7 +7,25 @@ were written on 2026-09-25 (commit `8d2892d`) from a color-theme audit. Plan
 agent-generated tattoo-shop mock site for ideas worth porting. Plans 010 to
 014 were written on 2026-09-29 (commit `bea6c5a`) from a senior-frontend
 audit of the color system (OKLCH/contrast/tooling), at the owner's request
-to draft plans for each finding.
+to draft plans for each finding. Plans 015 to 017 were written on 2026-09-30
+(commit `247a87d`) to start porting a second, dark-themed design mock's
+approved direction (sharp corners, dark-as-default, a hero photo + stamp
+badge) into this codebase — phase 1 of a "phase by surface" rollout the
+owner chose; header/hero/homepage this round, artists/portfolio/footer
+later. Plans 018 to 020 were written on 2026-09-30 (commit `881ef16`), phase
+2 of the same rollout (artists/portfolio/footer): 018 adds the `role`/
+`visitDates` fields the Artists page split needs, 019 builds that split
+plus a match-me CTA and a guest-artist-inquiry section, 020 repeats the nav
+and adds a booking CTA in the footer. Portfolio page visual polish was
+considered and skipped this round — it already inherits the dark/sharp
+identity for free via shared roles/CSS, with no open content questions
+blocking it, so there was nothing left to plan. Plan 021 was written on
+2026-09-30 (commit `f3511d3`), phase 3: restructures Aftercare into
+numbered steps plus a warning section, per the owner's direct request after
+reviewing the mock's version. The owner also rejected flash/flat-pricing
+outright this round (see "Findings considered and rejected") and left FAQ
+category grouping for a later pass since current FAQ volume doesn't need it
+yet.
 Execute in the order below. Each executor: read the plan fully before starting,
 honor its STOP conditions, and update your row when done.
 
@@ -29,7 +47,13 @@ honor its STOP conditions, and update your row when done.
 | 012  | Give `subtle` real differentiation from `muted` in dark mode               | P2       | S      | — (shares `contrast.mjs` `PAIRS` with 011)           | DONE (merged to main: `b1cdc54`)                                                                                                                                                                                                      |
 | 013  | Add a manual light/dark theme toggle                                       | P2       | M      | —                                                    | DONE (merged to main: `68b8f06`, `0065cd8`, `355aabc`, `c812679`, `597bb9c`, `031ef05`)                                                                                                                                               |
 | 014  | Emit wide-gamut `oklch()` alongside sRGB hex in `palette.css`              | P3       | M      | 011, 012 (recommended order, not a hard requirement) | REJECTED (axe-core@4.13.0 misparses the computed oklch()/lab() color values, producing false color-contrast violations in `pnpm test` — see plan file's execution report; not worth breaking the a11y test gate for a P3 enhancement) |
-| 021  | Replace free-form Aftercare rich text with structured steps + a warning    | P2       | M      | —                                                    | DONE (branch `advisor/021-structured-aftercare`, not merged)                                                                                                                                                                          |
+| 015  | Switch every rounded corner to sharp (0 radius)                           | P2       | S      | —                                                    | DONE (merged to main: `a10c785`)                                                                                                                                                                                                      |
+| 016  | Make dark the default theme ("Paper mode" becomes the opt-in)             | P2       | M      | —                                                    | DONE (merged to main: `40cd61f`, `9191def` — scope expanded mid-execution to include `scripts/lib/parse-css-vars.mjs`/`scripts/contrast.mjs`, see plan file)                                                                         |
+| 017  | Add a framed hero photo and a decorative "walk-ins" stamp to the homepage | P2       | M      | — (advisory: land after 015 if both are in flight)   | DONE (merged to main: `3088eb5`..`881ef16`)                                                                                                                                                                                           |
+| 018  | Add a `role` and `visitDates` field to artists                            | P1       | S      | —                                                    | DONE (branch `advisor/018-artist-role-field`: `eeb974f`, not merged)                                                                                                                                                                  |
+| 019  | Split the Artists page into resident/apprentice and guest artists         | P2       | M      | 018                                                   | DONE (branch `advisor/019-artists-resident-guest`: `6813b8a`..`9b80b78`, not merged)                                                                                                                                                  |
+| 020  | Repeat the nav and add a booking CTA in the footer                        | P3       | S      | —                                                    | DONE (merged to main: `f3511d3` — scope expanded mid-execution to fix a cross-plan test collision with plan 019, see plan file)                                                                                                      |
+| 021  | Replace free-form Aftercare rich text with structured steps + a warning   | P2       | M      | —                                                    | DONE (merged to main: `ed1696d`)                                                                                                                                                                                                       |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -45,6 +69,9 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 - 010 is independent of everything else, but 011 and 012 both edit `scripts/contrast.mjs`'s `PAIRS` array — land one before the other (either order) to avoid a merge overlap; if 010 lands first, its parser refactor is orthogonal to the `PAIRS` data and both apply cleanly on top.
 - 014 has no hard dependency, but it's recommended to run after 011 and 012 so its "contrast result must not change" verification step is checked against the final `PAIRS`/role state rather than an intermediate one.
 - 013 is fully independent of 010–012 and 014 — it adds a `:root[data-theme]` override, not a role or ramp change.
+- 015, 016 and 017 are mutually independent (each has its own scope: shape language, theme default, one new homepage component) and can run in any order or in parallel. The only soft note: 017's stamp badge is deliberately built without `rounded-full` so it doesn't undo 015's outcome if 015 hasn't landed yet — see 017's header note. None of the three touch `scripts/color-ramps.mjs`, `palette.css`, or any ramp value, so they're independent of 003–014 too.
+- 019 requires 018: it reads `Artist.role`/`Artist.visitDates`, which don't exist until 018 lands.
+- 020 is independent of 018 and 019 — it touches `site-header.tsx`/`site-footer.tsx`, neither of which 018/019 touch.
 
 ## Resolved: `pnpm test` flake in the contact-form axe check
 
@@ -70,6 +97,7 @@ in `button.tsx`/`contact-form.tsx`/`roles.css` needed to change.
 - Missing `active:` pressed state and `whitespace-nowrap`: taste / speculative, no observed breakage.
 - Lighter `accent-text` (gold-600) so links read gold instead of brown: fails 4.5:1 on `surface-sunken` in light mode; gold-700 is needed there.
 - Dark-mode focus ring: `navy-400` on the new navy `paper-950` is 7.7:1, so the ring stays as is (roles do not change meaning).
+- Flash designs with flat pricing (2026-09-30): rejected outright, not deferred. The owner clarified the shop doesn't publish tattoo prices at all — artists work hourly or flat per piece, case by case — so a flat-pricing flash feature contradicts real shop policy, not just an open question. See `project-shop-facts` memory. Flash designs themselves (pre-drawn pieces, no pricing attached) could still be a future idea, but nobody has proposed that version.
 
 ## Not planned (direction, deferred)
 
@@ -91,7 +119,48 @@ A few ideas from the reviewed mock were rejected outright rather than turned int
 
 A couple more are real ideas but need an owner decision before they're plannable, so they're not written up yet:
 
-- Flash designs with flat pricing and a one-off-vs-repeatable distinction: lines up with the still-open question "whether to include a flash/custom kind on pieces" (see `project-decisions-and-open-questions` memory). Worth raising with Tyler; write a plan once that's answered.
 - A structured Aftercare layout (quick-rules grid, timeline, dos/don'ts columns) instead of free-form Markdoc rich text: a real content-model tradeoff (fixed fields vs. editor freedom), not a quick add.
 - FAQ category grouping with a jump nav: needs a `category` taxonomy decision for the FAQ collection first.
 - A short physical-accessibility note (parking, steps, service animals) — cheap to add as a plain FAQ entry or footer line once someone writes the actual facts; not a code task.
+
+## From the design-port review (2026-09-30)
+
+A second design mock (dark-themed, React/Vite/Tailwind, no CMS) was
+critiqued (`/impeccable critique`) and the owner approved porting specific
+elements of its direction, resolving three real conflicts with this
+codebase's existing conventions up front rather than leaving them for an
+executor to guess:
+
+- **Accent color**: the mock's CTA/accent color is red. This codebase's
+  `roles.css` hard-rules `red = error, and nothing else` (already the
+  subject of an earlier "not planned" entry above: "the owner wants navy
+  and gold foundations first, then a separate design pass"). The owner
+  chose to keep that rule intact and translate the mock's red-accented
+  elements into gold, the existing accent primitive — not a new plan by
+  itself, but the constraint every plan in this round is written against.
+- **Theme default**: the owner chose to make dark the default (plan 016),
+  not merely more prominent — a real visitor-facing behavior change from
+  today's OS-follows-`prefers-color-scheme` behavior.
+- **Shape language**: the owner chose sharp corners site-wide, no
+  exceptions (plan 015) — including the new stamp badge in plan 017, which
+  is square rather than the mock's circular reference specifically so it
+  doesn't contradict plan 015's outcome.
+
+**Scope for this round**: "phase by surface" — header/hero/homepage only.
+Artists, Portfolio, and Footer are later phases, not started here.
+
+**Deferred, not rejected** — real ideas from the mock that need more than a
+color/shape translation before they're plannable:
+
+- The mock's flash-art background-removal technique (a runtime flood-fill
+  routine that cleans flash-sheet art against either theme): there is no
+  flash-art asset in this project's content yet (placeholder Unsplash
+  photos only, per the design-direction notes), so there's nothing to apply
+  the technique to. Revisit once real flash art exists, possibly alongside
+  the still-open "flash/custom kind on pieces" question noted above.
+- A fuller homepage restructure (stats band, services grid, testimonials,
+  etc., beyond the hero) — the homepage's current structure (intro,
+  Artists, Recent Work) is intentionally minimal and not yet a settled IA;
+  plan 017 only adds the hero, it does not restructure what's below it.
+- Header and footer visual updates (beyond what plan 016's theme-toggle
+  rewrite touches, which is behavioral, not visual) — next phase.
