@@ -309,6 +309,25 @@
     @apply grid gap-fluid-2xs border-t border-line pt-fluid-sm;
   }
 
+  /* Aftercare: numbered care steps, then a distinct warning callout. */
+  .aftercare-steps {
+    @apply grid list-none gap-fluid-md;
+  }
+
+  .aftercare-step {
+    @apply grid grid-cols-[auto_1fr] items-start gap-fluid-sm;
+  }
+
+  .aftercare-step__number {
+    @apply font-display text-2xl text-muted;
+  }
+
+  /* `warning` role: "waitlist, heads-up" per roles.css — a medical notice to
+     pay attention to, not an error. */
+  .aftercare-warning {
+    @apply border-l-2 border-warning bg-warning-soft p-fluid-sm;
+  }
+
   /* 404 and error pages */
   .status-page {
     @apply grid max-w-prose gap-fluid-sm py-fluid-lg;
