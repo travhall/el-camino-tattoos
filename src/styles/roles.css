@@ -72,10 +72,14 @@
      prefers-color-scheme check: every visitor lands here unless they've
      explicitly chosen "Paper mode" via the toggle (src/components/theme-toggle.tsx),
      which is recorded below as :root[data-theme="light"]. */
-  --background: var(--paper-950);
-  --surface: var(--paper-900);
-  --surface-raised: var(--paper-800);
-  --surface-sunken: var(--paper-950);
+  /* Dark surfaces are one-off hex (the mock's charcoals), not ramp steps: the
+     paper ramp jumps from 950 (#090704, L13) to 900 (#1c1a15, L22), and the
+     page background belongs between them (L18.7). paper-950 stays in the ramp
+     and is still used by scrim and veil. */
+  --background: #141311;
+  --surface: #1d1b18;
+  --surface-raised: #221f1b;
+  --surface-sunken: #0c0b09;
   --foreground: var(--ink-50);
   --muted: var(--ink-300);
   --subtle: var(--ink-400);
