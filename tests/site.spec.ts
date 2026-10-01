@@ -45,6 +45,28 @@ test.describe("shop info", () => {
     await expect(footer.getByText("Eau Claire, WI 54703")).toBeVisible();
   });
 
+  test("the footer groups shop details under labeled columns", async ({
+    page,
+  }) => {
+    await open(page, "/");
+    const footer = page.getByRole("contentinfo");
+    await expect(
+      footer.getByRole("heading", { name: "Find the shop" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "Come on by" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "Get in touch" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "Take a look around" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("link", { name: "Request an appointment" }),
+    ).toHaveAttribute("href", "/contact");
+  });
+
   test("the contact page says what a deposit is, and leaves out a missing phone", async ({
     page,
   }) => {
