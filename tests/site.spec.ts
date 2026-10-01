@@ -142,7 +142,9 @@ test.describe("editable pages", () => {
   }) => {
     await open(page, "/faq");
 
-    const questions = page.getByRole("heading", { level: 2 });
+    // Scoped to main: the footer now has its own h2 column headings on
+    // every page, so an unscoped query would pick those up too.
+    const questions = page.getByRole("main").getByRole("heading", { level: 2 });
     await expect(questions).toHaveText([
       "How much is a deposit?",
       "Do you take walk-ins?",
