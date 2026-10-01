@@ -495,9 +495,10 @@ test("the topbar shows the walk-in note and persists through theme toggle", asyn
 
   const topbar = page.locator(".site-topbar");
   await expect(topbar).toBeVisible();
-  await expect(
-    topbar.getByRole("link", { name: /walk-in/i }),
-  ).toHaveAttribute("href", "/contact");
+  await expect(topbar.getByRole("link", { name: /walk-in/i })).toHaveAttribute(
+    "href",
+    "/contact",
+  );
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
