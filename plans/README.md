@@ -25,7 +25,17 @@ numbered steps plus a warning section, per the owner's direct request after
 reviewing the mock's version. The owner also rejected flash/flat-pricing
 outright this round (see "Findings considered and rejected") and left FAQ
 category grouping for a later pass since current FAQ volume doesn't need it
-yet.
+yet. Plans 022 and 023 were written on 2026-09-30 (commit `581fd6b`), the
+header/footer visual pass the owner picked as the final phase of the design
+port: 022 adds a header topbar, 023 restructures the footer into labeled
+columns. Plans 024 to 026 were written on 2026-09-30 (commit `23ebb10`) from
+a fresh, direct (no-subagent) `/improve` audit run after the design port
+wrapped — the repo is small (62 TS/TSX files) so the audit was done by
+reading directly rather than fanning out Explore subagents. 024 closes a
+real security gap (Keystatic admin storage has no fail-safe against
+silently running unauthenticated in production), 025 patches a critical
+Next.js RCE advisory (unused API, but a trivial same-minor version bump),
+026 fixes a stale README sentence left behind by plan 021.
 Execute in the order below. Each executor: read the plan fully before starting,
 honor its STOP conditions, and update your row when done.
 
@@ -56,6 +66,9 @@ honor its STOP conditions, and update your row when done.
 | 021  | Replace free-form Aftercare rich text with structured steps + a warning    | P2       | M      | —                                                    | DONE (merged to main: `ed1696d`)                                                                                                                                                                                                      |
 | 022  | Add a header topbar (walk-ins note, location, theme toggle)                | P3       | S      | —                                                    | DONE (merged to main: `05fa2fa`..`f57bbab` — Step 1 revised mid-execution at `41ebd2a` to nest the topbar inside `<header>` after the original sibling-`<div>` version failed axe's `region` rule on all 48 a11y-sweep combinations)  |
 | 023  | Restructure the footer into labeled columns                                | P3       | M      | —                                                    | DONE (merged to main: `5d0d073`..`117fb2c` — the walk-in note repeats in hero/topbar/footer on `/`; owner reviewed and kept all three as reinforcement, 2026-09-30)                                                                   |
+| 024  | Fail the build if Keystatic would deploy unauthenticated                   | P1       | S      | —                                                    | TODO                                                                                                                                                                                                                                  |
+| 025  | Patch Next.js past the critical RCE advisory (GHSA-vcvr-r3jv-pc5j)         | P1       | S      | —                                                    | TODO                                                                                                                                                                                                                                  |
+| 026  | Fix README's stale description of the Aftercare page                       | P3       | S      | —                                                    | TODO                                                                                                                                                                                                                                  |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -75,6 +88,7 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 - 019 requires 018: it reads `Artist.role`/`Artist.visitDates`, which don't exist until 018 lands.
 - 020 is independent of 018 and 019 — it touches `site-header.tsx`/`site-footer.tsx`, neither of which 018/019 touch.
 - 022 and 023 are mutually independent — 022 touches `site-header.tsx` only, 023 touches `site-footer.tsx`/`shop-info.tsx` only, and neither edits shared CSS rules the other depends on. Land in either order.
+- 024, 025 and 026 are mutually independent — 024 touches `keystatic.config.ts` only, 025 touches `package.json`/`pnpm-lock.yaml` only, 026 touches `README.md` only. Land in any order. 024 is the highest-priority of the three (closes an unauthenticated-write exposure), but nothing blocks running them in parallel.
 
 ## Resolved: `pnpm test` flake in the contact-form axe check
 
