@@ -9,6 +9,21 @@ const useGitHub =
   Boolean(process.env.NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG) ||
   process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE === "github";
 
+// Netlify sets NETLIFY=true in every build and runtime context on its
+// platform (local dev, local `next build`, and other CI runners never set
+// this). If GitHub storage isn't configured there, Keystatic would fall
+// back to local-filesystem storage — meaning /keystatic and its API route
+// accept unauthenticated content writes in production. Fail the build
+// loudly instead of deploying that silently.
+if (process.env.NETLIFY && !useGitHub) {
+  throw new Error(
+    'Keystatic storage would be "local" on Netlify, which serves an ' +
+      "unauthenticated content-editing API in production. Set " +
+      "NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG (see .env.example and the " +
+      "README's Netlify setup section) before deploying.",
+  );
+}
+
 const instagramField = () =>
   fields.text({
     label: "Instagram handle",
