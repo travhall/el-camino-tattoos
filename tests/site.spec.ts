@@ -83,6 +83,16 @@ test.describe("shop info", () => {
     expect(fits).toBe(true);
   });
 
+  test("a photo that fails to load is replaced by a placeholder", async ({
+    page,
+  }) => {
+    await page.route("**/_next/image**", (route) => route.abort());
+    await open(page, "/");
+    const frame = page.locator(".home-hero__photo");
+    await expect(frame.locator(".photo-placeholder")).toBeVisible();
+    await expect(frame.locator("img")).toHaveCount(0);
+  });
+
   test("the footer shows the address", async ({ page }) => {
     await open(page, "/");
     const footer = page.getByRole("contentinfo");

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { Photo } from "@/components/photo";
+import { PhotoPlaceholder } from "@/components/photo-placeholder";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PieceGrid } from "@/components/piece-grid";
@@ -43,8 +44,8 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
     <div className="stack stack--xl">
       <div className="artist-profile">
         <div className="artist-profile__photo">
-          {artist.photo && (
-            <Image
+          {artist.photo ? (
+            <Photo
               src={artist.photo}
               alt={`Portrait of ${artist.name}`}
               fill
@@ -52,6 +53,8 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
               sizes="(min-width: 768px) 33vw, 100vw"
               className="image-cover"
             />
+          ) : (
+            <PhotoPlaceholder />
           )}
         </div>
         <div className="stack">

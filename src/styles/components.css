@@ -474,6 +474,16 @@
     @apply size-4 shrink-0 text-accent-mark;
   }
 
+  /* Stands in for a missing or failed photo, filling the media box it sits in
+     (see src/components/photo-placeholder.tsx). */
+  .photo-placeholder {
+    @apply absolute inset-0 grid place-items-center bg-surface-sunken text-border;
+  }
+
+  .photo-placeholder__star {
+    @apply size-1/4 max-w-16 min-w-8;
+  }
+
   /* A strip of "tape" pinning the photo down. Decorative only. */
   .photo-frame__tape {
     @apply absolute top-[-0.75rem] left-1/2 h-6 w-16 -translate-x-1/2 -rotate-2 bg-surface-raised/80;

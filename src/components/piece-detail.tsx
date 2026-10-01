@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Photo } from "@/components/photo";
 import type { Artist, Piece } from "@/lib/content";
 
 // Keystatic dates are calendar dates ("2026-08-01"), so format them in UTC to
@@ -31,7 +31,7 @@ export function PieceDetail({
   return (
     <div className="piece-detail">
       <div className="piece-detail__media">
-        <Image
+        <Photo
           src={piece.image}
           alt={artist ? `${piece.title} by ${artist.name}` : piece.title}
           fill

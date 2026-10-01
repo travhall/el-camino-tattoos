@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Photo } from "@/components/photo";
 import type { Artist, Piece } from "@/lib/content";
 
 export function PieceGrid({
@@ -23,7 +23,7 @@ export function PieceGrid({
           <li key={piece.slug}>
             <Link href={`/portfolio/${piece.slug}`} className="piece-tile">
               <div className="piece-tile__media">
-                <Image
+                <Photo
                   src={piece.image}
                   alt={
                     artistName ? `${piece.title} by ${artistName}` : piece.title

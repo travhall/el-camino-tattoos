@@ -1,5 +1,6 @@
-import Image from "next/image";
 import { FlashStar } from "@/components/flash-star";
+import { Photo } from "@/components/photo";
+import { PhotoPlaceholder } from "@/components/photo-placeholder";
 import type { Piece } from "@/lib/content";
 
 export function HeroPhoto({
@@ -8,25 +9,28 @@ export function HeroPhoto({
   walkIns,
   caption,
 }: {
+  /** The photo to show; with none, the frame holds a placeholder. */
   piece: Piece | null;
   artistName: string | undefined;
   walkIns: boolean;
   caption?: string;
 }) {
-  if (!piece) return null;
-
   return (
     <div className="home-hero__photo">
       <div className="photo-frame">
         <div className="photo-frame__media">
-          <Image
-            src={piece.image}
-            alt={artistName ? `${piece.title} by ${artistName}` : piece.title}
-            fill
-            sizes="(min-width: 768px) 46vw, 90vw"
-            className="image-cover"
-            priority
-          />
+          {piece ? (
+            <Photo
+              src={piece.image}
+              alt={artistName ? `${piece.title} by ${artistName}` : piece.title}
+              fill
+              sizes="(min-width: 768px) 46vw, 90vw"
+              className="image-cover"
+              priority
+            />
+          ) : (
+            <PhotoPlaceholder />
+          )}
         </div>
         {caption && (
           <p className="photo-frame__caption">
