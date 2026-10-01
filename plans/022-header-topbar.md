@@ -290,6 +290,19 @@ your own worktree's.
 
 ### Step 1 — Add the topbar to `SiteHeader`
 
+**Revised 2026-09-30, before any plan 022 execution was accepted:** the
+first execution attempt correctly caught that the original version of this
+step put `.site-topbar` as a sibling `<div>` *before* `<header>`, outside
+every ARIA landmark. `pnpm test`'s full a11y sweep (`tests/a11y.spec.ts`,
+which includes the `best-practice` tag) failed on axe's `region` rule
+across all 48 route/theme/viewport combinations, because the topbar text
+sat outside any landmark. The fix below nests the topbar **inside**
+`<header>` instead, so both bands are covered by the header's implicit
+`banner` landmark. This is the version to implement — the sibling-`<div>`
+version that follows is kept struck through only so you understand what
+changed and why if you're comparing against an earlier copy of this plan;
+do not implement it.
+
 Replace the full contents of `src/components/site-header.tsx` with:
 
 ```tsx
@@ -313,7 +326,7 @@ export async function SiteHeader() {
   const cityLine = [site.city, site.region].filter(Boolean).join(", ");
 
   return (
-    <>
+    <header className="site-header">
       {(site.walkInNote || cityLine) && (
         <div className="site-topbar">
           <div className="site-topbar__inner">
@@ -333,28 +346,38 @@ export async function SiteHeader() {
           </div>
         </div>
       )}
-      <header className="site-header">
-        <div className="site-header__inner">
-          <Link href="/" className="site-header__brand">
-            <SiteLogo className="site-header__logo" />
-            <span className="visually-hidden">El Camino Tattoos</span>
-          </Link>
-          <nav aria-label="Primary" className="site-nav">
-            {navLinks.map(({ href, label }) => (
-              <NavLink key={href} href={href} className="site-nav__link">
-                {label}
-              </NavLink>
-            ))}
-            {!(site.walkInNote || cityLine) && <ThemeToggle />}
-            {/* Persistent booking slot; points at /contact until a booking flow exists. */}
-            <ButtonLink href="/contact">Request</ButtonLink>
-          </nav>
-        </div>
-      </header>
-    </>
+      <div className="site-header__inner">
+        <Link href="/" className="site-header__brand">
+          <SiteLogo className="site-header__logo" />
+          <span className="visually-hidden">El Camino Tattoos</span>
+        </Link>
+        <nav aria-label="Primary" className="site-nav">
+          {navLinks.map(({ href, label }) => (
+            <NavLink key={href} href={href} className="site-nav__link">
+              {label}
+            </NavLink>
+          ))}
+          {!(site.walkInNote || cityLine) && <ThemeToggle />}
+          {/* Persistent booking slot; points at /contact until a booking flow exists. */}
+          <ButtonLink href="/contact">Request</ButtonLink>
+        </nav>
+      </div>
+    </header>
   );
 }
 ```
+
+The only structural change from a plain header/nav split: the outer
+`<header className="site-header">` now wraps *both* the topbar and the
+`site-header__inner` div, instead of the old version where `<header>` only
+wrapped `site-header__inner` and the topbar sat before it as a sibling. No
+CSS changes are needed for this — `.site-header`'s existing `border-b
+border-line` now draws under the whole band (topbar + nav, when the topbar
+renders) instead of just under the nav, which is the correct visual
+outcome (one line separating the entire masthead from the page), and when
+there's no topbar content the rendered output is byte-identical to before
+(a `<header>` wrapping one `<div className="site-header__inner">`, same as
+the original).
 
 Notes on this code, read before you implement:
 - The topbar only renders when there's content for it (`walkInNote` or a
