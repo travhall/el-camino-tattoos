@@ -168,30 +168,30 @@ test.describe("editable pages", () => {
     ).toHaveAttribute("href", "/faq");
   });
 
-  test("Aftercare renders what the editor wrote, under one h1", async ({
+  test("Aftercare renders structured steps and a warning, under one h1", async ({
     page,
   }) => {
     // The fixture only exists when there was no real Aftercare file to keep.
     const file = path.join(process.cwd(), "content/aftercare.mdoc");
     const seeded =
       existsSync(file) &&
-      readFileSync(file, "utf8").includes("Fixture aftercare");
+      readFileSync(file, "utf8").includes("Fixture aftercare intro line");
     test.skip(!seeded, "real Aftercare content is present");
 
     await open(page, "/aftercare");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Aftercare",
     );
-    await expect(page.getByRole("heading", { level: 2 })).toHaveText(
-      "Fixture aftercare",
-    );
-    await expect(page.getByRole("heading", { level: 3 })).toHaveText(
-      "The first days",
-    );
-    await expect(page.locator("main ol > li")).toHaveText([
-      "Wash gently",
-      "Pat dry",
-      "Apply a thin layer of ointment",
-    ]);
+    await expect(page.getByText("Fixture aftercare intro line")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Keep it clean" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Apply a thin layer" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "When to get help" }),
+    ).toBeVisible();
+    await expect(page.getByText("increasing redness")).toBeVisible();
   });
 });

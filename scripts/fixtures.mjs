@@ -63,8 +63,9 @@ export const fixtures = {
 };
 
 // FAQ entries are one file each (question and order in frontmatter, the answer
-// as the body). Aftercare is a single fixed file, so it is only written when
-// it doesn't exist and only removed while it still equals this text: real
+// as the body). Aftercare is a single fixed file (YAML frontmatter for intro/
+// steps, a markdoc body for the warning), so it is only written when it
+// doesn't exist and only removed while it still equals this text: real
 // content is never touched.
 fixtures.faq = [
   {
@@ -83,15 +84,16 @@ fixtures.faq = [
   },
 ];
 
-export const aftercareFixture = `## Fixture aftercare
+export const aftercareFixture = `---
+intro: Fixture aftercare intro line.
+steps:
+  - title: Keep it clean
+    body: Wash gently and pat dry with a clean towel.
+  - title: Apply a thin layer
+    body: Use the aftercare product your artist recommended.
+---
 
-Keep it clean and **do not** pick at it.
-
-### The first days
-
-1. Wash gently
-2. Pat dry
-3. Apply a thin layer of ointment
+Call a doctor if you see **increasing redness** or a fever.
 `;
 
 function png(width, height, [r, g, b]) {
