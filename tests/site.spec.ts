@@ -45,6 +45,28 @@ test.describe("shop info", () => {
     await expect(footer.getByText("Eau Claire, WI 54703")).toBeVisible();
   });
 
+  test("the footer groups shop details under labeled columns", async ({
+    page,
+  }) => {
+    await open(page, "/");
+    const footer = page.getByRole("contentinfo");
+    await expect(
+      footer.getByRole("heading", { name: "Find the shop" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "Come on by" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "Get in touch" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "Take a look around" }),
+    ).toBeVisible();
+    await expect(
+      footer.getByRole("link", { name: "Request an appointment" }),
+    ).toHaveAttribute("href", "/contact");
+  });
+
   test("the contact page says what a deposit is, and leaves out a missing phone", async ({
     page,
   }) => {
@@ -120,7 +142,9 @@ test.describe("editable pages", () => {
   }) => {
     await open(page, "/faq");
 
-    const questions = page.getByRole("heading", { level: 2 });
+    // Scoped to main: the footer now has its own h2 column headings on
+    // every page, so an unscoped query would pick those up too.
+    const questions = page.getByRole("main").getByRole("heading", { level: 2 });
     await expect(questions).toHaveText([
       "How much is a deposit?",
       "Do you take walk-ins?",

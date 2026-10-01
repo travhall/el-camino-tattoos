@@ -58,16 +58,20 @@
     @apply mt-auto border-t border-line bg-surface-sunken;
   }
 
-  .site-footer__inner {
-    @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-lg text-sm text-muted md:grid-cols-3;
-  }
-
-  .site-footer__brand {
-    @apply grid gap-fluid-sm;
+  .site-footer__top {
+    @apply mx-auto max-w-6xl px-fluid-sm pt-fluid-lg;
   }
 
   .site-footer__name {
     @apply font-medium text-foreground;
+  }
+
+  .site-footer__grid {
+    @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-md text-sm text-muted md:grid-cols-4;
+  }
+
+  .site-footer__col {
+    @apply grid content-start gap-fluid-sm;
   }
 
   .site-footer__nav {
@@ -86,19 +90,20 @@
     @apply underline decoration-nav-current decoration-2 underline-offset-4;
   }
 
+  .site-footer__note {
+    @apply text-xs;
+  }
+
   .site-footer__cta {
-    @apply flex items-start md:justify-self-end;
+    @apply justify-self-start;
   }
 
   .site-footer__copyright {
     @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
   }
 
-  /* Shop details: address and contact on one side, hours on the other. */
-  .shop-info {
-    @apply grid items-start gap-fluid-md md:grid-cols-2;
-  }
-
+  /* Shop address and contact details: each an <address> block, used inside
+     a footer column alongside its own <h2>. */
   .shop-info__contact {
     @apply grid justify-items-start gap-fluid-2xs not-italic;
   }
