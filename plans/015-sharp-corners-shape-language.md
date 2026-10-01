@@ -49,6 +49,7 @@ in the three CSS files below, inside `@apply` rules, per the project's
 "utilities in CSS, not JSX" convention):
 
 `src/styles/components.css`:
+
 - Line 76, `.button`: `...rounded-full border border-button-primary-border...`
 - Line 105, `.theme-toggle`: `...rounded-full border border-outline...`
 - Line 146, `.filter-chip`: `...rounded-full border border-chip-border...`
@@ -56,6 +57,7 @@ in the three CSS files below, inside `@apply` rules, per the project's
 - Line 268, `.form-status`: `...rounded-md border border-error...`
 
 `src/styles/layout.css`, line 14, `.skip-link`:
+
 ```css
 @apply not-sr-only fixed top-fluid-sm left-fluid-sm z-50 rounded-full bg-foreground px-fluid-md py-fluid-xs font-medium text-background;
 ```
@@ -63,6 +65,7 @@ in the three CSS files below, inside `@apply` rules, per the project's
 `src/styles/styleguide.css` (`/styleguide` only, but per CLAUDE.md "new UI
 goes in `/styleguide` first" — it should demonstrate real conventions, so it
 gets the same treatment):
+
 - Line 6 (the page's sticky section nav): `...rounded-md border border-line bg-surface-raised...`
 - Line 40 (a ramp-swatch box): `...h-20 rounded-md border border-line;`
 - Line 73 (a type-scale demo bar): `...block h-3 rounded-full bg-accent;`
@@ -70,6 +73,7 @@ gets the same treatment):
 
 `scripts/figma-manifest.mjs`, lines 73–77 (the `layout` object passed to the
 manifest writer):
+
 ```js
   "radius/control": {
     px: 6,
@@ -77,6 +81,7 @@ manifest writer):
   },
   "radius/pill": { px: 9999, source: ".filter-chip, .button (rounded-full)" },
 ```
+
 These become a single `radius/sharp` entry at `px: 0`, listing every
 consumer above (both the ones currently under `radius/control` and
 `radius/pill`, plus `.theme-toggle` and `.skip-link`, which were never
@@ -91,13 +96,13 @@ property anywhere in `src/styles/`.
 
 ## Commands you will need
 
-| Purpose        | Command                                      | Expected on success |
-| --------------- | --------------------------------------------- | -------------------- |
-| Typecheck      | `pnpm exec tsc --noEmit`                      | exit 0, no output    |
-| Lint           | `pnpm lint`                                    | exit 0                |
-| Format         | `pnpm format:check` (fix with `pnpm format`)   | exit 0                |
-| Figma manifest | `pnpm figma-manifest`                          | prints a new `hash` (a tracked value changed) |
-| Tests          | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
+| Purpose        | Command                                               | Expected on success                           |
+| -------------- | ----------------------------------------------------- | --------------------------------------------- |
+| Typecheck      | `pnpm exec tsc --noEmit`                              | exit 0, no output                             |
+| Lint           | `pnpm lint`                                           | exit 0                                        |
+| Format         | `pnpm format:check` (fix with `pnpm format`)          | exit 0                                        |
+| Figma manifest | `pnpm figma-manifest`                                 | prints a new `hash` (a tracked value changed) |
+| Tests          | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass                                      |
 
 Use `pnpm` only.
 

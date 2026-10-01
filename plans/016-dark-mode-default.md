@@ -35,7 +35,7 @@ Making dark genuinely the default means the site must stop consulting
 light must still land on the dark site — that's the whole point of "dark is
 the default," not "dark is more prominent." This is a real, visible behavior
 change for anyone with a light-mode OS, which today's test suite explicitly
-asserts the *opposite* of (see "Current state" below) — read that existing
+asserts the _opposite_ of (see "Current state" below) — read that existing
 test before starting; you are correcting its premise, not preserving it.
 
 ## Current state
@@ -71,7 +71,7 @@ test("dark-mode role block in roles.css matches its data-theme twin", async () =
 
 There is no `:root[data-theme="light"]` block today — "light" is simply
 whatever the base `:root` already is, so explicitly choosing "light" via the
-toggle only needs to *cancel* the `@media` block, which is why that block's
+toggle only needs to _cancel_ the `@media` block, which is why that block's
 selector is `:root:not([data-theme="light"])`.
 
 **`src/app/layout.tsx`**, the blocking pre-paint script (full relevant
@@ -172,7 +172,7 @@ export function ThemeToggle() {
 used **only** inside this one file — nothing else in the codebase branches
 on it, so removing it cannot break another file.
 
-**`tests/interactions.spec.ts`**, lines 480–505, asserts the *current*
+**`tests/interactions.spec.ts`**, lines 480–505, asserts the _current_
 (opposite) behavior — that OS light preference wins until the toggle is
 clicked twice:
 
@@ -207,13 +207,13 @@ test("theme toggle overrides OS preference and persists", async ({ page }) => {
 
 ## Commands you will need
 
-| Purpose   | Command                                      | Expected on success |
-| --------- | ---------------------------------------------| -------------------- |
-| Typecheck | `pnpm exec tsc --noEmit`                     | exit 0, no output    |
-| Lint      | `pnpm lint`                                   | exit 0                |
-| Format    | `pnpm format:check` (fix with `pnpm format`)  | exit 0                |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
-| One test  | `pnpm test --grep "theme"`                    | matching tests pass  |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass            |
+| One test  | `pnpm test --grep "theme"`                            | matching tests pass |
 
 Use `pnpm` only.
 
@@ -361,10 +361,12 @@ through the end of the file, line 204) with exactly this:
 Leave the file's header comment (lines 1–69, the role/UI-token glossary)
 untouched, **except** update this one sentence in the opening paragraph —
 change:
+
 > The model: each primitive has one job in BOTH modes, and dark mode just
 > uses the other end of the ramp.
 
 to:
+
 > The model: each primitive has one job in BOTH modes, and light mode just
 > uses the other end of the ramp. Dark is the default theme (see below).
 
@@ -538,7 +540,7 @@ needed.
 
 `scripts/lib/parse-css-vars.mjs` exports `parseCssVarRoles`, which both
 `scripts/contrast.mjs` and `scripts/figma-manifest.mjs` import and call. It
-hard-codes the *old* theme structure: it classifies a rule as "dark" only if
+hard-codes the _old_ theme structure: it classifies a rule as "dark" only if
 its selector is exactly `:root:not([data-theme="light"])` inside an
 `@media (prefers-color-scheme: dark)` block, or exactly
 `:root[data-theme="dark"]` — and treats every other `:root`-prefixed rule as
@@ -706,7 +708,7 @@ Run, in order: `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm format:check`
 (fix with `pnpm format` if needed), `pnpm test`.
 
 `pnpm test` re-runs the full axe sweep on every route — this is the most
-important check in this plan: dark is now the *first* paint every route's
+important check in this plan: dark is now the _first_ paint every route's
 axe check sees (the sweep's "light" pass now has to explicitly force light,
 which it already does per-route via `colorScheme`, so this should already
 work correctly; a failure here most likely means a contrast pairing that
@@ -743,7 +745,7 @@ default.
 
 Stop and report back (do not improvise) if:
 
-- Any excerpt in "Current state" doesn't match the live code — in particular, if another in-flight change has already touched `roles.css`'s theme blocks (e.g. a concurrent color-tuning plan), reconcile by re-reading the live file and re-deriving the dark/light split from its *current* values rather than the ones quoted here, and note in your summary what you re-derived.
+- Any excerpt in "Current state" doesn't match the live code — in particular, if another in-flight change has already touched `roles.css`'s theme blocks (e.g. a concurrent color-tuning plan), reconcile by re-reading the live file and re-deriving the dark/light split from its _current_ values rather than the ones quoted here, and note in your summary what you re-derived.
 - The full axe sweep (`pnpm test`) fails on a route/theme combination that passed before this change — this means a contrast pairing relied on being an override rather than the default; report the specific route, theme and rule rather than adjusting a color value yourself.
 - You find a **third** file (beyond the six now in Scope — the original four plus `scripts/lib/parse-css-vars.mjs` and `scripts/contrast.mjs`, added in Step 4a) that references `prefers-color-scheme` or the theme `"system"` state. (A first execution attempt already found and this plan now accounts for `parse-css-vars.mjs`/`contrast.mjs` — that is not itself a reason to stop; a file beyond those six still is.)
 

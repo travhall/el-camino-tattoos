@@ -190,21 +190,21 @@ Keep it clean and **do not** pick at it.
 ```
 
 ```js
-  // "wx" fails if the file exists, which is the point: never overwrite it.
-  await writeFile(at("content/aftercare.mdoc"), aftercareFixture, {
-    flag: "wx",
-  }).catch((error) => {
-    if (error.code !== "EEXIST") throw error;
-  });
+// "wx" fails if the file exists, which is the point: never overwrite it.
+await writeFile(at("content/aftercare.mdoc"), aftercareFixture, {
+  flag: "wx",
+}).catch((error) => {
+  if (error.code !== "EEXIST") throw error;
+});
 ```
 
 ```js
-  const aftercare = await readFile(at("content/aftercare.mdoc"), "utf8").catch(
-    () => null,
-  );
-  if (aftercare === aftercareFixture) {
-    await rm(at("content/aftercare.mdoc"), { force: true });
-  }
+const aftercare = await readFile(at("content/aftercare.mdoc"), "utf8").catch(
+  () => null,
+);
+if (aftercare === aftercareFixture) {
+  await rm(at("content/aftercare.mdoc"), { force: true });
+}
 ```
 
 (The exact line numbers of the write/cleanup blocks may have shifted
@@ -261,13 +261,13 @@ to get help" notice is exactly a heads-up, not an error.
 
 ## Commands you will need
 
-| Purpose   | Command                                      | Expected on success |
-| --------- | ---------------------------------------------| -------------------- |
-| Typecheck | `pnpm exec tsc --noEmit`                     | exit 0, no output    |
-| Lint      | `pnpm lint`                                   | exit 0                |
-| Format    | `pnpm format:check` (fix with `pnpm format`)  | exit 0                |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
-| One test  | `pnpm test --grep "Aftercare"`                | matching tests pass  |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass            |
+| One test  | `pnpm test --grep "Aftercare"`                        | matching tests pass |
 
 Use `pnpm` only.
 
@@ -451,24 +451,24 @@ Append to `src/styles/components.css`, inside `@layer components { ... }`
 layer — exact position doesn't matter, just keep it inside the layer):
 
 ```css
-  /* Aftercare: numbered care steps, then a distinct warning callout. */
-  .aftercare-steps {
-    @apply grid list-none gap-fluid-md;
-  }
+/* Aftercare: numbered care steps, then a distinct warning callout. */
+.aftercare-steps {
+  @apply grid list-none gap-fluid-md;
+}
 
-  .aftercare-step {
-    @apply grid grid-cols-[auto_1fr] items-start gap-fluid-sm;
-  }
+.aftercare-step {
+  @apply grid grid-cols-[auto_1fr] items-start gap-fluid-sm;
+}
 
-  .aftercare-step__number {
-    @apply font-display text-2xl text-muted;
-  }
+.aftercare-step__number {
+  @apply font-display text-2xl text-muted;
+}
 
-  /* `warning` role: "waitlist, heads-up" per roles.css — a medical notice to
+/* `warning` role: "waitlist, heads-up" per roles.css — a medical notice to
      pay attention to, not an error. */
-  .aftercare-warning {
-    @apply border-l-2 border-warning bg-warning-soft p-fluid-sm;
-  }
+.aftercare-warning {
+  @apply border-l-2 border-warning bg-warning-soft p-fluid-sm;
+}
 ```
 
 **Verify**: `grep -n "aftercare-steps\|aftercare-step\b\|aftercare-step__number\|aftercare-warning" src/styles/components.css` shows all four class names.
@@ -563,7 +563,7 @@ Run, in order: `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm format:check`
 `pnpm test` includes the axe sweep on `/aftercare` in both themes at both
 widths — the new `warning` role styling and the numbered-step layout are
 both worth axe's scrutiny; a `border-warning`/`bg-warning-soft` pairing has
-not been used in a component before (it's a new role *combination*, not a
+not been used in a component before (it's a new role _combination_, not a
 new role), so double-check the contrast numbers in `/styleguide` if axe
 flags anything, rather than assuming the role is safe in every combination.
 
@@ -609,6 +609,6 @@ Stop and report back (do not improvise) if:
   to over-build multi-paragraph support now with zero current need.
 - `steps` and `warning` are independent — an editor can fill in steps with
   no warning text (warning section just won't render, since
-  `getAftercare()` still returns a non-null object as long as *something*
+  `getAftercare()` still returns a non-null object as long as _something_
   is filled in) or vice versa. This is intentional flexibility within an
   otherwise fixed shape.

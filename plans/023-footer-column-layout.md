@@ -158,70 +158,70 @@ API.
 `src/styles/components.css` (the footer and shop-info blocks, lines 37-100):
 
 ```css
-  .site-footer {
-    @apply mt-auto border-t border-line bg-surface-sunken;
-  }
+.site-footer {
+  @apply mt-auto border-t border-line bg-surface-sunken;
+}
 
-  .site-footer__inner {
-    @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-lg text-sm text-muted md:grid-cols-3;
-  }
+.site-footer__inner {
+  @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-lg text-sm text-muted md:grid-cols-3;
+}
 
-  .site-footer__brand {
-    @apply grid gap-fluid-sm;
-  }
+.site-footer__brand {
+  @apply grid gap-fluid-sm;
+}
 
-  .site-footer__name {
-    @apply font-medium text-foreground;
-  }
+.site-footer__name {
+  @apply font-medium text-foreground;
+}
 
-  .site-footer__nav {
-    @apply grid gap-fluid-2xs;
-  }
+.site-footer__nav {
+  @apply grid gap-fluid-2xs;
+}
 
-  /* Mirrors .site-nav__link's state styling (44px hit area; current page is
+/* Mirrors .site-nav__link's state styling (44px hit area; current page is
      an underline, not color alone), kept separate rather than shared with
      the header's .site-nav__link so the footer's vertical layout doesn't
      depend on overriding the header nav's flex-row rule. */
-  .site-footer__nav-link {
-    @apply inline-flex min-h-11 items-center hover:underline;
-  }
+.site-footer__nav-link {
+  @apply inline-flex min-h-11 items-center hover:underline;
+}
 
-  .site-footer__nav-link[aria-current] {
-    @apply underline decoration-nav-current decoration-2 underline-offset-4;
-  }
+.site-footer__nav-link[aria-current] {
+  @apply underline decoration-nav-current decoration-2 underline-offset-4;
+}
 
-  .site-footer__cta {
-    @apply flex items-start md:justify-self-end;
-  }
+.site-footer__cta {
+  @apply flex items-start md:justify-self-end;
+}
 
-  .site-footer__copyright {
-    @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
-  }
+.site-footer__copyright {
+  @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
+}
 
-  /* Shop details: address and contact on one side, hours on the other. */
-  .shop-info {
-    @apply grid items-start gap-fluid-md md:grid-cols-2;
-  }
+/* Shop details: address and contact on one side, hours on the other. */
+.shop-info {
+  @apply grid items-start gap-fluid-md md:grid-cols-2;
+}
 
-  .shop-info__contact {
-    @apply grid justify-items-start gap-fluid-2xs not-italic;
-  }
+.shop-info__contact {
+  @apply grid justify-items-start gap-fluid-2xs not-italic;
+}
 
-  .shop-info__link {
-    @apply inline-flex min-h-11 items-center;
-  }
+.shop-info__link {
+  @apply inline-flex min-h-11 items-center;
+}
 
-  .shop-info__hours {
-    @apply grid gap-1;
-  }
+.shop-info__hours {
+  @apply grid gap-1;
+}
 
-  .shop-info__hours-row {
-    @apply flex gap-2;
-  }
+.shop-info__hours-row {
+  @apply flex gap-2;
+}
 
-  .shop-info__days {
-    @apply font-medium text-foreground;
-  }
+.shop-info__days {
+  @apply font-medium text-foreground;
+}
 ```
 
 `src/styles/typography.css` already has the pattern this plan uses for
@@ -229,13 +229,13 @@ column headings — a heading styled smaller than its semantic level (lines
 41-47):
 
 ```css
-  .caption {
-    @apply text-xs text-muted;
-  }
+.caption {
+  @apply text-xs text-muted;
+}
 
-  .eyebrow {
-    @apply text-sm font-medium tracking-wide text-muted uppercase;
-  }
+.eyebrow {
+  @apply text-sm font-medium tracking-wide text-muted uppercase;
+}
 ```
 
 The file's own header comment explains why this is safe: "Headings are
@@ -287,21 +287,22 @@ is already out of this test's scope — keep the footer's CTA text as
 
 ## Commands you will need
 
-| Purpose | Command |
-|---|---|
-| Typecheck | `pnpm exec tsc --noEmit` |
-| Lint | `pnpm lint` |
-| Format check | `pnpm format:check` |
-| Format write | `pnpm format` |
-| Seed test fixtures | `node scripts/fixtures.mjs seed` |
-| Clean test fixtures | `node scripts/fixtures.mjs clean` |
-| Full test suite (builds + seeds + Playwright) | `pnpm test` |
-| Dev server | `node_modules/.bin/next dev --port <port>` (pick an unused port) |
-| Confirm `ShopInfo` has one caller | `grep -rn "ShopInfo" src --include="*.tsx"` |
+| Purpose                                       | Command                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| Typecheck                                     | `pnpm exec tsc --noEmit`                                         |
+| Lint                                          | `pnpm lint`                                                      |
+| Format check                                  | `pnpm format:check`                                              |
+| Format write                                  | `pnpm format`                                                    |
+| Seed test fixtures                            | `node scripts/fixtures.mjs seed`                                 |
+| Clean test fixtures                           | `node scripts/fixtures.mjs clean`                                |
+| Full test suite (builds + seeds + Playwright) | `pnpm test`                                                      |
+| Dev server                                    | `node_modules/.bin/next dev --port <port>` (pick an unused port) |
+| Confirm `ShopInfo` has one caller             | `grep -rn "ShopInfo" src --include="*.tsx"`                      |
 
 ## Scope
 
 **In scope:**
+
 - `src/components/shop-info.tsx` — split into three exports: `ShopAddress`,
   `ShopHours`, `ShopContact` (see Step 1 for exact code).
 - `src/components/site-footer.tsx` — rewrite into a brand row plus a
@@ -314,6 +315,7 @@ is already out of this test's scope — keep the footer's CTA text as
   the new column headings if it doesn't already exist.
 
 **Out of scope — do not touch:**
+
 - `src/lib/content.ts` / `keystatic.config.ts` — no schema change.
 - `src/components/site-header.tsx` — that's plan 022, a separate plan. If
   022 has already landed, don't re-touch its topbar code.
@@ -470,11 +472,7 @@ export async function SiteFooter() {
           <h2 className="eyebrow">Take a look around</h2>
           <div className="site-footer__nav">
             {navLinks.map(({ href, label }) => (
-              <NavLink
-                key={href}
-                href={href}
-                className="site-footer__nav-link"
-              >
+              <NavLink key={href} href={href} className="site-footer__nav-link">
                 {label}
               </NavLink>
             ))}
@@ -490,6 +488,7 @@ export async function SiteFooter() {
 ```
 
 Notes:
+
 - Each column renders unconditionally (the `<h2>` label always shows), but
   the content under it (`ShopAddress`/`ShopHours`/`ShopContact`) still
   renders nothing when empty, exactly as before. A heading with no content
@@ -517,75 +516,75 @@ In `src/styles/components.css`, replace the entire block from
 shown in "Current state" above between those two rules, inclusive) with:
 
 ```css
-  .site-footer {
-    @apply mt-auto border-t border-line bg-surface-sunken;
-  }
+.site-footer {
+  @apply mt-auto border-t border-line bg-surface-sunken;
+}
 
-  .site-footer__top {
-    @apply mx-auto max-w-6xl px-fluid-sm pt-fluid-lg;
-  }
+.site-footer__top {
+  @apply mx-auto max-w-6xl px-fluid-sm pt-fluid-lg;
+}
 
-  .site-footer__name {
-    @apply font-medium text-foreground;
-  }
+.site-footer__name {
+  @apply font-medium text-foreground;
+}
 
-  .site-footer__grid {
-    @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-md text-sm text-muted md:grid-cols-4;
-  }
+.site-footer__grid {
+  @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-md text-sm text-muted md:grid-cols-4;
+}
 
-  .site-footer__col {
-    @apply grid content-start gap-fluid-sm;
-  }
+.site-footer__col {
+  @apply grid content-start gap-fluid-sm;
+}
 
-  .site-footer__nav {
-    @apply grid gap-fluid-2xs;
-  }
+.site-footer__nav {
+  @apply grid gap-fluid-2xs;
+}
 
-  /* Mirrors .site-nav__link's state styling (44px hit area; current page is
+/* Mirrors .site-nav__link's state styling (44px hit area; current page is
      an underline, not color alone), kept separate rather than shared with
      the header's .site-nav__link so the footer's vertical layout doesn't
      depend on overriding the header nav's flex-row rule. */
-  .site-footer__nav-link {
-    @apply inline-flex min-h-11 items-center hover:underline;
-  }
+.site-footer__nav-link {
+  @apply inline-flex min-h-11 items-center hover:underline;
+}
 
-  .site-footer__nav-link[aria-current] {
-    @apply underline decoration-nav-current decoration-2 underline-offset-4;
-  }
+.site-footer__nav-link[aria-current] {
+  @apply underline decoration-nav-current decoration-2 underline-offset-4;
+}
 
-  .site-footer__note {
-    @apply text-xs;
-  }
+.site-footer__note {
+  @apply text-xs;
+}
 
-  .site-footer__cta {
-    @apply justify-self-start;
-  }
+.site-footer__cta {
+  @apply justify-self-start;
+}
 
-  .site-footer__copyright {
-    @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
-  }
+.site-footer__copyright {
+  @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
+}
 
-  /* Shop address and contact details: each an <address> block, used inside
+/* Shop address and contact details: each an <address> block, used inside
      a footer column alongside its own <h2>. */
-  .shop-info__contact {
-    @apply grid justify-items-start gap-fluid-2xs not-italic;
-  }
+.shop-info__contact {
+  @apply grid justify-items-start gap-fluid-2xs not-italic;
+}
 
-  .shop-info__link {
-    @apply inline-flex min-h-11 items-center;
-  }
+.shop-info__link {
+  @apply inline-flex min-h-11 items-center;
+}
 
-  .shop-info__hours {
-    @apply grid gap-1;
-  }
+.shop-info__hours {
+  @apply grid gap-1;
+}
 
-  .shop-info__hours-row {
-    @apply flex gap-2;
-  }
+.shop-info__hours-row {
+  @apply flex gap-2;
+}
 
-  .shop-info__days {
-    @apply font-medium text-foreground;
-  }
+.shop-info__days {
+  @apply font-medium text-foreground;
+}
 ```
 
 Note what's gone: `.site-footer__inner`, `.site-footer__brand`, and
@@ -669,6 +668,7 @@ node_modules/.bin/next dev --port <pick-an-unused-port>
 ```
 
 Visit `/` in a browser (scroll to the footer). Confirm, in both themes:
+
 - Four labeled columns render: Find the shop, Come on by, Get in touch,
   Take a look around.
 - The "Request an appointment" button still looks and behaves like a real

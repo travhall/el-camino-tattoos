@@ -199,13 +199,13 @@ fixtures, which won't set `role`, keep falling back to `"resident"` via
 
 ## Commands you will need
 
-| Purpose   | Command                                      | Expected on success |
-| --------- | ---------------------------------------------| -------------------- |
-| Typecheck | `pnpm exec tsc --noEmit`                     | exit 0, no output    |
-| Lint      | `pnpm lint`                                   | exit 0                |
-| Format    | `pnpm format:check` (fix with `pnpm format`)  | exit 0                |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
-| One test  | `pnpm test --grep "artists"`                  | matching tests pass  |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass            |
+| One test  | `pnpm test --grep "artists"`                          | matching tests pass |
 
 Use `pnpm` only.
 
@@ -217,7 +217,7 @@ Use `pnpm` only.
 - `src/app/(site)/artists/page.tsx`
 - `scripts/fixtures.mjs` (add one fixture artist with `role: "guest"`, and teach the writer loop to emit `role`/`visitDates` lines when present)
 - `tests/routes.ts` (no new route, but see Step 4 — you likely don't need to touch this; only if a new fixture-dependent assertion requires it, which it shouldn't)
-- `tests/site.spec.ts` or `tests/interactions.spec.ts` (add tests — pick whichever fits; `site.spec.ts`'s `"shop info"`/similar describe blocks already test Artists-adjacent content against real config, but this feature needs the new *fixture* guest artist, so model it after a fixture-dependent test in `interactions.spec.ts` instead — your call, document which you picked and why in your report)
+- `tests/site.spec.ts` or `tests/interactions.spec.ts` (add tests — pick whichever fits; `site.spec.ts`'s `"shop info"`/similar describe blocks already test Artists-adjacent content against real config, but this feature needs the new _fixture_ guest artist, so model it after a fixture-dependent test in `interactions.spec.ts` instead — your call, document which you picked and why in your report)
 
 **Out of scope** (do NOT touch):
 
@@ -241,12 +241,16 @@ In `src/components/artist-card.tsx`, after the existing `specialties`
 paragraph, add:
 
 ```tsx
-      {artist.specialties.length > 0 && (
-        <p className="artist-card__meta">{artist.specialties.join(", ")}</p>
-      )}
-      {artist.role === "guest" && artist.visitDates && (
-        <p className="artist-card__meta">Guest · {artist.visitDates}</p>
-      )}
+{
+  artist.specialties.length > 0 && (
+    <p className="artist-card__meta">{artist.specialties.join(", ")}</p>
+  );
+}
+{
+  artist.role === "guest" && artist.visitDates && (
+    <p className="artist-card__meta">Guest · {artist.visitDates}</p>
+  );
+}
 ```
 
 This is intentionally additive and generic — it works anywhere `ArtistCard`
@@ -278,31 +282,31 @@ In the writer loop (around line 132), add `role`/`visitDates` lines only
 when the fixture object sets them:
 
 ```js
-  for (const artist of fixtures.artists) {
-    const lines = [
-      `name: ${artist.name}`,
-      "specialties:",
-      ...artist.specialties.map((s) => `  - ${s}`),
-      `bio: ${artist.bio}`,
-      `instagram: ${artist.instagram}`,
-      `order: ${artist.order}`,
-    ];
-    if (artist.role) lines.push(`role: ${artist.role}`);
-    if (artist.visitDates) lines.push(`visitDates: ${artist.visitDates}`);
-    if (artist.photo) {
-      const dir = at("public/images/artists", artist.slug);
-      await mkdir(dir, { recursive: true });
-      await writeFile(
-        path.join(dir, artist.photo.file),
-        png(600, 800, artist.photo.color),
-      );
-      lines.push(`photo: /images/artists/${artist.slug}/${artist.photo.file}`);
-    }
+for (const artist of fixtures.artists) {
+  const lines = [
+    `name: ${artist.name}`,
+    "specialties:",
+    ...artist.specialties.map((s) => `  - ${s}`),
+    `bio: ${artist.bio}`,
+    `instagram: ${artist.instagram}`,
+    `order: ${artist.order}`,
+  ];
+  if (artist.role) lines.push(`role: ${artist.role}`);
+  if (artist.visitDates) lines.push(`visitDates: ${artist.visitDates}`);
+  if (artist.photo) {
+    const dir = at("public/images/artists", artist.slug);
+    await mkdir(dir, { recursive: true });
     await writeFile(
-      at("content/artists", `${artist.slug}.yaml`),
-      `${lines.join("\n")}\n`,
+      path.join(dir, artist.photo.file),
+      png(600, 800, artist.photo.color),
     );
+    lines.push(`photo: /images/artists/${artist.slug}/${artist.photo.file}`);
   }
+  await writeFile(
+    at("content/artists", `${artist.slug}.yaml`),
+    `${lines.join("\n")}\n`,
+  );
+}
 ```
 
 (Only the `if (artist.role) ...` / `if (artist.visitDates) ...` two lines
@@ -342,8 +346,8 @@ export default async function ArtistsPage() {
       <div className="stack">
         <h1>Artists</h1>
         <p className="lead measure">
-          Pick an artist you connect with. Every inquiry comes through the
-          same studio inbox, so you can&rsquo;t go wrong asking.
+          Pick an artist you connect with. Every inquiry comes through the same
+          studio inbox, so you can&rsquo;t go wrong asking.
         </p>
       </div>
 
@@ -360,8 +364,8 @@ export default async function ArtistsPage() {
         <h2>Not sure who&rsquo;s right for you?</h2>
         <p className="measure">
           Tell us what you&rsquo;re thinking and we&rsquo;ll match your idea
-          with the right hands. Each artist keeps their own book, but you
-          only need to knock on one door.
+          with the right hands. Each artist keeps their own book, but you only
+          need to knock on one door.
         </p>
         <div>
           <ButtonLink href="/contact">Request an appointment</ButtonLink>
@@ -372,9 +376,9 @@ export default async function ArtistsPage() {
         <h2>Traveling tattooer?</h2>
         <p className="measure">
           We&rsquo;re open to the occasional guest artist who shares our
-          approach to tattooing. Our resident crew is full and we
-          aren&rsquo;t taking apprentice or new-resident applications right
-          now, but if you&rsquo;re passing through, send over your portfolio.
+          approach to tattooing. Our resident crew is full and we aren&rsquo;t
+          taking apprentice or new-resident applications right now, but if
+          you&rsquo;re passing through, send over your portfolio.
         </p>
         {site.email && (
           <p>

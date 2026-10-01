@@ -85,36 +85,36 @@ export function SiteHeader() {
 `src/styles/components.css` (relevant block, lines 6-35):
 
 ```css
-  /* Site shell */
-  .site-header {
-    @apply border-b border-line;
-  }
+/* Site shell */
+.site-header {
+  @apply border-b border-line;
+}
 
-  .site-header__inner {
-    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs px-fluid-sm py-fluid-sm;
-  }
+.site-header__inner {
+  @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs px-fluid-sm py-fluid-sm;
+}
 
-  .site-header__brand {
-    @apply inline-flex min-h-11 items-center;
-  }
+.site-header__brand {
+  @apply inline-flex min-h-11 items-center;
+}
 
-  .site-header__logo {
-    @apply h-5 w-auto md:h-6;
-  }
+.site-header__logo {
+  @apply h-5 w-auto md:h-6;
+}
 
-  .site-nav {
-    @apply flex flex-wrap items-center gap-x-fluid-md gap-y-fluid-3xs;
-  }
+.site-nav {
+  @apply flex flex-wrap items-center gap-x-fluid-md gap-y-fluid-3xs;
+}
 
-  /* 44px tall hit area; current page/section is marked by an underline as
+/* 44px tall hit area; current page/section is marked by an underline as
      well as aria-current, so it isn't conveyed by color alone. */
-  .site-nav__link {
-    @apply inline-flex min-h-11 items-center hover:underline;
-  }
+.site-nav__link {
+  @apply inline-flex min-h-11 items-center hover:underline;
+}
 
-  .site-nav__link[aria-current] {
-    @apply underline decoration-nav-current decoration-2 underline-offset-8;
-  }
+.site-nav__link[aria-current] {
+  @apply underline decoration-nav-current decoration-2 underline-offset-8;
+}
 ```
 
 `src/components/theme-toggle.tsx` (full file, unchanged by this plan — read
@@ -244,20 +244,21 @@ plan — you are moving it into the topbar, not adding a second instance.
 
 ## Commands you will need
 
-| Purpose | Command |
-|---|---|
-| Typecheck | `pnpm exec tsc --noEmit` |
-| Lint | `pnpm lint` |
-| Format check | `pnpm format:check` |
-| Format write | `pnpm format` |
-| Seed test fixtures | `node scripts/fixtures.mjs seed` |
-| Clean test fixtures | `node scripts/fixtures.mjs clean` |
-| Full test suite (builds + seeds + Playwright) | `pnpm test` |
-| Dev server | `node_modules/.bin/next dev --port <port>` (pick an unused port) |
+| Purpose                                       | Command                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| Typecheck                                     | `pnpm exec tsc --noEmit`                                         |
+| Lint                                          | `pnpm lint`                                                      |
+| Format check                                  | `pnpm format:check`                                              |
+| Format write                                  | `pnpm format`                                                    |
+| Seed test fixtures                            | `node scripts/fixtures.mjs seed`                                 |
+| Clean test fixtures                           | `node scripts/fixtures.mjs clean`                                |
+| Full test suite (builds + seeds + Playwright) | `pnpm test`                                                      |
+| Dev server                                    | `node_modules/.bin/next dev --port <port>` (pick an unused port) |
 
 ## Scope
 
 **In scope:**
+
 - `src/components/site-header.tsx` — add the topbar, make the component
   async, fetch `site` via `getSite()`.
 - `src/styles/components.css` — new topbar rules.
@@ -265,6 +266,7 @@ plan — you are moving it into the topbar, not adding a second instance.
   for the topbar's content and the moved theme toggle.
 
 **Out of scope — do not touch:**
+
 - `src/lib/content.ts` / `keystatic.config.ts` — no schema change, the
   `Site` type already has every field this plan needs.
 - `src/components/theme-toggle.tsx` — moved, not edited.
@@ -292,7 +294,7 @@ your own worktree's.
 
 **Revised 2026-09-30, before any plan 022 execution was accepted:** the
 first execution attempt correctly caught that the original version of this
-step put `.site-topbar` as a sibling `<div>` *before* `<header>`, outside
+step put `.site-topbar` as a sibling `<div>` _before_ `<header>`, outside
 every ARIA landmark. `pnpm test`'s full a11y sweep (`tests/a11y.spec.ts`,
 which includes the `best-practice` tag) failed on axe's `region` rule
 across all 48 route/theme/viewport combinations, because the topbar text
@@ -368,7 +370,7 @@ export async function SiteHeader() {
 ```
 
 The only structural change from a plain header/nav split: the outer
-`<header className="site-header">` now wraps *both* the topbar and the
+`<header className="site-header">` now wraps _both_ the topbar and the
 `site-header__inner` div, instead of the old version where `<header>` only
 wrapped `site-header__inner` and the topbar sat before it as a sibling. No
 CSS changes are needed for this — `.site-header`'s existing `border-b
@@ -380,6 +382,7 @@ there's no topbar content the rendered output is byte-identical to before
 the original).
 
 Notes on this code, read before you implement:
+
 - The topbar only renders when there's content for it (`walkInNote` or a
   city). This matches the existing pattern in `ShopInfo`/`getAftercare` of
   "every field optional, render only what's filled in" — don't make it
@@ -413,29 +416,30 @@ In `src/styles/components.css`, add this block immediately after the
 `.site-header__logo` rule (before `.site-nav`):
 
 ```css
-  .site-topbar {
-    @apply border-b border-line bg-surface-sunken text-sm text-subtle;
-  }
+.site-topbar {
+  @apply border-b border-line bg-surface-sunken text-sm text-subtle;
+}
 
-  .site-topbar__inner {
-    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs px-fluid-sm py-fluid-2xs;
-  }
+.site-topbar__inner {
+  @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs px-fluid-sm py-fluid-2xs;
+}
 
-  .site-topbar__walkin {
-    @apply inline-flex min-h-11 items-center hover:underline;
-  }
+.site-topbar__walkin {
+  @apply inline-flex min-h-11 items-center hover:underline;
+}
 
-  .site-topbar__right {
-    @apply flex items-center gap-fluid-sm;
-  }
+.site-topbar__right {
+  @apply flex items-center gap-fluid-sm;
+}
 
-  .site-topbar__location {
-    @apply hidden sm:inline;
-  }
+.site-topbar__location {
+  @apply hidden sm:inline;
+}
 ```
 
 Rationale for the roles used (per `roles.css`'s own guidance, read its
 header comment if you need the full role list):
+
 - `surface-sunken` — "recessed areas: section bands, the footer, wells."
   The topbar is a thin recessed band above the main header, the same
   semantic role the footer already uses for its background.
@@ -477,9 +481,10 @@ test("the topbar shows the walk-in note and persists through theme toggle", asyn
 
   const topbar = page.locator(".site-topbar");
   await expect(topbar).toBeVisible();
-  await expect(
-    topbar.getByRole("link", { name: /walk-in/i }),
-  ).toHaveAttribute("href", "/contact");
+  await expect(topbar.getByRole("link", { name: /walk-in/i })).toHaveAttribute(
+    "href",
+    "/contact",
+  );
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
@@ -525,6 +530,7 @@ node_modules/.bin/next dev --port <pick-an-unused-port>
 ```
 
 Visit `/` in a browser. Confirm:
+
 - A topbar strip appears above the main header, with the walk-in note on
   the left and the theme toggle (and location, at desktop width) on the
   right.

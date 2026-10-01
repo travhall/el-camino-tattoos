@@ -205,13 +205,13 @@ render during both `pnpm dev` and `pnpm test` without any content change.
 
 ## Commands you will need
 
-| Purpose   | Command                                      | Expected on success |
-| --------- | ---------------------------------------------| -------------------- |
-| Typecheck | `pnpm exec tsc --noEmit`                     | exit 0, no output    |
-| Lint      | `pnpm lint`                                   | exit 0                |
-| Format    | `pnpm format:check` (fix with `pnpm format`)  | exit 0                |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
-| One test  | `pnpm test --grep "hero"`                     | matching tests pass  |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass            |
+| One test  | `pnpm test --grep "hero"`                             | matching tests pass |
 
 Use `pnpm` only.
 
@@ -230,7 +230,7 @@ Use `pnpm` only.
 - `src/components/shop-notes.tsx`, `src/components/piece-grid.tsx` — read as reference patterns only.
 - `keystatic.config.ts` — no schema change.
 - The Artists and Recent Work sections of the homepage, or any other route.
-- `scripts/figma-manifest.mjs` — this plan adds no new *shared* tracked measurement (the photo reuses the existing `aspect-[4/5]` convention already used by `.piece-tile__media`, untracked today for the same reason); if the owner later wants the hero specifically tracked in Figma, that's a follow-up.
+- `scripts/figma-manifest.mjs` — this plan adds no new _shared_ tracked measurement (the photo reuses the existing `aspect-[4/5]` convention already used by `.piece-tile__media`, untracked today for the same reason); if the owner later wants the hero specifically tracked in Figma, that's a follow-up.
 - Plans 015 and 016 — independent work; do not start them here.
 
 ## Git workflow
@@ -266,9 +266,7 @@ export function HeroPhoto({
         <div className="photo-frame__media">
           <Image
             src={piece.image}
-            alt={
-              artistName ? `${piece.title} by ${artistName}` : piece.title
-            }
+            alt={artistName ? `${piece.title} by ${artistName}` : piece.title}
             fill
             sizes="(min-width: 768px) 40vw, 90vw"
             className="image-cover"
@@ -304,45 +302,45 @@ Append to the end of `src/styles/components.css`, inside the existing
 closing `}`, after `.status-page h1:focus`):
 
 ```css
-  /* Homepage hero: intro text beside a framed, "pinned" photo with a
+/* Homepage hero: intro text beside a framed, "pinned" photo with a
      decorative ink-stamp badge. */
-  .home-hero {
-    @apply grid items-center gap-fluid-lg md:grid-cols-2;
-  }
+.home-hero {
+  @apply grid items-center gap-fluid-lg md:grid-cols-2;
+}
 
-  .home-hero__photo {
-    @apply relative;
-  }
+.home-hero__photo {
+  @apply relative;
+}
 
-  /* A bordered mat around the photo, like a pinned-up print. */
-  .photo-frame {
-    @apply relative border border-line bg-surface p-fluid-2xs;
-  }
+/* A bordered mat around the photo, like a pinned-up print. */
+.photo-frame {
+  @apply relative border border-line bg-surface p-fluid-2xs;
+}
 
-  .photo-frame__media {
-    @apply relative aspect-[4/5] bg-surface-sunken;
-  }
+.photo-frame__media {
+  @apply relative aspect-[4/5] bg-surface-sunken;
+}
 
-  /* A strip of "tape" pinning the photo down. Decorative only. */
-  .photo-frame__tape {
-    @apply absolute top-[-0.75rem] left-1/2 h-6 w-16 -translate-x-1/2 -rotate-2 bg-surface-raised/80;
-  }
+/* A strip of "tape" pinning the photo down. Decorative only. */
+.photo-frame__tape {
+  @apply absolute top-[-0.75rem] left-1/2 h-6 w-16 -translate-x-1/2 -rotate-2 bg-surface-raised/80;
+}
 
-  /* Decorative ink-stamp badge echoing the walk-ins note ShopNotes already
+/* Decorative ink-stamp badge echoing the walk-ins note ShopNotes already
      states in real text; aria-hidden because it duplicates that accessible
      copy (see plans/017-homepage-hero-photo-and-stamp.md). Square, not
      round: stays inside the site's sharp-corner shape language (plan 015)
      while still reading as a stamp via the rotation and double ring. */
-  .stamp {
-    @apply absolute right-[-1rem] bottom-[-1rem] flex aspect-square w-24 -rotate-12 flex-col items-center justify-center gap-0.5 border-2 border-accent-mark text-center text-[10px] leading-tight font-medium tracking-[0.08em] text-accent-mark uppercase;
-    box-shadow:
-      inset 0 0 0 3px var(--background),
-      inset 0 0 0 4px var(--accent-mark);
-  }
+.stamp {
+  @apply absolute right-[-1rem] bottom-[-1rem] flex aspect-square w-24 -rotate-12 flex-col items-center justify-center gap-0.5 border-2 border-accent-mark text-center text-[10px] leading-tight font-medium tracking-[0.08em] text-accent-mark uppercase;
+  box-shadow:
+    inset 0 0 0 3px var(--background),
+    inset 0 0 0 4px var(--accent-mark);
+}
 
-  .stamp__line {
-    @apply block;
-  }
+.stamp__line {
+  @apply block;
+}
 ```
 
 **Verify**: `grep -n "\.home-hero\b\|\.home-hero__photo\|\.photo-frame\b\|\.photo-frame__media\|\.photo-frame__tape\|\.stamp\b\|\.stamp__line" src/styles/components.css` shows all 7 new class names.
@@ -513,7 +511,7 @@ Stop and report back (do not improvise) if:
   reuse of `walkInNote`; out of scope here.
 - If plan 015 (sharp corners) lands after this plan, nothing needs to
   change — the stamp was already built without `rounded-full`. If plan 015
-  is later *reverted*, this stamp staying square (not round) will look
+  is later _reverted_, this stamp staying square (not round) will look
   inconsistent with a then-rounded site; that's an acceptable, explicitly
   documented tradeoff, not a bug.
 - A reviewer should check the photo's crop at both the `md:grid-cols-2`

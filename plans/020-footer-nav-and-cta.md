@@ -171,13 +171,13 @@ see where `.site-footer`/`.site-footer__inner` sit in the file.)
 
 ## Commands you will need
 
-| Purpose   | Command                                      | Expected on success |
-| --------- | ---------------------------------------------| -------------------- |
-| Typecheck | `pnpm exec tsc --noEmit`                     | exit 0, no output    |
-| Lint      | `pnpm lint`                                   | exit 0                |
-| Format    | `pnpm format:check` (fix with `pnpm format`)  | exit 0                |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
-| One test  | `pnpm test --grep "footer"`                   | matching tests pass  |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass            |
+| One test  | `pnpm test --grep "footer"`                           | matching tests pass |
 
 Use `pnpm` only.
 
@@ -247,11 +247,7 @@ export async function SiteFooter() {
           <p className="site-footer__name">{siteName}</p>
           <nav aria-label="Footer" className="site-footer__nav">
             {navLinks.map(({ href, label }) => (
-              <NavLink
-                key={href}
-                href={href}
-                className="site-footer__nav-link"
-              >
+              <NavLink key={href} href={href} className="site-footer__nav-link">
                 {label}
               </NavLink>
             ))}
@@ -278,45 +274,45 @@ Replace lines 37–43 of `src/styles/components.css` (the current
 `.site-footer`/`.site-footer__inner` rules quoted in "Current state") with:
 
 ```css
-  .site-footer {
-    @apply mt-auto border-t border-line bg-surface-sunken;
-  }
+.site-footer {
+  @apply mt-auto border-t border-line bg-surface-sunken;
+}
 
-  .site-footer__inner {
-    @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-lg text-sm text-muted md:grid-cols-3;
-  }
+.site-footer__inner {
+  @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-lg text-sm text-muted md:grid-cols-3;
+}
 
-  .site-footer__brand {
-    @apply grid gap-fluid-sm;
-  }
+.site-footer__brand {
+  @apply grid gap-fluid-sm;
+}
 
-  .site-footer__name {
-    @apply font-medium text-foreground;
-  }
+.site-footer__name {
+  @apply font-medium text-foreground;
+}
 
-  .site-footer__nav {
-    @apply grid gap-fluid-2xs;
-  }
+.site-footer__nav {
+  @apply grid gap-fluid-2xs;
+}
 
-  /* Mirrors .site-nav__link's state styling (44px hit area; current page is
+/* Mirrors .site-nav__link's state styling (44px hit area; current page is
      an underline, not color alone), kept separate rather than shared with
      the header's .site-nav__link so the footer's vertical layout doesn't
      depend on overriding the header nav's flex-row rule. */
-  .site-footer__nav-link {
-    @apply inline-flex min-h-11 items-center hover:underline;
-  }
+.site-footer__nav-link {
+  @apply inline-flex min-h-11 items-center hover:underline;
+}
 
-  .site-footer__nav-link[aria-current] {
-    @apply underline decoration-nav-current decoration-2 underline-offset-4;
-  }
+.site-footer__nav-link[aria-current] {
+  @apply underline decoration-nav-current decoration-2 underline-offset-4;
+}
 
-  .site-footer__cta {
-    @apply flex items-start md:justify-self-end;
-  }
+.site-footer__cta {
+  @apply flex items-start md:justify-self-end;
+}
 
-  .site-footer__copyright {
-    @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
-  }
+.site-footer__copyright {
+  @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
+}
 ```
 
 **Verify**: `grep -n "site-footer {" -A1 src/styles/components.css` shows `bg-surface-sunken` on the line after `.site-footer {` (the plan's originally-suggested single-line grep doesn't match because `@apply` sits on its own line under this file's formatting — that's a plan-text issue, not a sign anything is wrong; confirm by direct inspection if grep is inconclusive). `pnpm lint` (exit 0) since it also lints Tailwind class usage in this repo's config.
@@ -354,11 +350,9 @@ repeated call to action, not an accidental duplicate). In
 anything else in this test or the file):
 
 ```ts
-    await expect(
-      page
-        .getByRole("main")
-        .getByRole("link", { name: "Request an appointment" }),
-    ).toHaveAttribute("href", "/contact");
+await expect(
+  page.getByRole("main").getByRole("link", { name: "Request an appointment" }),
+).toHaveAttribute("href", "/contact");
 ```
 
 `page.getByRole("main")` matches the `<main>` landmark rendered by

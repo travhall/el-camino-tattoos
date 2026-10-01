@@ -122,12 +122,12 @@ guest-role fixture artist when it needs one to test the split).
 
 ## Commands you will need
 
-| Purpose   | Command                                      | Expected on success |
-| --------- | ---------------------------------------------| -------------------- |
-| Typecheck | `pnpm exec tsc --noEmit`                     | exit 0, no output    |
-| Lint      | `pnpm lint`                                   | exit 0                |
-| Format    | `pnpm format:check` (fix with `pnpm format`)  | exit 0                |
-| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass |
+| Purpose   | Command                                               | Expected on success |
+| --------- | ----------------------------------------------------- | ------------------- |
+| Typecheck | `pnpm exec tsc --noEmit`                              | exit 0, no output   |
+| Lint      | `pnpm lint`                                           | exit 0              |
+| Format    | `pnpm format:check` (fix with `pnpm format`)          | exit 0              |
+| Tests     | `pnpm test` (seeds fixtures, builds, runs Playwright) | all pass            |
 
 Use `pnpm` only.
 
@@ -229,7 +229,7 @@ export const getArtists = cache(async (): Promise<Artist[]> => {
 ```
 
 Do not change the function's sort order (still by `order` then `name`) —
-grouping by role happens where the data is *consumed* (plan 019), not here.
+grouping by role happens where the data is _consumed_ (plan 019), not here.
 
 **Verify**: `pnpm exec tsc --noEmit` → exit 0. If `entry.role` or
 `entry.visitDates` don't typecheck against the Keystatic reader's inferred
@@ -295,7 +295,7 @@ Stop and report back (do not improvise) if:
   settled — this plan only stores the value; it deliberately does not decide
   where or whether it's shown. Don't infer a display decision from the
   existence of this field.
-- If the owner later wants a stricter guest-visit *date range* (start/end
+- If the owner later wants a stricter guest-visit _date range_ (start/end
   dates) instead of free text, that's a field-type change
   (`fields.text` → two `fields.date`s or a `fields.object`), not something
   this plan's simple string was meant to preempt — it deliberately mirrors
