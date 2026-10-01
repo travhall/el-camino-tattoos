@@ -102,12 +102,24 @@ export const getPiece = cache(async (slug: string) => {
 
 const hasContent = (node: Node) => node.children.length > 0;
 
-/** The Aftercare page's rich text, or null until someone has written it. */
-export const getAftercare = cache(async (): Promise<Node | null> => {
+export type AftercareStep = { title: string; body: string };
+
+export type Aftercare = {
+  intro: string;
+  steps: readonly AftercareStep[];
+  warning: Node;
+} | null;
+
+/** The Aftercare page's structured content, or null until someone has written it. */
+export const getAftercare = cache(async (): Promise<Aftercare> => {
   const entry = await reader.singletons.aftercare.read();
   if (!entry) return null;
-  const { node } = await entry.content();
-  return hasContent(node) ? node : null;
+  const { node } = await entry.warning();
+  const steps = entry.steps.filter((step) => step.title && step.body);
+  const hasIntro = Boolean(entry.intro);
+  const hasWarning = hasContent(node);
+  if (!hasIntro && steps.length === 0 && !hasWarning) return null;
+  return { intro: entry.intro ?? "", steps, warning: node };
 });
 
 export type Faq = {
