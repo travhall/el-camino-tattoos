@@ -38,6 +38,23 @@ test.describe("shop info", () => {
     await expect(stamp).toHaveAttribute("aria-hidden", "true");
   });
 
+  test("page sections share one container: 1280px wide at a 1440px viewport", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, "/");
+    for (const selector of [
+      ".site-topbar__inner",
+      ".site-header__inner",
+      "main",
+      ".site-footer__grid",
+    ]) {
+      const box = await page.locator(selector).first().boundingBox();
+      expect(box?.width, selector).toBe(1280);
+      expect(box?.x, selector).toBe(80);
+    }
+  });
+
   test("the footer shows the address", async ({ page }) => {
     await open(page, "/");
     const footer = page.getByRole("contentinfo");

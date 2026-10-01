@@ -19,8 +19,31 @@
     @apply sr-only;
   }
 
+  /* The one page container, sized to match the design mock: content up to
+     80rem (1280px), with 22/40/56px side gutters at phone/tablet/desktop.
+     Every full-width section (topbar, header, main, footer) uses
+     width: var(--page-width) with margin-inline: auto. The % in
+     --page-width resolves on the element that uses it. */
+  :root {
+    --page-max: 80rem;
+    --page-gutter: 1.375rem;
+    --page-width: min(100% - 2 * var(--page-gutter), var(--page-max));
+  }
+
+  @media (min-width: 48rem) {
+    :root {
+      --page-gutter: 2.5rem;
+    }
+  }
+
+  @media (min-width: 75rem) {
+    :root {
+      --page-gutter: 3.5rem;
+    }
+  }
+
   .page {
-    @apply mx-auto w-full max-w-6xl flex-1 px-fluid-sm py-fluid-xl;
+    @apply mx-auto w-(--page-width) flex-1 py-fluid-xl;
   }
 
   /* <main> is a skip-link target (tabindex="-1"); it isn't interactive, so

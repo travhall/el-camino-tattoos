@@ -9,7 +9,7 @@
   }
 
   .site-header__inner {
-    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs px-fluid-sm py-fluid-sm;
+    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs py-fluid-sm;
   }
 
   .site-header__brand {
@@ -25,7 +25,7 @@
   }
 
   .site-topbar__inner {
-    @apply mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs px-fluid-sm py-fluid-2xs;
+    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs py-fluid-2xs;
   }
 
   .site-topbar__walkin {
@@ -59,7 +59,7 @@
   }
 
   .site-footer__top {
-    @apply mx-auto max-w-6xl px-fluid-sm pt-fluid-lg;
+    @apply mx-auto w-(--page-width) pt-fluid-lg;
   }
 
   .site-footer__name {
@@ -67,7 +67,7 @@
   }
 
   .site-footer__grid {
-    @apply mx-auto grid max-w-6xl gap-fluid-lg px-fluid-sm pt-fluid-md text-sm text-muted md:grid-cols-4;
+    @apply mx-auto grid w-(--page-width) gap-fluid-lg pt-fluid-md text-sm text-muted md:grid-cols-4;
   }
 
   .site-footer__col {
@@ -99,7 +99,7 @@
   }
 
   .site-footer__copyright {
-    @apply mx-auto max-w-6xl px-fluid-sm py-fluid-sm text-sm text-muted;
+    @apply mx-auto w-(--page-width) py-fluid-sm text-sm text-muted;
   }
 
   /* Shop address and contact details: each an <address> block, used inside
