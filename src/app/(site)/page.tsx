@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArtistGrid } from "@/components/artist-grid";
 import { HeroPhoto } from "@/components/hero-photo";
 import { PieceGrid } from "@/components/piece-grid";
-import { ShopNotes } from "@/components/shop-notes";
 import { ShopPromises } from "@/components/shop-promises";
 import { ButtonLink } from "@/components/ui/button";
 import { getArtists, getPieces, getSite } from "@/lib/content";
@@ -31,9 +30,6 @@ export default async function Home() {
     <div className="stack stack--xl">
       <div className="home-hero">
         <div className="home-hero__intro">
-          {site.heroKicker && (
-            <p className="home-hero__kicker">{site.heroKicker}</p>
-          )}
           <h1 className="home-hero__title">
             {(site.heroHeadline || siteName).split("\n").map((line) => (
               <span key={line} className="home-hero__title-line">
@@ -41,27 +37,15 @@ export default async function Home() {
               </span>
             ))}
           </h1>
-          <svg
-            className="home-hero__underline"
-            viewBox="0 0 460 12"
-            fill="none"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path
-              d="M2 7C82 2 178 9 258 5S399 6 456 3M18 10c129-3 280 1 427-2"
-              stroke="currentColor"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-            />
-          </svg>
           {site.heroDescription && (
             <p className="home-hero__description">{site.heroDescription}</p>
           )}
-          <ButtonLink href="/contact" size="lg" className="home-hero__cta">
-            Request an appointment
-          </ButtonLink>
-          <ShopNotes site={site} className="home-hero__note" />
+          <div className="cluster">
+            <ButtonLink href="/contact">Book an appointment</ButtonLink>
+            <ButtonLink href="/portfolio" variant="secondary">
+              See our work
+            </ButtonLink>
+          </div>
         </div>
         <HeroPhoto
           piece={heroPiece}

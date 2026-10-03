@@ -253,10 +253,6 @@ export default config({
           label: "Consultation note",
           description: "e.g. Free consultations.",
         }),
-        heroKicker: fields.text({
-          label: "Hero kicker",
-          description: "A short italic line above the headline.",
-        }),
         heroHeadline: fields.text({
           label: "Hero headline",
           description:

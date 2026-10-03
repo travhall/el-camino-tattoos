@@ -157,7 +157,6 @@ export type Site = {
   walkIns: boolean;
   walkInNote: string;
   consultationNote: string;
-  heroKicker: string;
   heroHeadline: string;
   heroDescription: string;
   heroPhotoCaption: string;
@@ -183,7 +182,6 @@ export const getSite = cache(async (): Promise<Site> => {
     walkIns: entry?.walkIns ?? false,
     walkInNote: entry?.walkInNote ?? "",
     consultationNote: entry?.consultationNote ?? "",
-    heroKicker: entry?.heroKicker ?? "",
     heroHeadline: entry?.heroHeadline ?? "",
     heroDescription: entry?.heroDescription ?? "",
     heroPhotoCaption: entry?.heroPhotoCaption ?? "",

@@ -1,0 +1,9 @@
+name: Artist Three
+specialties:
+  - Fine line
+  - Botanical
+bio: Demo profile. Replace with the real artist's name, photo and bio.
+instagram: ""
+order: 3
+role: resident
+photo: /images/artists/artist-three/photo.avif

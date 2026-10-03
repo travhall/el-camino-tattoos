@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { FlashStar } from "@/components/flash-star";
 import { ShopPromises } from "@/components/shop-promises";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -419,19 +418,19 @@ export default async function StyleGuidePage() {
         <div className="cluster">
           <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="ink">Ink</Button>
           <Button variant="ghost">Ghost</Button>
+          <Button variant="link">Link</Button>
         </div>
         <div className="cluster">
           <Button disabled>Primary disabled</Button>
           <Button variant="secondary" disabled>
             Secondary disabled
           </Button>
-          <Button variant="ink" disabled>
-            Ink disabled
-          </Button>
           <Button variant="ghost" disabled>
             Ghost disabled
+          </Button>
+          <Button variant="link" disabled>
+            Link disabled
           </Button>
           <Button pending>Pending</Button>
         </div>
@@ -439,6 +438,24 @@ export default async function StyleGuidePage() {
           <Button size="sm">Small</Button>
           <Button size="md">Medium</Button>
           <Button size="lg">Large</Button>
+        </div>
+        <div className="cluster">
+          <Button icon="arrow-right">Request an appointment</Button>
+          <Button variant="secondary" icon="arrow-up-right">
+            Open in new tab
+          </Button>
+          <Button variant="secondary" icon="plus" iconPosition="start">
+            Add reference
+          </Button>
+          <Button variant="ghost" icon="instagram" iconPosition="start">
+            Instagram
+          </Button>
+          <Button variant="link" icon="arrow-right">
+            See all artists
+          </Button>
+          <Button icon="arrow-right" disabled>
+            Disabled keeps icon still
+          </Button>
         </div>
         <div className="cluster">
           <ButtonLink href="/contact">Link styled as button</ButtonLink>
@@ -572,47 +589,31 @@ export default async function StyleGuidePage() {
       <Section id="hero" title="Hero">
         <div className="home-hero">
           <div className="home-hero__intro">
-            <p className="home-hero__kicker">A good place to get tattooed.</p>
             <p className="home-hero__title">
-              <span className="home-hero__title-line">GOOD TATTOOS.</span>
-              <span className="home-hero__title-line">GOOD PEOPLE.</span>
+              <span className="home-hero__title-line">Classic Tattoos,</span>
+              <span className="home-hero__title-line">Fair Prices.</span>
             </p>
-            <svg
-              className="home-hero__underline"
-              viewBox="0 0 460 12"
-              fill="none"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M2 7C82 2 178 9 258 5S399 6 456 3M18 10c129-3 280 1 427-2"
-                stroke="currentColor"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-              />
-            </svg>
             <p className="home-hero__description">
-              Classic roots. Original work. A small, welcoming studio.
+              A small, welcoming tattoo studio in downtown Eau Claire.
             </p>
-            <ButtonLink href="/contact" size="lg" className="home-hero__cta">
-              Request an appointment
-            </ButtonLink>
-            <p className="home-hero__note">Walk-ins welcome when available.</p>
+            <div className="cluster">
+              <ButtonLink href="/contact">Book an appointment</ButtonLink>
+              <ButtonLink href="/portfolio" variant="secondary">
+                See our work
+              </ButtonLink>
+            </div>
           </div>
           <div className="home-hero__photo">
             <div className="photo-frame">
               <div className="photo-frame__media sg-tile">Hero photo</div>
               <p className="photo-frame__caption">
-                <span>Tradition at heart. Everyone welcome.</span>
-                <FlashStar className="photo-frame__star" />
+                Tradition at heart. All are welcome.
               </p>
-              <span aria-hidden="true" className="photo-frame__tape" />
-            </div>
-            <div aria-hidden="true" className="stamp">
-              <span className="stamp__line">Walk-ins</span>
-              <span className="stamp__line">Welcome</span>
-              <FlashStar className="stamp__star" />
-              <span className="stamp__small">When available</span>
+              <div aria-hidden="true" className="stamp">
+                <span className="stamp__title">Walk-ins</span>
+                <span className="stamp__line">Welcome</span>
+                <span className="stamp__small">When available</span>
+              </div>
             </div>
           </div>
         </div>

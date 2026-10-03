@@ -8,13 +8,13 @@
      topbar's height so only the nav row stays pinned. --topbar-height is the
      one source for that offset and for the topbar's own height. */
   .site-header {
-    @apply sticky top-0 z-40 border-b border-line bg-background;
+    @apply sticky top-0 z-40 border-b border-line bg-surface-raised;
     --topbar-height: 2.75rem;
   }
 
   @media (min-width: 48rem) {
     .site-header {
-      --topbar-height: 2.25rem;
+      --topbar-height: 2.5625rem;
     }
   }
 
@@ -26,16 +26,27 @@
     @apply mx-auto flex min-h-20 w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs py-0 md:min-h-[5.3rem] xl:min-h-[6.125rem];
   }
 
+  /* Text wordmark: Being for the name, a tracked line under it, as in the
+     design. The footer keeps the SVG wordmark. */
   .site-header__brand {
-    @apply inline-flex min-h-11 items-center;
+    @apply order-1 inline-flex min-h-11 flex-col items-center text-foreground;
   }
 
-  .site-header__logo {
-    @apply h-5 w-auto md:h-6;
+  /* Phones: brand and button share the first row, the links wrap below. */
+  .site-header__cta {
+    @apply order-2 max-md:px-3 max-md:text-sm md:order-3;
+  }
+
+  .site-header__wordmark {
+    @apply font-display text-xl leading-none font-normal uppercase md:text-2xl;
+  }
+
+  .site-header__tagline {
+    @apply text-xs tracking-[0.2em] uppercase;
   }
 
   .site-topbar {
-    @apply border-b border-line bg-surface-sunken text-xs tracking-widest text-subtle uppercase;
+    @apply border-b border-line bg-surface-sunken text-sm text-foreground uppercase;
     height: var(--topbar-height);
   }
 
@@ -44,29 +55,39 @@
   }
 
   .site-topbar__walkin {
-    @apply inline-flex min-h-11 items-center gap-2 hover:underline md:min-h-9;
+    @apply inline-flex min-h-11 items-center gap-2 text-status-open hover:underline md:min-h-9;
+  }
+
+  /* Decorative "open" light; the note beside it carries the meaning. */
+  .site-topbar__dot {
+    @apply size-2 shrink-0 rounded-full bg-status-open;
   }
 
   .site-topbar__star {
-    @apply size-4 shrink-0 text-accent-mark;
+    --star-facet: var(--surface-sunken);
+    @apply hidden size-4 shrink-0 text-accent-mark sm:block;
   }
 
   .site-topbar__right {
-    @apply flex items-center gap-fluid-sm;
+    @apply flex items-center gap-fluid-xs;
   }
 
   .site-topbar__location {
     @apply hidden sm:inline;
   }
 
+  .site-topbar__phone {
+    @apply hidden min-h-11 items-center hover:underline sm:inline-flex md:min-h-9;
+  }
+
   .site-nav {
-    @apply flex flex-wrap items-center gap-x-fluid-md gap-y-fluid-3xs;
+    @apply order-3 flex w-full flex-wrap items-center gap-x-fluid-sm gap-y-fluid-3xs md:order-2 md:ml-auto md:w-auto md:gap-x-fluid-md;
   }
 
   /* 44px tall hit area; current page/section is marked by an underline as
      well as aria-current, so it isn't conveyed by color alone. */
   .site-nav__link {
-    @apply inline-flex min-h-11 items-center text-sm font-medium tracking-wide uppercase hover:underline;
+    @apply inline-flex min-h-11 items-center text-sm font-semibold uppercase hover:underline md:text-base;
   }
 
   .site-nav__link[aria-current] {
@@ -165,7 +186,7 @@
      the button's shape needs, and keeps an edge in forced-colors (high
      contrast) mode, where the fill is removed. Every other variant resets it. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-none border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-medium text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-medium text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -173,14 +194,43 @@
     @apply border border-button-secondary-border bg-transparent text-button-secondary-fg not-disabled:not-aria-disabled:hover:bg-button-secondary-hover;
   }
 
-  /* Solid ink. Matches the primary today (both ink); use it where a screen
-     must stay ink even if the primary button's tokens change. */
-  .button--ink {
-    @apply border-transparent bg-foreground text-background not-disabled:not-aria-disabled:hover:bg-foreground/85;
-  }
-
   .button--ghost {
     @apply border-transparent bg-transparent text-foreground not-disabled:not-aria-disabled:hover:bg-hover;
+  }
+
+  /* Text-only action: reads as a link (same gold underline as .link) but keeps
+     the 44px hit area. No fill, so there is no hover fill either. */
+  .button--link {
+    @apply rounded-none border-transparent bg-transparent px-0 text-link-text underline decoration-link-underline decoration-2 underline-offset-4 not-disabled:not-aria-disabled:hover:bg-transparent not-disabled:not-aria-disabled:hover:no-underline;
+  }
+
+  /* Optional line icon. It moves on hover and keyboard focus only while the
+     button is live (not disabled or pending). The global reduced-motion rule
+     collapses the transition, so the end state still shows, just without the
+     travel. */
+  .button__icon {
+    @apply size-[1.125em] shrink-0 transition-transform motion-reduce:transition-none;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-out);
+  }
+
+  .button:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible)
+    .button__icon {
+    &[data-icon="arrow-right"] {
+      @apply translate-x-0.5;
+    }
+
+    &[data-icon="arrow-up-right"] {
+      @apply translate-x-px -translate-y-px;
+    }
+
+    &[data-icon="plus"] {
+      @apply rotate-90;
+    }
+
+    &[data-icon="instagram"] {
+      @apply scale-110 -rotate-6;
+    }
   }
 
   .button--sm {
@@ -194,7 +244,7 @@
   /* Theme toggle: a small standalone control, not a call-to-action, so it
      does not reuse .button. 44px minimum hit area per CLAUDE.md. */
   .theme-toggle {
-    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-none border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none md:min-h-9 md:gap-2 md:px-3;
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none md:min-h-9 md:gap-2 md:px-3;
     transition-duration: var(--duration-fast);
   }
 
@@ -241,7 +291,7 @@
   }
 
   .filter-chip {
-    @apply inline-flex min-h-11 items-center rounded-none border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
+    @apply inline-flex min-h-11 items-center rounded-full border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
   }
 
   /* Selected state is fill AND weight, not color alone. */
@@ -326,7 +376,7 @@
   }
 
   .field__control {
-    @apply min-h-11 w-full rounded-none border border-outline bg-background px-3 py-2 placeholder:text-muted;
+    @apply min-h-11 w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
   }
 
   /* Grouped controls (radios, related file inputs). */
@@ -363,7 +413,7 @@
   }
 
   .form-status {
-    @apply rounded-none border border-error bg-error-soft px-3 py-2;
+    @apply rounded-md border border-error bg-error-soft px-3 py-2;
   }
 
   /* FAQ: one section per question, each linkable by its slug. */
@@ -404,74 +454,50 @@
     outline: none;
   }
 
-  /* Homepage hero: intro text beside a framed, "pinned" photo with a
-     decorative ink-stamp badge. */
+  /* Homepage hero: headline, copy and two buttons beside a framed photo with
+     a round walk-ins badge (design: Figma Design page, Hero). */
   .home-hero {
-    @apply grid items-center gap-fluid-xl md:grid-cols-[1.04fr_1.12fr];
+    @apply grid items-center gap-fluid-lg md:grid-cols-[1.38fr_1fr];
   }
 
   .home-hero__intro {
-    @apply grid justify-items-start gap-fluid-sm;
+    @apply grid content-center justify-items-start gap-fluid-md;
   }
 
-  .home-hero__kicker {
-    @apply text-lg text-muted italic;
-  }
-
+  /* Being at the top of the scale. Below 1400px the column is too narrow for
+     the largest step, so it drops one. */
   .home-hero__title {
-    @apply font-display text-4xl font-semibold uppercase;
+    @apply font-display text-5xl font-semibold min-[1400px]:text-6xl;
     /* Being's ink-trap cut, as in .display. */
     font-variation-settings: "trap" 1;
   }
 
   .home-hero__title-line {
-    @apply block whitespace-nowrap;
+    @apply block;
   }
 
-  /* Hand-drawn underline under the headline. Decorative. */
-  .home-hero__underline {
-    @apply -mt-1 h-3 w-[94%] text-accent-mark;
-  }
-
+  /* The description sits between two hairlines. */
   .home-hero__description {
-    @apply max-w-[28rem] text-base text-muted;
+    @apply w-full max-w-xl border-y border-line py-[18px] text-base text-foreground;
   }
 
-  .home-hero__cta {
-    @apply mt-fluid-2xs;
-  }
-
-  .home-hero__note {
-    @apply text-sm text-subtle;
-  }
-
+  /* The frame tilts as one piece: photo, caption and badge. */
   .home-hero__photo {
-    @apply relative;
+    @apply relative md:-rotate-1;
   }
 
-  /* A bordered mat around the photo, like a pinned-up print, with a hard
-     offset shadow and a slight tilt from md up. */
+  /* A mat around the photo, like a pinned-up print. It takes the primary
+     button's fill, so it is the light card in dark mode. */
   .photo-frame {
-    @apply relative border border-border bg-surface p-2 pb-0 md:rotate-[1.3deg];
-    box-shadow: 8px 8px 0 var(--frame-shadow-color);
+    @apply relative bg-button-primary-bg p-[9px] text-button-primary-fg;
   }
 
   .photo-frame__media {
-    @apply relative aspect-[4/3] bg-surface-sunken md:aspect-[5/4];
-  }
-
-  /* Black-and-white print look, as in the design mock. Delete this rule to
-     show the photo in colour. */
-  .photo-frame__media img {
-    @apply brightness-95 contrast-[1.08] grayscale;
+    @apply relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-sunken md:aspect-[25/29];
   }
 
   .photo-frame__caption {
-    @apply flex items-center justify-between gap-fluid-xs px-2 py-fluid-xs text-xs tracking-widest text-muted uppercase;
-  }
-
-  .photo-frame__star {
-    @apply size-4 shrink-0 text-accent-mark;
+    @apply pt-[9px] text-xs tracking-[0.18em] uppercase;
   }
 
   /* Stands in for a missing or failed photo, filling the media box it sits in
@@ -481,36 +507,26 @@
   }
 
   .photo-placeholder__star {
+    --star-facet: var(--surface-sunken);
     @apply size-1/4 max-w-16 min-w-8;
   }
 
-  /* A strip of "tape" pinning the photo down. Decorative only. */
-  .photo-frame__tape {
-    @apply absolute top-[-0.75rem] left-1/2 h-6 w-16 -translate-x-1/2 -rotate-2 bg-surface-raised/80;
+  /* Round walk-ins badge on the photo's lower edge. Decorative: the topbar
+     states the same walk-in note as real text, so this is aria-hidden. */
+  .stamp {
+    @apply absolute right-0 bottom-14 flex size-36 -rotate-[8deg] flex-col items-center justify-center rounded-full border-2 border-accent-mark text-center text-warning uppercase md:size-40;
   }
 
-  /* Decorative ink-stamp badge echoing the walk-ins note ShopNotes already
-     states in real text; aria-hidden because it duplicates that accessible
-     copy (see plans/017-homepage-hero-photo-and-stamp.md). Square, not
-     round: stays inside the site's sharp-corner shape language (plan 015)
-     while still reading as a stamp via the rotation and double ring. */
-  .stamp {
-    @apply absolute right-[-1.6rem] bottom-3 flex aspect-square w-32 rotate-[11deg] flex-col items-center justify-center gap-0.5 border-2 border-accent-mark text-center text-xs leading-tight font-medium tracking-[0.08em] text-accent-mark uppercase;
-    box-shadow:
-      inset 0 0 0 3px var(--background),
-      inset 0 0 0 4px var(--accent-mark);
+  .stamp__title {
+    @apply text-lg font-semibold;
   }
 
   .stamp__line {
-    @apply block;
-  }
-
-  .stamp__star {
-    @apply my-0.5 size-4 text-accent-mark;
+    @apply text-xl font-extrabold;
   }
 
   .stamp__small {
-    @apply text-[9px] tracking-widest;
+    @apply text-xs font-semibold;
   }
 
   /* The shop's short promises, in a ruled strip under the hero. */

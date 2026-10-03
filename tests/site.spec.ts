@@ -16,13 +16,17 @@ const meta = (page: Page, selector: string) =>
   page.locator(selector).first().getAttribute("content");
 
 test.describe("shop info", () => {
-  test("the homepage leads with the walk-in and consultation notes", async ({
+  test("the homepage leads with the walk-in note and phone in the topbar", async ({
     page,
   }) => {
     await open(page, "/");
+    const topbar = page.locator(".site-topbar");
     await expect(
-      page.getByText("Walk-ins welcome when available. Free consultations."),
+      topbar.getByText("Walk-ins welcome when available."),
     ).toBeVisible();
+    await expect(
+      topbar.getByRole("link", { name: "(715) 912-1169" }),
+    ).toHaveAttribute("href", "tel:7159121169");
   });
 
   test("the homepage hero shows a photo with a decorative walk-ins stamp", async ({
@@ -61,12 +65,18 @@ test.describe("shop info", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await open(page, "/");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      /GOOD TATTOOS\.\s*GOOD PEOPLE\./,
+      /Classic Tattoos,\s*Fair Prices\./,
     );
-    await expect(page.getByText("Classic roots. Original work.")).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Request an appointment" }).first(),
+      page.getByText("El Camino Tattoo is a small, welcoming tattoo studio"),
+    ).toBeVisible();
+    const intro = page.locator(".home-hero__intro");
+    await expect(
+      intro.getByRole("link", { name: "Book an appointment" }),
     ).toHaveAttribute("href", "/contact");
+    await expect(
+      intro.getByRole("link", { name: "See our work" }),
+    ).toHaveAttribute("href", "/portfolio");
     const promises = page
       .getByRole("list", { name: "What to expect" })
       .getByRole("listitem");
@@ -136,26 +146,25 @@ test.describe("shop info", () => {
     ).toBeVisible();
   });
 
-  test("the contact page says what a deposit is, and leaves out a missing phone", async ({
+  test("the contact page says what a deposit is, and offers the phone", async ({
     page,
   }) => {
     await open(page, "/contact");
     await expect(
       page.getByText("A $100 deposit holds your appointment."),
     ).toBeVisible();
-    await expect(page.getByText("Prefer to talk?")).toHaveCount(0);
+    await expect(page.getByText("Prefer to talk?")).toBeVisible();
   });
 
-  test("the header's action is Request, and it goes to the form", async ({
+  test("the header's action is Request an appointment, and it goes to the form", async ({
     page,
   }) => {
     await open(page, "/");
-    const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link", { name: "Request" })).toHaveAttribute(
-      "href",
-      "/contact",
-    );
-    await expect(nav.getByRole("link", { name: "Book" })).toHaveCount(0);
+    await expect(
+      page
+        .getByRole("banner")
+        .getByRole("link", { name: "Request an appointment" }),
+    ).toHaveAttribute("href", "/contact");
   });
 });
 

@@ -1,4 +1,4 @@
-import { FlashStar } from "@/components/flash-star";
+import { NauticalStar } from "@/components/nautical-star";
 
 /**
  * Stands in for a photo that is missing or failed to load. Fills its parent
@@ -13,7 +13,7 @@ export function PhotoPlaceholder({ label }: { label?: string }) {
       aria-label={label || undefined}
       aria-hidden={label ? undefined : true}
     >
-      <FlashStar className="photo-placeholder__star" />
+      <NauticalStar className="photo-placeholder__star" />
     </div>
   );
 }

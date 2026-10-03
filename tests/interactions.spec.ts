@@ -24,7 +24,7 @@ test("skip link is the first tab stop and moves focus into <main>", async ({
 test("nav marks the current page and its section", async ({ page }) => {
   const portfolio = page
     .getByRole("navigation", { name: "Primary" })
-    .getByRole("link", { name: "Portfolio" });
+    .getByRole("link", { name: "Our Work" });
 
   await open(page, "/portfolio");
   await expect(portfolio).toHaveAttribute("aria-current", "page");
@@ -512,7 +512,7 @@ test("header: compact topbar and a sticky nav row on desktop", async ({
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page, "/");
   const topbar = await page.locator(".site-topbar").boundingBox();
-  expect(topbar?.height).toBe(36);
+  expect(topbar?.height).toBe(41);
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   const row = await page.locator(".site-header__inner").boundingBox();
   expect(row?.y).toBe(0);

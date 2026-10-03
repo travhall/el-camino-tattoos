@@ -1,0 +1,9 @@
+name: Artist Two
+specialties:
+  - Black & grey
+  - Realism
+bio: Demo profile. Replace with the real artist's name, photo and bio.
+instagram: ""
+order: 2
+role: resident
+photo: /images/artists/artist-two/photo.avif

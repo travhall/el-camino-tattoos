@@ -1,4 +1,3 @@
-import { FlashStar } from "@/components/flash-star";
 import { Photo } from "@/components/photo";
 import { PhotoPlaceholder } from "@/components/photo-placeholder";
 import type { Piece } from "@/lib/content";
@@ -32,22 +31,15 @@ export function HeroPhoto({
             <PhotoPlaceholder />
           )}
         </div>
-        {caption && (
-          <p className="photo-frame__caption">
-            <span>{caption}</span>
-            <FlashStar className="photo-frame__star" />
-          </p>
-        )}
-        <span aria-hidden="true" className="photo-frame__tape" />
+        {caption && <p className="photo-frame__caption">{caption}</p>}
+        {walkIns ? (
+          <div aria-hidden="true" className="stamp">
+            <span className="stamp__title">Walk-ins</span>
+            <span className="stamp__line">Welcome</span>
+            <span className="stamp__small">When available</span>
+          </div>
+        ) : null}
       </div>
-      {walkIns ? (
-        <div aria-hidden="true" className="stamp">
-          <span className="stamp__line">Walk-ins</span>
-          <span className="stamp__line">Welcome</span>
-          <FlashStar className="stamp__star" />
-          <span className="stamp__small">When available</span>
-        </div>
-      ) : null}
     </div>
   );
 }
