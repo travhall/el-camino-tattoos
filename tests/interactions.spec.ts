@@ -512,7 +512,8 @@ test("header: compact topbar and a sticky nav row on desktop", async ({
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page, "/");
   const topbar = await page.locator(".site-topbar").boundingBox();
-  expect(topbar?.height).toBe(41);
+  // 44px: the topbar's links and toggle are standalone 44px targets.
+  expect(topbar?.height).toBe(44);
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   const row = await page.locator(".site-header__inner").boundingBox();
   expect(row?.y).toBe(0);

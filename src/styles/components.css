@@ -9,13 +9,8 @@
      one source for that offset and for the topbar's own height. */
   .site-header {
     @apply sticky top-0 z-40 border-b border-line bg-surface-raised;
+    /* 44px: the topbar's links and toggle are standalone targets. */
     --topbar-height: 2.75rem;
-  }
-
-  @media (min-width: 48rem) {
-    .site-header {
-      --topbar-height: 2.5625rem;
-    }
   }
 
   .site-header:has(.site-topbar) {
@@ -23,7 +18,7 @@
   }
 
   .site-header__inner {
-    @apply mx-auto flex min-h-20 w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-xs py-0 md:min-h-[5.3rem] xl:min-h-[6.125rem];
+    @apply mx-auto flex min-h-16 w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-0 py-0 md:min-h-[5.3rem] xl:min-h-[6.125rem];
   }
 
   /* Text wordmark: Being for the name, a tracked line under it, as in the
@@ -50,12 +45,20 @@
     height: var(--topbar-height);
   }
 
+  /* One row, never wrapping: the topbar has a fixed height (the sticky
+     offset above depends on it), so a wrapped row would spill over the
+     brand. Phones get smaller walk-in text so it fits beside the toggle;
+     on very narrow screens it truncates rather than wrapping. */
   .site-topbar__inner {
-    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-fluid-3xs py-0 md:min-h-9;
+    @apply mx-auto flex h-full w-(--page-width) flex-nowrap items-center justify-between gap-x-fluid-xs md:gap-x-fluid-md;
   }
 
   .site-topbar__walkin {
-    @apply inline-flex min-h-11 items-center gap-2 text-status-open hover:underline md:min-h-9;
+    @apply inline-flex min-h-11 min-w-0 items-center gap-2 text-xs text-status-open hover:underline sm:text-sm;
+  }
+
+  .site-topbar__walkin-text {
+    @apply truncate;
   }
 
   /* Decorative "open" light; the note beside it carries the meaning. */
@@ -69,7 +72,7 @@
   }
 
   .site-topbar__right {
-    @apply flex items-center gap-fluid-xs;
+    @apply flex shrink-0 items-center gap-fluid-xs;
   }
 
   .site-topbar__location {
@@ -77,17 +80,17 @@
   }
 
   .site-topbar__phone {
-    @apply hidden min-h-11 items-center hover:underline sm:inline-flex md:min-h-9;
+    @apply hidden min-h-11 items-center hover:underline sm:inline-flex;
   }
 
   .site-nav {
-    @apply order-3 flex w-full flex-wrap items-center gap-x-fluid-sm gap-y-fluid-3xs md:order-2 md:ml-auto md:w-auto md:gap-x-fluid-md;
+    @apply order-3 flex w-full flex-nowrap items-center gap-x-2 overflow-x-auto md:order-2 md:ml-auto md:w-auto md:flex-wrap md:gap-x-fluid-md md:overflow-visible;
   }
 
-  /* 44px tall hit area; current page/section is marked by an underline as
-     well as aria-current, so it isn't conveyed by color alone. */
+  /* 44px hit area both ways; current page/section is marked by an underline
+     as well as aria-current, so it isn't conveyed by color alone. */
   .site-nav__link {
-    @apply inline-flex min-h-11 items-center text-sm font-semibold uppercase hover:underline md:text-base;
+    @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-sm font-semibold whitespace-nowrap uppercase hover:underline md:text-base;
   }
 
   .site-nav__link[aria-current] {
@@ -244,7 +247,7 @@
   /* Theme toggle: a small standalone control, not a call-to-action, so it
      does not reuse .button. 44px minimum hit area per CLAUDE.md. */
   .theme-toggle {
-    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none md:min-h-9 md:gap-2 md:px-3;
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none md:gap-2 md:px-3;
     transition-duration: var(--duration-fast);
   }
 
@@ -324,8 +327,10 @@
     @apply text-sm text-muted;
   }
 
+  /* items-start: the text column keeps its natural height instead of
+     stretching (and spreading its rows) to the photo's height. */
   .artist-profile {
-    @apply grid gap-fluid-lg md:grid-cols-[minmax(0,1fr)_2fr];
+    @apply grid items-start gap-fluid-lg md:grid-cols-[minmax(0,1fr)_2fr];
   }
 
   .artist-profile__photo {
@@ -334,11 +339,25 @@
 
   /* Single piece: full page and viewer overlay share this */
   .piece-detail {
-    @apply grid gap-fluid-md md:grid-cols-[2fr_1fr];
+    @apply grid items-start gap-fluid-md md:grid-cols-[2fr_1fr];
   }
 
   .piece-detail__media {
     @apply relative aspect-[4/5] bg-surface;
+  }
+
+  /* In the viewer, the photo fits the viewport (minus the dialog's close bar
+     and padding) so the dialog doesn't scroll. The image is object-contain,
+     so a shorter box letterboxes rather than crops. */
+  .viewer .piece-detail__media {
+    max-height: calc(92dvh - 8rem);
+  }
+
+  @media (min-width: 48rem) {
+    .viewer .piece-detail__media {
+      aspect-ratio: auto;
+      height: calc(92dvh - 8rem);
+    }
   }
 
   .piece-detail__meta {
@@ -517,12 +536,14 @@
     @apply absolute right-0 bottom-14 flex size-36 -rotate-[8deg] flex-col items-center justify-center rounded-full border-2 border-accent-mark text-center text-warning uppercase md:size-40;
   }
 
+  /* Sized to stay inside the ring at every width (text-xl reached 32px on
+     desktop and broke the 160px circle). */
   .stamp__title {
-    @apply text-lg font-semibold;
+    @apply text-base leading-tight font-semibold;
   }
 
   .stamp__line {
-    @apply text-xl font-extrabold;
+    @apply text-lg leading-tight font-extrabold;
   }
 
   .stamp__small {

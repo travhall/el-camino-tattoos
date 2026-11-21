@@ -38,7 +38,9 @@ export async function SiteHeader() {
             {site.walkInNote ? (
               <Link href="/contact" className="site-topbar__walkin">
                 <span aria-hidden="true" className="site-topbar__dot" />
-                {site.walkInNote}
+                <span className="site-topbar__walkin-text">
+                  {site.walkInNote}
+                </span>
               </Link>
             ) : (
               <span />
