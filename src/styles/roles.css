@@ -2,18 +2,19 @@
  * Semantic color roles. Hand-edited: change a line, save, and the browser
  * updates. No build step.
  *
- * The model: each primitive has one job in BOTH modes, and light mode just
- * uses the other end of the ramp. Dark is the default theme (see below).
- *   paper ... backgrounds, surfaces, dividers, hover fills
- *   ink ..... text and strokes (foreground, muted, outline), and the primary
- *             button, which is the foreground color as a fill
- *   gold .... the accent (fills, gold text, marks), and warning (its amber end)
- *   red ..... error, and nothing else
- *   green ... success: open, available, done
- *   navy .... focus ring
- * Never point a role at a ramp outside its job (no paper text, no ink page or
- * surface backgrounds; ink fills are only for controls), so a role reads the
- * same in either mode.
+ * One theme, dark (2026-11-25: Tyler prefers dark; the light toggle is gone).
+ * The model (2026-11-25): one warm neutral ladder for every surface and text
+ * tier (OKLCH hue 70, about 0.05 lightness between levels, so page, card and
+ * raised are visibly different), bone text instead of pure white, and one
+ * accent: brass (the gold ramp, re-pinned). The neutrals are one-off hex
+ * values computed in OKLCH; the ramps they replace (paper, ink) stay in
+ * palette.css for reference only. Red is error only, green is "open" only,
+ * navy is the focus ring.
+ *   sunken  L.135  topbar, footer, wells
+ *   page    L.175  background
+ *   surface L.23   cards, inputs, step panel
+ *   raised  L.29   cut-out cards, menus
+ *   text    L.95 / muted L.80 / subtle L.62
  *
  * Each role points at a step of a primitive ramp from palette.css (generated
  * by scripts/color-ramps.mjs, which is where the ramps and their pinned brand
@@ -28,17 +29,19 @@
  *   surface .............. the default raised element: cards, inputs
  *   surface-raised ....... elements that float above the page: nav pill, menus
  *   surface-sunken ....... recessed areas: section bands, the footer, wells
- *   foreground / muted ... text
- *   subtle ............... third text tier: captions, footer links, labels on photos
+ *   foreground ........... primary text: headings, body (L .95)
+ *   muted ................ secondary text: descriptions, captions (L .80)
+ *   subtle ............... tertiary text: metadata, fine print (L .62; not on raised)
  *   scrim ................ base color for a translucent fill behind text on a
  *                          photo (apply the opacity where it is used)
  *   veil ................. base color for the page-dimming layer behind a modal
  *                          dialog (dark in both themes; apply the opacity where
  *                          it is used)
  *   accent ............... gold fills: badges, tags, decorative details (not buttons)
- *   accent-foreground .... text on an accent fill
+ *   on-accent ............ text ON a brass fill (dark). Not for text on the
+ *                          page: use accent-text for brass-colored text
  *   accent-hover ......... accent fill while hovered
- *   accent-text .......... gold as readable text
+ *   accent-text .......... brass as readable text on the page
  *   accent-soft .......... tinted backgrounds, with foreground text on top
  *   accent-mark .......... gold marks that must read at 3:1: underlines, state
  *                          indicators, edges around an accent fill
@@ -70,49 +73,48 @@
  *                          only; matches the page background in light, so invisible)
  */
 :root {
-  /* Dark — the default theme. No data-theme attribute and no
-     prefers-color-scheme check: every visitor lands here unless they've
-     explicitly chosen "Paper mode" via the toggle (src/components/theme-toggle.tsx),
-     which is recorded below as :root[data-theme="light"]. */
-  /* Dark surfaces are one-off hex (the mock's charcoals), not ramp steps: the
-     paper ramp jumps from 950 (#090704, L13) to 900 (#1c1a15, L22), and the
-     page background belongs between them (L18.7). paper-950 stays in the ramp
-     and is still used by scrim and veil. */
-  --background: #141311;
-  --surface: #1d1b18;
-  --surface-raised: #221f1b;
-  --surface-sunken: #0c0b09;
-  --foreground: var(--ink-50);
-  --muted: var(--ink-300);
-  --subtle: var(--ink-400);
-  --scrim: var(--paper-950);
-  --veil: var(--paper-950);
-  --outline: var(--ink-400);
-  --border: var(--paper-700);
-  --line: var(--paper-800);
-  --hover: var(--paper-800);
+  /* Neutral ladder (warm, hue 70). */
+  --surface-sunken: #0a0806;
+  --background: #13100d;
+  --surface: #201c18;
+  --surface-raised: #2f2b26;
+  --hover: #393530;
+  --line: #33302b;
+  --border: #4b4742;
+  --outline: #7e7974;
+  /* Three text tiers, clearly apart (L .95 / .80 / .62). subtle passes 4.5:1
+     on page, surface and sunken only: never put it on a raised surface. */
+  --subtle: #8b857f;
+  --muted: #c3bdb6;
+  --foreground: #f4ede6;
+  --scrim: #0a0806;
+  --veil: #0a0806;
+
+  /* Brass: the one accent. */
   --accent: var(--gold-300);
-  --accent-foreground: var(--ink-950);
+  --on-accent: var(--surface-sunken);
   --accent-hover: var(--gold-200);
   --accent-text: var(--gold-200);
-  --accent-soft: var(--gold-800);
+  --accent-soft: #3b2a12;
   --accent-mark: var(--gold-300);
-  --error: var(--red-500);
-  --error-text: var(--red-400);
+
+  /* Status. */
+  --error: var(--red-400);
+  --error-text: var(--red-300);
   --error-soft: var(--red-900);
   --success: var(--green-400);
   --success-text: var(--green-300);
   --success-soft: var(--green-900);
-  --warning: var(--gold-400);
+  --warning: var(--gold-300);
   --warning-text: var(--gold-200);
-  --warning-soft: var(--gold-900);
+  --warning-soft: #3b2a12;
   --focus: var(--navy-400);
 
   /* UI tokens */
-  /* Ink: the foreground as a fill, so it never collides with a status color. */
+  /* Bone: the foreground as a fill, so it never collides with a status color. */
   --button-primary-bg: var(--foreground);
   --button-primary-fg: var(--background);
-  --button-primary-hover: var(--ink-200);
+  --button-primary-hover: #d9d2ca;
   --button-primary-border: var(--foreground);
   --button-secondary-border: var(--outline);
   --button-secondary-fg: var(--foreground);
@@ -125,55 +127,10 @@
   --chip-selected-bg: var(--foreground);
   --chip-selected-fg: var(--background);
   --selection-bg: var(--accent);
-  --selection-fg: var(--accent-foreground);
+  --selection-fg: var(--on-accent);
   --focus-ring: var(--focus);
   --status-open: var(--success);
   --status-waitlist: var(--warning);
   --status-closed: var(--muted);
-  --frame-shadow-color: var(--paper-950);
-}
-
-/* Light ("Paper mode"): opt-in only, via the toggle. A partial override —
-   only what differs from the dark default above; accent, accent-foreground,
-   veil and most UI tokens are the same in both themes and fall through from
-   :root unchanged. Set by src/components/theme-toggle.tsx; the blocking
-   script in src/app/layout.tsx applies it before paint so there is no flash. */
-:root[data-theme="light"] {
-  --background: var(--paper-50);
-  --surface: var(--paper-100);
-  --surface-raised: var(--paper-50);
-  --surface-sunken: var(--paper-200);
-  --foreground: var(--ink-950);
-  --muted: var(--ink-700);
-  /* Light mode: subtle stays equal to muted. ink-600 (the next step lighter)
-     measures 3.80:1 on surface-sunken, under the 4.5:1 subtle needs there, and
-     there is no intermediate ramp step. Dark differentiates subtle from muted
-     instead (ink-400 vs ink-300) because the same wall doesn't exist there.
-     Fixing light mode would mean lightening surface-sunken itself, which
-     affects every section band and the footer — a design call, not a token
-     tweak. See plans/012-subtle-text-tier-dark-differentiation.md. */
-  --subtle: var(--ink-700);
-  --scrim: var(--paper-50);
-  --outline: var(--ink-600);
-  --border: var(--paper-400);
-  --line: var(--paper-300);
-  --hover: var(--paper-200);
-  --accent-hover: var(--gold-400);
-  --accent-text: var(--gold-700);
-  --accent-soft: var(--gold-100);
-  --accent-mark: var(--gold-600);
-  --error: var(--red-600);
-  --error-text: var(--red-700);
-  --error-soft: var(--red-100);
-  --success: var(--green-600);
-  --success-text: var(--green-700);
-  --success-soft: var(--green-100);
-  --warning: var(--gold-700);
-  --warning-text: var(--gold-700);
-  --warning-soft: var(--gold-100);
-  --focus: var(--navy-700);
-
-  /* UI tokens. The ink button is dark text here, so hover lightens toward background. */
-  --button-primary-hover: var(--ink-800);
-  --frame-shadow-color: var(--background);
+  --frame-shadow-color: var(--surface-sunken);
 }

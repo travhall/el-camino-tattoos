@@ -90,7 +90,7 @@
   /* 44px hit area both ways; current page/section is marked by an underline
      as well as aria-current, so it isn't conveyed by color alone. */
   .site-nav__link {
-    @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-sm font-semibold whitespace-nowrap uppercase hover:underline md:text-base;
+    @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap uppercase hover:underline md:text-base;
   }
 
   .site-nav__link[aria-current] {
@@ -189,7 +189,7 @@
      the button's shape needs, and keeps an edge in forced-colors (high
      contrast) mode, where the fill is removed. Every other variant resets it. */
   .button {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-medium text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-control border border-button-primary-border bg-button-primary-bg px-4 py-1.5 font-normal text-button-primary-fg transition-colors not-disabled:not-aria-disabled:hover:bg-button-primary-hover disabled:opacity-50 aria-disabled:opacity-50 motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -204,7 +204,7 @@
   /* Text-only action: reads as a link (same gold underline as .link) but keeps
      the 44px hit area. No fill, so there is no hover fill either. */
   .button--link {
-    @apply rounded-none border-transparent bg-transparent px-0 text-link-text underline decoration-link-underline decoration-2 underline-offset-4 not-disabled:not-aria-disabled:hover:bg-transparent not-disabled:not-aria-disabled:hover:no-underline;
+    @apply border-transparent bg-transparent px-0 text-link-text underline decoration-link-underline decoration-2 underline-offset-4 not-disabled:not-aria-disabled:hover:bg-transparent not-disabled:not-aria-disabled:hover:no-underline;
   }
 
   /* Optional line icon. It moves on hover and keyboard focus only while the
@@ -231,7 +231,8 @@
       @apply rotate-90;
     }
 
-    &[data-icon="instagram"] {
+    &[data-icon="instagram"],
+    &[data-icon="facebook"] {
       @apply scale-110 -rotate-6;
     }
   }
@@ -241,24 +242,24 @@
   }
 
   .button--lg {
-    @apply min-h-12 px-6 py-2.5 text-lg;
+    /* Large labels can go light (300); small ones stay Regular to keep their
+       strokes on a dark ground. */
+    @apply min-h-12 px-6 py-2.5 text-lg font-light;
   }
 
-  /* Theme toggle: a small standalone control, not a call-to-action, so it
-     does not reuse .button. 44px minimum hit area per CLAUDE.md. */
-  .theme-toggle {
-    @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-outline bg-transparent text-foreground transition-colors hover:bg-hover motion-reduce:transition-none md:gap-2 md:px-3;
-    transition-duration: var(--duration-fast);
-  }
+  /* Icon only (IconButton): a square at each size's height, no padding, icon
+     centred. The icon is 1.125em of the size's text, so it scales with it.
+     Small (36px) is under the 44px target: compact secondary controls only. */
+  .button--icon {
+    @apply size-11 p-0;
 
-  .theme-toggle__icon {
-    @apply text-base leading-none;
-  }
+    &.button--sm {
+      @apply size-9;
+    }
 
-  /* Visible only from md up; phones keep the icon-only 44px control, whose
-     accessible name is the same. */
-  .theme-toggle__label {
-    @apply hidden md:inline;
+    &.button--lg {
+      @apply size-12;
+    }
   }
 
   /* Portfolio grid and tiles */
@@ -271,7 +272,7 @@
   }
 
   .piece-tile__media {
-    @apply relative aspect-[4/5] overflow-hidden bg-surface;
+    @apply relative aspect-[4/5] overflow-hidden rounded-media bg-surface;
   }
 
   .piece-tile__image {
@@ -294,7 +295,7 @@
   }
 
   .filter-chip {
-    @apply inline-flex min-h-11 items-center rounded-full border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
+    @apply inline-flex min-h-11 items-center rounded-control border border-chip-border px-4 py-1.5 text-sm hover:bg-chip-hover;
   }
 
   /* Selected state is fill AND weight, not color alone. */
@@ -312,7 +313,7 @@
   }
 
   .artist-card__media {
-    @apply relative aspect-[3/4] overflow-hidden bg-surface;
+    @apply relative aspect-[3/4] overflow-hidden rounded-media bg-surface;
   }
 
   .artist-card__name {
@@ -334,7 +335,7 @@
   }
 
   .artist-profile__photo {
-    @apply relative aspect-[3/4] bg-surface;
+    @apply relative aspect-[3/4] overflow-hidden rounded-feature bg-surface;
   }
 
   /* Single piece: full page and viewer overlay share this */
@@ -343,7 +344,7 @@
   }
 
   .piece-detail__media {
-    @apply relative aspect-[4/5] bg-surface;
+    @apply relative aspect-[4/5] overflow-hidden rounded-media bg-surface;
   }
 
   /* In the viewer, the photo fits the viewport (minus the dialog's close bar
@@ -374,7 +375,7 @@
 
   /* Piece viewer: native <dialog> */
   .viewer {
-    @apply m-auto max-h-[92dvh] w-[min(64rem,calc(100vw-1.5rem))] overflow-auto overscroll-contain bg-background text-foreground backdrop:bg-veil/80;
+    @apply m-auto max-h-[92dvh] w-[min(64rem,calc(100vw-1.5rem))] overflow-auto overscroll-contain rounded-panel bg-background text-foreground backdrop:bg-veil/80;
   }
 
   .viewer__inner {
@@ -395,7 +396,7 @@
   }
 
   .field__control {
-    @apply min-h-11 w-full rounded-md border border-outline bg-background px-3 py-2 placeholder:text-muted;
+    @apply min-h-11 w-full rounded-control border border-outline bg-background px-3 py-2 placeholder:text-muted;
   }
 
   /* Grouped controls (radios, related file inputs). */
@@ -432,7 +433,7 @@
   }
 
   .form-status {
-    @apply rounded-md border border-error bg-error-soft px-3 py-2;
+    @apply rounded-control border border-error bg-error-soft px-3 py-2;
   }
 
   /* FAQ: one section per question, each linkable by its slug. */
@@ -486,7 +487,7 @@
   /* Being at the top of the scale. Below 1400px the column is too narrow for
      the largest step, so it drops one. */
   .home-hero__title {
-    @apply font-display text-5xl font-semibold min-[1400px]:text-6xl;
+    @apply font-display text-5xl font-normal min-[1400px]:text-6xl;
     /* Being's ink-trap cut, as in .display. */
     font-variation-settings: "trap" 1;
   }
@@ -512,7 +513,7 @@
   }
 
   .photo-frame__media {
-    @apply relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-sunken md:aspect-[25/29];
+    @apply relative aspect-[4/3] overflow-hidden rounded-media bg-surface-sunken md:aspect-[25/29];
   }
 
   .photo-frame__caption {

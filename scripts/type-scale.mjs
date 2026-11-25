@@ -27,12 +27,12 @@ const steps = [
   { name: "sm", step: -1, lineHeight: 1.5 },
   { name: "base", step: 0, lineHeight: 1.55 },
   { name: "lg", step: 1, lineHeight: 1.45 },
-  { name: "xl", step: 2, lineHeight: 1.3 },
-  { name: "2xl", step: 3, lineHeight: 1.2 },
-  { name: "3xl", step: 4, lineHeight: 1.1 },
-  { name: "4xl", step: 5, lineHeight: 1.05 },
-  { name: "5xl", step: 6, lineHeight: 1 },
-  { name: "6xl", step: 7, lineHeight: 1 },
+  { name: "xl", step: 2, lineHeight: 1.15 },
+  { name: "2xl", step: 3, lineHeight: 1.05 },
+  { name: "3xl", step: 4, lineHeight: 1 },
+  { name: "4xl", step: 5, lineHeight: 0.95 },
+  { name: "5xl", step: 6, lineHeight: 0.95 },
+  { name: "6xl", step: 7, lineHeight: 0.9 },
 ];
 
 // name -> Tailwind spacing utility (`p-fluid-md`, `gap-fluid-lg`, ...),

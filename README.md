@@ -20,7 +20,7 @@ Fonts: Being (variable, headings and display) via `next/font/local`, and Hanken 
 
 Markup uses semantic classes, and Tailwind utilities are applied inside them with `@apply`. See `src/styles/` and the conventions in `CLAUDE.md`. Browse everything at `/styleguide`.
 
-Color is primitives mapped to roles. `scripts/color-ramps.mjs` generates tonal ramps (`paper`, `ink`, `gold`, `red`, `green`, `navy`) from pinned brand values into `src/styles/palette.css`. Semantic roles (`background`, `foreground`, `accent`, `success`, ...) and the UI tokens components use (`button-primary-bg`, `chip-selected-bg`, ...) are hand-edited in `src/styles/roles.css`, for light and dark, and update live in the browser with no build step. To change a role, edit that file. To change a brand value, edit the pins in the generator and run:
+Color is primitives mapped to roles. `scripts/color-ramps.mjs` generates tonal ramps (`paper`, `ink`, `gold`, `red`, `green`, `navy`) from pinned brand values into `src/styles/palette.css`. Semantic roles (`background`, `foreground`, `accent`, `success`, ...) and the UI tokens components use (`button-primary-bg`, `chip-selected-bg`, ...) are hand-edited in `src/styles/roles.css`, and update live in the browser with no build step. To change a role, edit that file. To change a brand value, edit the pins in the generator and run:
 
 ```bash
 pnpm color-ramps
@@ -52,7 +52,7 @@ pnpm test                               # seeds fixtures, builds, runs Playwrigh
 pnpm test --grep "touch targets"        # extra args go to Playwright
 ```
 
-The suite runs axe-core (WCAG 2.0 to 2.2 A/AA) on every route in light and dark at phone and desktop widths, plus interaction tests for the skip link, nav state, piece viewer, 404, contact form, reduced motion and touch-target sizes. CI runs it on every push and pull request, and uploads the Playwright report when it fails.
+The suite runs axe-core (WCAG 2.0 to 2.2 A/AA) on every route at phone and desktop widths, plus interaction tests for the skip link, nav state, piece viewer, 404, contact form, reduced motion and touch-target sizes. CI runs it on every push and pull request, and uploads the Playwright report when it fails.
 
 ## Contact form and analytics
 

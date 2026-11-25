@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { NauticalStar } from "@/components/nautical-star";
 import { NavLink } from "@/components/nav-link";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ButtonLink } from "@/components/ui/button";
 import { getSite } from "@/lib/content";
 import { phoneHref } from "@/lib/site";
@@ -57,7 +56,6 @@ export async function SiteHeader() {
                   {site.phone}
                 </a>
               )}
-              <ThemeToggle />
             </div>
           </div>
         </div>

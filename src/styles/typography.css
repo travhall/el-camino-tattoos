@@ -4,28 +4,31 @@
  * Size tokens come from type-scale.css.
  */
 @layer components {
+  /* Weights (2026-11-25, matching Figma): large type is light. Being reads
+     best at Regular from H2 up; H3/H4 step to Medium so small headings keep
+     their weight on a dark ground. */
   h1,
   .heading-1 {
-    @apply font-display text-4xl font-semibold;
+    @apply font-display text-4xl font-normal;
   }
 
   h2,
   .heading-2 {
-    @apply font-display text-3xl font-semibold;
+    @apply font-display text-3xl font-normal;
   }
 
   h3,
   .heading-3 {
-    @apply font-display text-2xl font-semibold;
+    @apply font-display text-2xl font-medium;
   }
 
   h4,
   .heading-4 {
-    @apply font-display text-xl font-semibold;
+    @apply font-display text-xl font-medium;
   }
 
   .display {
-    @apply font-display text-6xl font-semibold;
+    @apply font-display text-6xl font-normal;
     /* Being's ink-trap cut. Only the trap axis: weight stays on font-weight. */
     font-variation-settings: "trap" 1;
   }

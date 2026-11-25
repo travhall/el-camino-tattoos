@@ -7,7 +7,7 @@
  *
  * Reads (never edit the outputs):
  *   src/styles/palette.generated.json   primitive ramps
- *   src/styles/roles.css                semantic roles, light and dark
+ *   src/styles/roles.css                semantic roles (one dark theme)
  *   src/styles/type-scale.generated.json  fluid type and space scale
  *   src/app/globals.css                 motion tokens
  *   src/lib/fonts.ts                    fonts (checked, names are listed below)
@@ -48,13 +48,7 @@ function resolve(value, vars, depth = 0) {
 
 const parsed = parseCssVarRoles(read("src/styles/roles.css"));
 const roles = Object.fromEntries(
-  Object.keys(parsed.light).map((name) => [
-    name,
-    {
-      light: resolve(parsed.light[name], parsed.light),
-      dark: resolve(parsed.dark[name], parsed.dark),
-    },
-  ]),
+  Object.keys(parsed).map((name) => [name, resolve(parsed[name], parsed)]),
 );
 
 const motionCss = read("src/app/globals.css");
@@ -71,13 +65,39 @@ const layout = {
   "max-width/viewer": { px: 1024, source: ".viewer (64rem)" },
   "size/target-min": { px: 44, source: "min-h-11, the touch target minimum" },
   "radius/control": {
-    px: 6,
-    source: ".field__control, .form-status (rounded-md)",
+    px: 8,
+    source:
+      ".button, .filter-chip, .field__control, .form-status, .skip-link (rounded-control)",
+  },
+  "radius/media": {
+    px: 12,
+    source:
+      ".piece-tile__media, .artist-card__media, .piece-detail__media (rounded-media)",
+  },
+  "radius/panel": { px: 16, source: ".viewer (rounded-panel)" },
+  "radius/feature": {
+    px: 24,
+    source: ".artist-profile__photo (rounded-feature)",
   },
   "radius/pill": {
     px: 9999,
-    source: ".button, .theme-toggle, .filter-chip, .skip-link (rounded-full)",
+    source: "status dots, round icons (rounded-full)",
   },
+  // Fixed (non-fluid) spacing inside controls: Tailwind's 4px steps (px-4,
+  // py-1.5, gap-2...). Layout spacing between blocks is the fluid scale.
+  "space/fixed/4": { px: 4, source: ".button--sm (py-1), .field (gap-1)" },
+  "space/fixed/6": { px: 6, source: ".button, .filter-chip (py-1.5)" },
+  "space/fixed/8": {
+    px: 8,
+    source: ".button, .check (gap-2), .field__control, .form-status (py-2)",
+  },
+  "space/fixed/10": { px: 10, source: ".button--lg (py-2.5)" },
+  "space/fixed/12": {
+    px: 12,
+    source: ".button--sm, .field__control, .form-status (px-3)",
+  },
+  "space/fixed/16": { px: 16, source: ".button, .filter-chip (px-4)" },
+  "space/fixed/24": { px: 24, source: ".button--lg (px-6)" },
   "border/width": { px: 1, source: "controls (border)" },
   "focus/ring-width": { px: 2, source: ":focus-visible outline" },
   "focus/ring-offset": { px: 2, source: ":focus-visible outline-offset" },

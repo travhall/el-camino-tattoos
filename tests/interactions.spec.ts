@@ -80,8 +80,9 @@ test.describe("piece viewer", () => {
     const dialog = page.getByRole("dialog", { name: "Fixture Koi" });
     await expect(dialog).toBeVisible();
 
-    // Just inside the dialog's top-left corner: the former padding area.
-    await dialog.click({ position: { x: 2, y: 2 } });
+    // Just inside the dialog's padding area. 20px in: the corner itself is
+    // rounded (radius/panel, 16px), so the pixel at 2,2 is backdrop now.
+    await dialog.click({ position: { x: 20, y: 20 } });
     await expect(dialog).toBeVisible();
     await dialog.getByRole("heading", { level: 1 }).click();
     await expect(dialog).toBeVisible();
@@ -269,21 +270,15 @@ test.describe("contact form", () => {
       "aria-invalid",
     );
 
-    // The error state has to pass axe (contrast of the red text and border),
-    // in both themes. Pair with reduced motion: buttons transition-colors
-    // over --duration-fast, so switching colorScheme on an already-loaded
-    // page (unlike the dedicated per-route sweep, which sets colorScheme
-    // before navigating) can catch axe mid-transition and flag a real but
-    // momentary low-contrast frame that never reflects the settled colors.
-    for (const colorScheme of ["light", "dark"] as const) {
-      await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+    // The error state has to pass axe (contrast of the red text and border).
+    // Reduced motion: buttons transition-colors, and axe must not catch a
+    // momentary mid-transition frame.
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    {
       const { violations } = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
         .analyze();
-      expect(
-        violations.map((v) => `${colorScheme}: ${v.id}`),
-        colorScheme,
-      ).toEqual([]);
+      expect(violations.map((v) => v.id)).toEqual([]);
     }
 
     // Typing fixes the name and its error goes away; the others stay.
@@ -305,8 +300,7 @@ test.describe("contact form", () => {
     page,
   }) => {
     await open(page, "/contact");
-    for (const colorScheme of ["light", "dark"] as const) {
-      await page.emulateMedia({ colorScheme });
+    {
       const { accent, foreground } = await page.evaluate(() => {
         const probe = document.createElement("span");
         probe.style.color = "var(--foreground)";
@@ -318,7 +312,7 @@ test.describe("contact form", () => {
           foreground,
         };
       });
-      expect(accent, colorScheme).toBe(foreground);
+      expect(accent).toBe(foreground);
     }
   });
 
@@ -456,41 +450,7 @@ test.describe("touch targets on a phone", () => {
   }
 });
 
-test("theme defaults to dark regardless of OS preference, and the toggle persists light", async ({
-  page,
-}) => {
-  await page.emulateMedia({ colorScheme: "light" });
-  await open(page, "/");
-
-  const background = () =>
-    page.evaluate(() =>
-      getComputedStyle(document.documentElement).getPropertyValue(
-        "--background",
-      ),
-    );
-  const darkBackground = await background();
-
-  const toggle = page.getByRole("button", { name: /mode/i });
-  await toggle.click(); // dark -> light
-  const lightBackground = await background();
-  expect(lightBackground).not.toBe(darkBackground);
-
-  await page.reload();
-  await page.locator(hydrated).waitFor({ state: "attached" });
-  expect(await background()).toBe(lightBackground); // persisted
-
-  await toggle.click(); // light -> dark
-  expect(await background()).toBe(darkBackground);
-
-  const { violations } = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
-    .analyze();
-  expect(violations.map((v) => v.id)).toEqual([]);
-});
-
-test("the topbar shows the walk-in note and persists through theme toggle", async ({
-  page,
-}) => {
+test("the topbar shows the walk-in note", async ({ page }) => {
   await open(page, "/");
 
   const topbar = page.locator(".site-topbar");
@@ -512,7 +472,7 @@ test("header: compact topbar and a sticky nav row on desktop", async ({
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page, "/");
   const topbar = await page.locator(".site-topbar").boundingBox();
-  // 44px: the topbar's links and toggle are standalone 44px targets.
+  // 44px: the topbar's links are standalone 44px targets.
   expect(topbar?.height).toBe(44);
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   const row = await page.locator(".site-header__inner").boundingBox();

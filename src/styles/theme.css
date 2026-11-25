@@ -2,19 +2,12 @@
  * Theme: maps semantic color roles to Tailwind utilities (bg-background,
  * text-foreground, bg-surface, text-muted, border-outline, ...).
  *
- * This file names no colors. The role values (light and dark) are hand-edited
+ * This file names no colors. The role values are hand-edited
  * in roles.css, pointing at the generated ramps in palette.css. Guidance for
  * each role lives at the top of roles.css.
  */
 :root {
-  color-scheme: light dark;
-}
-
-:root[data-theme="light"] {
-  color-scheme: light;
-}
-
-:root[data-theme="dark"] {
+  /* One theme, dark: native controls and scrollbars match it. */
   color-scheme: dark;
 }
 
@@ -33,7 +26,7 @@
   --color-line: var(--line);
   --color-hover: var(--hover);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-on-accent: var(--on-accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
@@ -70,4 +63,22 @@
   --color-status-open: var(--status-open);
   --color-status-waitlist: var(--status-waitlist);
   --color-status-closed: var(--status-closed);
+}
+
+/*
+ * Corner radius (2026-11-25). Roles, not sizes: components pick a role, so
+ * the whole site can be retuned here. Primitive steps (px): 4, 8, 12, 16, 24,
+ * full. Nesting: an inner radius is the outer radius minus the padding
+ * between them. Mirrored in Figma as Layout > radius/*.
+ *   rounded-control  8   buttons, inputs, chips, small alerts, skip link
+ *   rounded-media   12   photos in strips, grids, thumbnails, portraits
+ *   rounded-panel   16   cards and containers, dialogs, cut-out cards
+ *   rounded-feature 24   large pieces: hero image, footer band
+ *   rounded-full         only round things: status dots, avatars, icons
+ */
+@theme {
+  --radius-control: 0.5rem;
+  --radius-media: 0.75rem;
+  --radius-panel: 1rem;
+  --radius-feature: 1.5rem;
 }

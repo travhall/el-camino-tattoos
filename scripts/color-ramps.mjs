@@ -38,10 +38,11 @@ const ramps = {
   // Neutral black: text and strokes in both modes (foreground, muted, outline).
   // Only a trace of cool tint, so it sits quietly on the paper.
   ink: { pins: { 700: "#484b4f", 950: "#090a0c" } },
-  // Mustard gold: the brand accent, and warning (its amber end). Sits high in
+  // Brass (2026-11-25): the one accent on the dark theme, and warning. Muted,
+  // warm, like old shop signage; replaces the Sailor Jerry mustard. Sits high in
   // lightness, so it lives at 300. Its hue drifts toward amber (62) as it
   // darkens, so hover, mark and text steps read as gold-brown rather than olive.
-  gold: { pins: { 300: "#e9ac1f" }, darkHue: 62 },
+  gold: { pins: { 300: "#e3b160" }, darkHue: 62 },
   // Tattoo red: error, and nothing else.
   red: { pins: { 600: "#bf2a2e" } },
   // Deep green: success (open, available, done).

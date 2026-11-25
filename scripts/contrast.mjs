@@ -47,8 +47,8 @@ export const PAIRS = [
   ["focus", "surface", 3, "focus ring on surface"],
   ["focus", "surface-raised", 3, "focus ring on a raised surface"],
   ["focus", "surface-sunken", 3, "focus ring on a sunken surface"],
-  ["accent-foreground", "accent", 4.5, "text on accent fill"],
-  ["accent-foreground", "accent-hover", 4.5, "text on accent fill, hovered"],
+  ["on-accent", "accent", 4.5, "text on accent fill"],
+  ["on-accent", "accent-hover", 4.5, "text on accent fill, hovered"],
   ["accent-mark", "background", 3, "gold underlines, marks, accent-fill edges"],
   ["accent-mark", "surface", 3, "gold marks on surface"],
   ["accent-mark", "surface-raised", 3, "gold marks on a raised surface"],
@@ -132,11 +132,7 @@ export function contrast(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-/**
- * Splits roles.css into light values and dark values. Light is whatever the
- * `:root[data-theme="light"]` block overrides, on top of the dark (default)
- * values in the base `:root`.
- */
+/** Reads the roles from roles.css (one theme). */
 export const parseRoles = parseCssVarRoles;
 
 /** Resolves `var(--paper-50)`, `var(--other-role)` or a #hex to a #rrggbb. */
@@ -155,35 +151,18 @@ function resolve(name, vars, ramps, depth = 0) {
   return resolve(ref[1], vars, ramps, depth + 1);
 }
 
-/** One row per pairing: ratios for light and dark, or null if a role is missing. */
+/** One row per pairing: its contrast ratio, or null if a role is missing. */
 export function checkContrast(rolesCss, ramps) {
-  const modes = parseRoles(rolesCss);
-  // Regression guard for the exact bug class fixed in parse-css-vars.mjs: if
-  // every role's light and dark value collapses to the same thing, the dark
-  // override selectors (`:root:not([data-theme="light"])`,
-  // `:root[data-theme="dark"]`) failed to parse, and this whole check would
-  // silently measure light mode twice instead of catching a real dark-mode
-  // contrast regression.
-  const anyRoleDiffers = Object.keys(modes.light).some(
-    (k) => modes.light[k] !== modes.dark[k],
-  );
-  if (!anyRoleDiffers) {
-    throw new Error(
-      "checkContrast: light and dark resolved to identical role values — the dark-mode override selectors in roles.css did not parse. This would hide every real dark-mode contrast regression.",
-    );
-  }
+  const roles = parseRoles(rolesCss);
   return PAIRS.map(([fg, bg, min, note]) => {
-    const row = { fg, bg, min, note, light: null, dark: null };
-    for (const mode of ["light", "dark"]) {
-      const a = resolve(fg, modes[mode], ramps);
-      const b = resolve(bg, modes[mode], ramps);
-      if (a && b) row[mode] = Math.round(contrast(a, b) * 100) / 100;
-    }
-    return row;
+    const a = resolve(fg, roles, ramps);
+    const b = resolve(bg, roles, ramps);
+    const ratio = a && b ? Math.round(contrast(a, b) * 100) / 100 : null;
+    return { fg, bg, min, note, ratio };
   });
 }
 
-export const passes = (row, mode) => row[mode] !== null && row[mode] >= row.min;
+export const passes = (row) => row.ratio !== null && row.ratio >= row.min;
 
 export async function loadInputs(root = process.cwd()) {
   const [rolesCss, palette] = await Promise.all([

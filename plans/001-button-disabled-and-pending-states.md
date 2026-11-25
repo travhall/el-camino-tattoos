@@ -81,7 +81,7 @@ export function Button({
 }
 
 .button--accent {
-  @apply bg-accent text-accent-foreground hover:bg-accent/85;
+  @apply text-accent-foreground bg-accent hover:bg-accent/85;
 }
 
 .button--ghost {

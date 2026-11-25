@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { ShopPromises } from "@/components/shop-promises";
-import { Button, ButtonLink } from "@/components/ui/button";
+import {
+  Button,
+  ButtonLink,
+  IconButton,
+  IconButtonLink,
+} from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
-import { ThemeToggle } from "@/components/theme-toggle";
 import palette from "@/styles/palette.generated.json";
 import typeScale from "@/styles/type-scale.generated.json";
 import {
@@ -60,7 +64,7 @@ const roleGroups = [
     title: "Accent",
     roles: [
       { name: "accent", note: "gold fills: badges, details" },
-      { name: "accent-foreground", note: "text on accent" },
+      { name: "on-accent", note: "text on a brass fill" },
       { name: "accent-hover", note: "accent fill, hovered" },
       { name: "accent-text", note: "gold as readable text" },
       { name: "accent-soft", note: "tinted backgrounds" },
@@ -148,10 +152,10 @@ function Label({ children }: { children: React.ReactNode }) {
 type Pairing = ReturnType<typeof checkContrast>[number];
 
 // Never color alone: a miss is spelled out in the cell.
-function ratio(row: Pairing, mode: "light" | "dark") {
-  const value = row[mode];
+function ratio(row: Pairing) {
+  const value = row.ratio;
   if (value === null) return "role missing";
-  return passes(row, mode) ? `${value}:1` : `${value}:1, below minimum`;
+  return passes(row) ? `${value}:1` : `${value}:1, below minimum`;
 }
 
 export default async function StyleGuidePage() {
@@ -177,7 +181,6 @@ export default async function StyleGuidePage() {
             </li>
           ))}
         </ul>
-        <ThemeToggle />
       </nav>
 
       <Section id="typography" title="Typography">
@@ -394,8 +397,7 @@ export default async function StyleGuidePage() {
               <th scope="col">Pairing</th>
               <th scope="col">Used for</th>
               <th scope="col">Min</th>
-              <th scope="col">Light</th>
-              <th scope="col">Dark</th>
+              <th scope="col">Ratio</th>
             </tr>
           </thead>
           <tbody>
@@ -406,8 +408,7 @@ export default async function StyleGuidePage() {
                 </th>
                 <td>{pair.note}</td>
                 <td>{pair.min}:1</td>
-                <td>{ratio(pair, "light")}</td>
-                <td>{ratio(pair, "dark")}</td>
+                <td>{ratio(pair)}</td>
               </tr>
             ))}
           </tbody>
@@ -450,6 +451,9 @@ export default async function StyleGuidePage() {
           <Button variant="ghost" icon="instagram" iconPosition="start">
             Instagram
           </Button>
+          <Button variant="ghost" icon="facebook" iconPosition="start">
+            Facebook
+          </Button>
           <Button variant="link" icon="arrow-right">
             See all artists
           </Button>
@@ -462,6 +466,41 @@ export default async function StyleGuidePage() {
           <ButtonLink href="/portfolio" variant="secondary">
             View portfolio
           </ButtonLink>
+        </div>
+        <p className="small muted">
+          Icon only: a square at each size, label required (it becomes the
+          accessible name).
+        </p>
+        <div className="cluster">
+          <IconButton icon="plus" label="Add" size="sm" />
+          <IconButton icon="plus" label="Add" />
+          <IconButton icon="plus" label="Add" size="lg" />
+          <IconButton icon="arrow-right" label="Next" variant="secondary" />
+          <IconButton
+            icon="arrow-right"
+            label="Next"
+            variant="secondary"
+            disabled
+          />
+          <IconButtonLink
+            href="https://www.instagram.com/"
+            icon="instagram"
+            label="Instagram"
+            variant="ghost"
+          />
+          <IconButtonLink
+            href="https://www.facebook.com/"
+            icon="facebook"
+            label="Facebook"
+            variant="ghost"
+          />
+          <IconButtonLink
+            href="https://www.facebook.com/"
+            icon="facebook"
+            label="Facebook"
+            variant="secondary"
+            size="lg"
+          />
         </div>
       </Section>
 

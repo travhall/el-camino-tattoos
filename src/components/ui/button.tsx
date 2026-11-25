@@ -29,9 +29,19 @@ type Options = {
 export function buttonClasses({
   variant = "primary",
   size = "md",
+  iconOnly = false,
   className,
-}: Pick<Options, "variant" | "size"> & { className?: string } = {}) {
-  return ["button", variants[variant], sizes[size], className]
+}: Pick<Options, "variant" | "size"> & {
+  iconOnly?: boolean;
+  className?: string;
+} = {}) {
+  return [
+    "button",
+    variants[variant],
+    sizes[size],
+    iconOnly && "button--icon",
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 }
@@ -104,6 +114,67 @@ export function ButtonLink({
       <ButtonContent icon={icon} iconPosition={iconPosition}>
         {children}
       </ButtonContent>
+    </Link>
+  );
+}
+
+/**
+ * Icon-only button: a square at the button's height (36, 44 or 48px) with the
+ * icon centred, scaling with the size. `label` is required and becomes the
+ * accessible name. No link variant: underlined text with no text makes no
+ * sense.
+ */
+type IconOnlyOptions = {
+  icon: IconName;
+  label: string;
+  variant?: Exclude<Variant, "link">;
+  size?: Size;
+};
+
+export function IconButton({
+  icon,
+  label,
+  variant,
+  size,
+  className,
+  type = "button",
+  pending = false,
+  ...props
+}: IconOnlyOptions &
+  Omit<React.ComponentProps<"button">, "children" | "aria-label"> & {
+    /** Same as Button's `pending`: busy but still focusable. */
+    pending?: boolean;
+  }) {
+  return (
+    <button
+      type={type}
+      className={buttonClasses({ variant, size, iconOnly: true, className })}
+      aria-label={label}
+      aria-busy={pending || undefined}
+      aria-disabled={pending || undefined}
+      {...props}
+    >
+      <Icon name={icon} className="button__icon" />
+    </button>
+  );
+}
+
+export function IconButtonLink({
+  icon,
+  label,
+  variant,
+  size,
+  className,
+  ...props
+}: IconOnlyOptions &
+  Omit<React.ComponentProps<typeof Link>, "children" | "aria-label">) {
+  return (
+    <Link
+      className={buttonClasses({ variant, size, iconOnly: true, className })}
+      aria-label={label}
+      {...props}
+    >
+      <Icon name={icon} className="button__icon" />
     </Link>
   );
 }

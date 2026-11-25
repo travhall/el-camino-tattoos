@@ -16,11 +16,11 @@ const viewports = {
   desktop: { width: 1280, height: 900 },
 } as const;
 
-// Every route, in light and dark, on a phone and a desktop: no axe violations.
-for (const colorScheme of ["light", "dark"] as const) {
+// Every route, on a phone and a desktop: no axe violations. One (dark) theme.
+{
   for (const [device, viewport] of Object.entries(viewports)) {
-    test.describe(`${colorScheme} / ${device}`, () => {
-      test.use({ colorScheme, viewport });
+    test.describe(device, () => {
+      test.use({ viewport });
 
       for (const route of routes) {
         test(route, async ({ page }) => {
