@@ -33,17 +33,28 @@ test.describe("shop info", () => {
     ).toHaveAttribute("href", "tel:7159121169");
   });
 
-  test("the homepage hero shows a photo with a decorative walk-ins stamp", async ({
+  test("page heroes put the photo beside the text on desktop and above it on phones", async ({
     page,
   }) => {
-    await open(page, "/");
-    const hero = page.locator(".home-hero__photo");
-    await expect(hero.getByRole("img")).toBeVisible();
-    // The stamp duplicates the walk-ins note ShopNotes already states as real
-    // text, so it must stay out of the accessibility tree.
-    const stamp = page.locator(".stamp");
-    await expect(stamp).toBeVisible();
-    await expect(stamp).toHaveAttribute("aria-hidden", "true");
+    await page.setViewportSize({ width: 1512, height: 900 });
+    // The styleguide's "Page, photo right" demo (no page ships a photo).
+    await open(page, "/styleguide");
+    const hero = page.locator(".hero--image-right");
+    const content = await hero.locator(".hero__content").boundingBox();
+    const media = await hero.locator(".hero__media").boundingBox();
+    // 420 x 560 in the design, to the right of the text.
+    expect(Math.round(media!.width)).toBe(420);
+    expect(Math.round(media!.height)).toBe(560);
+    expect(media!.x).toBeGreaterThan(content!.x + content!.width - 1);
+    await expect(hero.getByRole("img")).toHaveAttribute("alt", /tattoo artist/);
+
+    await page.setViewportSize({ width: 375, height: 812 });
+    const contentPhone = await hero.locator(".hero__content").boundingBox();
+    const mediaPhone = await hero.locator(".hero__media").boundingBox();
+    // On phones the photo comes first, so the text scrolls up under it.
+    expect(contentPhone!.y).toBeGreaterThanOrEqual(
+      mediaPhone!.y + mediaPhone!.height,
+    );
   });
 
   test("the page container is 1440px wide at a 1512px viewport", async ({
@@ -69,46 +80,47 @@ test.describe("shop info", () => {
     await expect(topbar.getByText("Opens tomorrow at 12pm")).toBeVisible();
   });
 
-  test("the hero shows the editable headline, description and promises strip", async ({
+  test("the homepage hero shows the editable eyebrow, headline, intro, buttons and promises", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await open(page, "/");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      /Classic Tattoos,\s*Fair Prices\./,
-    );
+    const hero = page.locator(".hero");
+    await expect(hero).toHaveClass(/hero--home/);
+    await expect(hero.locator(".hero__media")).toHaveCount(0);
     await expect(
-      page.getByText("El Camino Tattoo is a small, welcoming tattoo studio"),
+      hero.getByText("Tradition at heart. All are welcome."),
     ).toBeVisible();
-    const intro = page.locator(".home-hero__intro");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Classic Tattoos, Fair Prices",
+    );
+    await expect(hero.getByText("Three artists in downtown")).toBeVisible();
     await expect(
-      intro.getByRole("link", { name: "Book an appointment" }),
+      hero.getByRole("link", { name: "Free consultation" }),
     ).toHaveAttribute("href", "/contact");
     await expect(
-      intro.getByRole("link", { name: "See our work" }),
+      hero.getByRole("link", { name: "See our work" }),
     ).toHaveAttribute("href", "/portfolio");
     const promises = page
       .getByRole("list", { name: "What to expect" })
       .getByRole("listitem");
     await expect(promises).toHaveCount(3);
-    // Each headline line must fit inside the hero's text column.
-    const fits = await page.evaluate(() => {
-      const column = document
-        .querySelector(".home-hero__intro")!
-        .getBoundingClientRect().width;
-      return [...document.querySelectorAll(".home-hero__title-line")].every(
-        (line) => line.getBoundingClientRect().width <= column,
+    // The heading fits the page at every width (no sideways scroll).
+    for (const width of [375, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth,
       );
-    });
-    expect(fits).toBe(true);
+      expect(overflow).toBe(false);
+    }
   });
 
   test("a photo that fails to load is replaced by a placeholder", async ({
     page,
   }) => {
     await page.route("**/_next/image**", (route) => route.abort());
-    await open(page, "/");
-    const frame = page.locator(".home-hero__photo");
+    await open(page, "/styleguide");
+    const frame = page.locator(".hero--image-right .hero__media");
     await expect(frame.locator(".photo-placeholder")).toBeVisible();
     await expect(frame.locator("img")).toHaveCount(0);
   });

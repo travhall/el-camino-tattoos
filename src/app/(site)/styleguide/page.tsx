@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Filmstrip } from "@/components/filmstrip";
-import { getArtists, getFilmstripPieces } from "@/lib/content";
+import { Hero } from "@/components/hero";
+import {
+  getArtists,
+  getFilmstripPieces,
+  type HeroContent,
+} from "@/lib/content";
 import { ShopPromises } from "@/components/shop-promises";
 import {
   Button,
@@ -21,6 +26,40 @@ export const metadata: Metadata = {
   title: "Style guide",
   robots: { index: false, follow: false },
 };
+
+// Hero variants as in the design (Figma Ideation page), with fixed copy so
+// the styleguide doesn't change when the pages' heroes are edited.
+const heroCopy = {
+  eyebrow: "Tradition at heart. All are welcome.",
+  heading: "Classic Tattoos, Fair Prices",
+  intro:
+    "Three artists in downtown Eau Claire making bold, clean work that lasts, at prices that make sense for everyday people.",
+  buttons: [
+    { label: "Free consultation", href: "/contact" },
+    { label: "See our work", href: "/portfolio" },
+  ],
+};
+const heroPhoto = {
+  src: "/demo/Home Image.jpg",
+  alt: "A tattoo artist at a workstation, with flash and framed prints on the wall.",
+};
+const heroDemos: {
+  label: string;
+  size: "home" | "page";
+  hero: HeroContent;
+}[] = [
+  { label: "Home", size: "home", hero: { ...heroCopy, image: null } },
+  {
+    label: "Page, photo left",
+    size: "page",
+    hero: { ...heroCopy, image: { ...heroPhoto, position: "left" } },
+  },
+  {
+    label: "Page, photo right",
+    size: "page",
+    hero: { ...heroCopy, image: { ...heroPhoto, position: "right" } },
+  },
+];
 
 const weights = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
@@ -642,36 +681,25 @@ export default async function StyleGuidePage() {
       </Section>
 
       <Section id="hero" title="Hero">
-        <div className="home-hero">
-          <div className="home-hero__intro">
-            <p className="home-hero__title">
-              <span className="home-hero__title-line">Classic Tattoos,</span>
-              <span className="home-hero__title-line">Fair Prices.</span>
-            </p>
-            <p className="home-hero__description">
-              A small, welcoming tattoo studio in downtown Eau Claire.
-            </p>
-            <div className="cluster">
-              <ButtonLink href="/contact">Book an appointment</ButtonLink>
-              <ButtonLink href="/portfolio" variant="secondary">
-                See our work
-              </ButtonLink>
-            </div>
+        <p className="muted measure">
+          Top of every page, edited per page in Keystatic&rsquo;s &ldquo;Page
+          heroes&rdquo; entry. The homepage sets the heading at the display
+          size; other pages use the h1 size and can add a photo on either side
+          (under the text on phones). These demos use a &lt;p&gt; for the
+          heading only because this page already has its h1.
+        </p>
+        {heroDemos.map(({ label, size, hero }) => (
+          <div key={label} className="stack stack--sm">
+            <p className="caption">{label}</p>
+            <Hero
+              hero={hero}
+              fallbackHeading="Hero"
+              size={size}
+              headingAs="p"
+              pinned={false}
+            />
           </div>
-          <div className="home-hero__photo">
-            <div className="photo-frame">
-              <div className="photo-frame__media sg-tile">Hero photo</div>
-              <p className="photo-frame__caption">
-                Tradition at heart. All are welcome.
-              </p>
-              <div aria-hidden="true" className="stamp">
-                <span className="stamp__title">Walk-ins</span>
-                <span className="stamp__line">Welcome</span>
-                <span className="stamp__small">When available</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
         <ShopPromises
           promises={[
             "Rooted in American traditional",

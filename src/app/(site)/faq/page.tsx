@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RichText, richTextToPlainText } from "@/components/rich-text";
-import { getFaqs } from "@/lib/content";
+import { Hero } from "@/components/hero";
+import { getFaqs, getHero } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { siteName } from "@/lib/site";
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function FaqPage() {
-  const faqs = await getFaqs();
+  const [faqs, hero] = await Promise.all([getFaqs(), getHero("faq")]);
 
   const faqJsonLd =
     faqs.length > 0
@@ -32,8 +33,8 @@ export default async function FaqPage() {
 
   return (
     <>
+      <Hero hero={hero} fallbackHeading="FAQ" />
       <div className="stack">
-        <h1>FAQ</h1>
         {faqs.length === 0 ? (
           <p className="muted measure">
             No questions have been added yet. If you have one, please{" "}

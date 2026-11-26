@@ -1,0 +1,77 @@
+home:
+  eyebrow: Tradition at heart. All are welcome.
+  heading: Classic Tattoos, Fair Prices
+  intro: >-
+    Three artists in downtown Eau Claire making bold, clean work that lasts,
+    at prices that make sense for everyday people.
+  primary:
+    label: Free consultation
+    href: /contact
+  secondary:
+    label: See our work
+    href: /portfolio
+  imageAlt: ''
+  imagePosition: right
+artists:
+  eyebrow: ''
+  heading: Artists
+  intro: >-
+    Pick an artist you connect with. Every inquiry comes through the same
+    studio inbox, so you can't go wrong asking.
+  primary:
+    label: ''
+    href: ''
+  secondary:
+    label: ''
+    href: ''
+  imageAlt: ''
+  imagePosition: right
+portfolio:
+  eyebrow: ''
+  heading: Portfolio
+  intro: ''
+  primary:
+    label: ''
+    href: ''
+  secondary:
+    label: ''
+    href: ''
+  imageAlt: ''
+  imagePosition: right
+aftercare:
+  eyebrow: ''
+  heading: Aftercare
+  intro: ''
+  primary:
+    label: ''
+    href: ''
+  secondary:
+    label: ''
+    href: ''
+  imageAlt: ''
+  imagePosition: right
+faq:
+  eyebrow: ''
+  heading: FAQ
+  intro: ''
+  primary:
+    label: ''
+    href: ''
+  secondary:
+    label: ''
+    href: ''
+  imageAlt: ''
+  imagePosition: right
+contact:
+  eyebrow: ''
+  heading: Contact
+  intro: >-
+    Tell us about the tattoo you have in mind and we'll get back to you.
+  primary:
+    label: ''
+    href: ''
+  secondary:
+    label: ''
+    href: ''
+  imageAlt: ''
+  imagePosition: right

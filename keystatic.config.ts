@@ -26,6 +26,66 @@ function dayHoursField(label: string) {
   );
 }
 
+// The hero at the top of one page (src/components/hero.tsx). Every field
+// may be left empty: an empty heading falls back to the page's name, and
+// anything else empty simply isn't shown. A button needs both its label and
+// its link.
+function heroField(label: string) {
+  const button = (buttonLabel: string) =>
+    fields.object(
+      {
+        label: fields.text({ label: "Label" }),
+        href: fields.text({
+          label: "Link",
+          description: "A page on this site, like /contact, or a full URL.",
+        }),
+      },
+      { label: buttonLabel, layout: [6, 6] },
+    );
+  return fields.object(
+    {
+      eyebrow: fields.text({
+        label: "Eyebrow",
+        description: "A short line above the heading, set in capitals.",
+      }),
+      heading: fields.text({
+        label: "Heading",
+        description:
+          "The page's main heading. Put each line on its own line, or leave it to wrap.",
+        multiline: true,
+      }),
+      intro: fields.text({
+        label: "Intro",
+        description: "One or two sentences under the heading.",
+        multiline: true,
+      }),
+      primary: button("Main button"),
+      secondary: button("Second button"),
+      image: fields.image({
+        label: "Photo",
+        description:
+          "Optional. Shown beside the text from desktop width and under it on phones. Portrait works best; about 1600px tall, under 1MB.",
+        directory: "public/images/heroes",
+        publicPath: "/images/heroes/",
+      }),
+      imageAlt: fields.text({
+        label: "Photo description",
+        description:
+          "What the photo shows, for people who can't see it. Needed when there's a photo.",
+      }),
+      imagePosition: fields.select({
+        label: "Photo side",
+        options: [
+          { label: "Right", value: "right" },
+          { label: "Left", value: "left" },
+        ],
+        defaultValue: "right",
+      }),
+    },
+    { label },
+  );
+}
+
 // Once the GitHub App exists, its public slug is set (in Netlify), and edits
 // commit to GitHub, which triggers a rebuild. Without it (local dev, CI),
 // edits write straight to the working tree. The slug is a NEXT_PUBLIC_ var so
@@ -95,7 +155,7 @@ export default config({
     brand: { name: "El Camino Tattoos" },
     navigation: {
       Shop: ["site"],
-      Pages: ["aftercare", "faq"],
+      Pages: ["heroes", "aftercare", "faq"],
       Content: ["artists", "pieces"],
     },
   },
@@ -238,6 +298,20 @@ export default config({
       },
     }),
 
+    heroes: singleton({
+      label: "Page heroes",
+      path: "content/heroes",
+      format: { data: "yaml" },
+      schema: {
+        home: heroField("Home"),
+        artists: heroField("Artists"),
+        portfolio: heroField("Portfolio"),
+        aftercare: heroField("Aftercare"),
+        faq: heroField("FAQ"),
+        contact: heroField("Contact"),
+      },
+    }),
+
     site: singleton({
       label: "Shop info",
       path: "content/site",
@@ -283,21 +357,6 @@ export default config({
         consultationNote: fields.text({
           label: "Consultation note",
           description: "e.g. Free consultations.",
-        }),
-        heroHeadline: fields.text({
-          label: "Hero headline",
-          description:
-            "Shown as the page's main heading. Put each line on its own line.",
-          multiline: true,
-        }),
-        heroDescription: fields.text({
-          label: "Hero description",
-          description: "One or two sentences under the headline.",
-          multiline: true,
-        }),
-        heroPhotoCaption: fields.text({
-          label: "Hero photo caption",
-          description: "A short line under the hero photo.",
         }),
         shopPromises: fields.array(fields.text({ label: "Promise" }), {
           label: "Shop promises",

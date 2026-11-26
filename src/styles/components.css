@@ -133,8 +133,10 @@
     @apply flex flex-wrap items-center justify-between gap-fluid-2xs border-t border-line pt-fluid-sm lg:order-3 lg:justify-end lg:border-0 lg:pt-0;
   }
 
+  /* On desktop the label matches the nav links' size (text-sm), as in the
+     design; the button keeps its 44px height. */
   .site-header__cta {
-    @apply max-lg:-ml-4;
+    @apply max-lg:-ml-4 lg:text-sm;
   }
 
   .site-header__socials {
@@ -280,6 +282,43 @@
         animation-timeline: --scroll-reveal;
         animation-range: entry 0% entry 100%;
       }
+    }
+  }
+
+  /* Scroll conceal, reusable (page hero and artist photos; design ref:
+     Brightlight): the reverse of .scroll-reveal. The frame scrolls with the
+     page while its content is held still on screen, so the frame's rounded
+     lower edge rises over it until it's gone. The content is moved down
+     exactly as far as the page has scrolled (a root scroll timeline, 1:1 up
+     to 2000px, further than any of these photos sit from the top), and the
+     frame's overflow clips it. The frame has no fill of its own (the
+     content carries the loading fill), so the part of it that rises above
+     the content stays invisible; the content keeps the frame's rounded
+     corners. Every width (on phones the photo leads), only
+     where scroll-driven animations exist and motion isn't reduced;
+     otherwise it's a still photo. */
+  .scroll-conceal__content {
+    @apply absolute inset-0 bg-surface-sunken;
+    border-radius: inherit;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .scroll-conceal > .scroll-conceal__content {
+        @apply overflow-hidden;
+        animation: scroll-conceal linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0px 2000px;
+      }
+    }
+  }
+
+  @keyframes scroll-conceal {
+    from {
+      translate: 0 0;
+    }
+    to {
+      translate: 0 2000px;
     }
   }
 
@@ -486,12 +525,18 @@
 
   /* items-start: the text column keeps its natural height instead of
      stretching (and spreading its rows) to the photo's height. */
+  /* Like the page hero (.hero): the text sits on the photo's lower edge,
+     lifted by the same space as .hero__content. */
   .artist-profile {
-    @apply grid items-start gap-fluid-lg md:grid-cols-[minmax(0,1fr)_2fr];
+    @apply grid items-start gap-fluid-lg md:grid-cols-[minmax(0,1fr)_2fr] md:items-end;
+  }
+
+  .artist-profile__content {
+    @apply md:py-fluid-xl;
   }
 
   .artist-profile__photo {
-    @apply relative aspect-[3/4] overflow-hidden rounded-feature bg-surface;
+    @apply relative aspect-[3/4] overflow-hidden rounded-feature;
   }
 
   /* Single piece as a full page (a direct visit to /portfolio/[piece]) */
@@ -728,51 +773,77 @@
     outline: none;
   }
 
-  /* Homepage hero: headline, copy and two buttons beside a framed photo with
-     a round walk-ins badge (design: Figma Design page, Hero). */
-  .home-hero {
-    @apply grid items-center gap-fluid-lg md:grid-cols-[1.38fr_1fr];
+  /* Page hero (Hero component): eyebrow, h1, intro and buttons, with an
+     optional photo (design: Figma Ideation page, "Hero - Home" and "Hero -
+     Page + Left/Right Image"). Stacked below lg, photo last; from lg the
+     photo is a fixed 420px column on the editor's chosen side and the text
+     sits on its lower edge. The design frame's outer 48px top padding is
+     main's own (.page), so the hero adds none. */
+  .hero {
+    @apply grid gap-fluid-lg lg:items-end;
   }
 
-  .home-hero__intro {
-    @apply grid content-center justify-items-start gap-fluid-md;
+  .hero--image-right {
+    @apply lg:grid-cols-[minmax(0,1fr)_26.25rem];
   }
 
-  /* Being at the top of the scale. Below 1400px the column is too narrow for
-     the largest step, so it drops one. */
-  .home-hero__title {
-    @apply font-display text-5xl font-normal min-[1400px]:text-6xl;
-    /* Being's ink-trap cut, as in .display. */
-    font-variation-settings: "trap" 1;
+  .hero--image-left {
+    @apply lg:grid-cols-[26.25rem_minmax(0,1fr)];
+  }
+
+  .hero__content {
+    @apply flex min-w-0 flex-col items-start justify-center lg:py-fluid-xl;
+  }
+
+  /* h1 size by default; the homepage sets it at the display size (below). */
+  .hero__heading {
+    @apply font-display text-4xl font-normal;
     text-wrap: balance;
   }
 
-  .home-hero__title-line {
+  .hero--home .hero__heading {
+    @apply text-6xl font-light;
+    /* Being's ink-trap cut, as in .display. */
+    font-variation-settings: "trap" 1;
+  }
+
+  .hero__heading-line {
     @apply block;
   }
 
-  /* The description sits between two hairlines. */
-  .home-hero__description {
-    @apply w-full max-w-xl border-y border-line py-[18px] text-base text-foreground;
+  /* Intro and buttons, set in from the heading's edge as in the design
+     (the inset drops on phones, where the column is narrow). The buttons
+     go to the far end, or under the intro when there isn't room. */
+  .hero__body {
+    @apply flex w-full flex-wrap items-end justify-between gap-x-fluid-lg gap-y-fluid-md pt-fluid-md sm:p-fluid-lg;
   }
 
-  /* The frame tilts as one piece: photo, caption and badge. */
-  .home-hero__photo {
-    @apply relative md:-rotate-1;
+  .hero__intro {
+    @apply max-w-[42.5rem] min-w-0 flex-[1_1_20rem] text-base text-foreground;
   }
 
-  /* A mat around the photo, like a pinned-up print. It takes the primary
-     button's fill, so it is the light card in dark mode. */
-  .photo-frame {
-    @apply relative bg-button-primary-bg p-[9px] text-button-primary-fg;
+  .hero--home .hero__intro {
+    @apply text-lg;
   }
 
-  .photo-frame__media {
-    @apply relative aspect-[4/3] overflow-hidden rounded-media bg-surface-sunken md:aspect-[25/29];
+  .hero__actions {
+    @apply flex flex-wrap items-center gap-fluid-sm;
   }
 
-  .photo-frame__caption {
-    @apply pt-[9px] text-xs tracking-[0.18em] uppercase;
+  /* 3:4 portrait beside the text (420 x 560 in the design); a shorter 4:3
+     crop under it on phones and tablets. */
+  .hero__media {
+    @apply relative aspect-[4/3] overflow-hidden rounded-feature lg:aspect-[3/4];
+  }
+
+  /* First on phones, so the text scrolls up under the pinned photo
+     (.scroll-conceal); beside the text, on the chosen side, from lg. */
+  .hero__media {
+    @apply max-lg:order-first;
+  }
+
+  .hero--image-left .hero__media {
+    @apply lg:order-first;
   }
 
   /* Stands in for a missing or failed photo, filling the media box it sits in
@@ -784,26 +855,6 @@
   .photo-placeholder__star {
     --star-facet: var(--surface-sunken);
     @apply size-1/4 max-w-16 min-w-8;
-  }
-
-  /* Round walk-ins badge on the photo's lower edge. Decorative: the topbar
-     states the same walk-in note as real text, so this is aria-hidden. */
-  .stamp {
-    @apply absolute right-0 bottom-14 flex size-36 -rotate-[8deg] flex-col items-center justify-center rounded-full border-2 border-accent-mark text-center text-warning uppercase md:size-40;
-  }
-
-  /* Sized to stay inside the ring at every width (text-xl reached 32px on
-     desktop and broke the 160px circle). */
-  .stamp__title {
-    @apply text-base leading-tight font-semibold;
-  }
-
-  .stamp__line {
-    @apply text-lg leading-tight font-extrabold;
-  }
-
-  .stamp__small {
-    @apply text-xs font-semibold;
   }
 
   /* The shop's short promises, in a ruled strip under the hero. */

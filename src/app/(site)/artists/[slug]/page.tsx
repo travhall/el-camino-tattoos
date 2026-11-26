@@ -43,21 +43,24 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
   return (
     <div className="stack stack--xl">
       <div className="artist-profile">
-        <div className="artist-profile__photo">
-          {artist.photo ? (
-            <Photo
-              src={artist.photo}
-              alt={`Portrait of ${artist.name}`}
-              fill
-              priority
-              sizes="(min-width: 768px) 33vw, 100vw"
-              className="image-cover"
-            />
-          ) : (
-            <PhotoPlaceholder />
-          )}
+        {/* Pinned while its frame scrolls away, as in the page hero. */}
+        <div className="artist-profile__photo scroll-conceal">
+          <div className="scroll-conceal__content">
+            {artist.photo ? (
+              <Photo
+                src={artist.photo}
+                alt={`Portrait of ${artist.name}`}
+                fill
+                priority
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="image-cover"
+              />
+            ) : (
+              <PhotoPlaceholder />
+            )}
+          </div>
         </div>
-        <div className="stack">
+        <div className="stack artist-profile__content">
           <h1>{artist.name}</h1>
           {artist.specialties.length > 0 && (
             <p className="muted">{artist.specialties.join(", ")}</p>

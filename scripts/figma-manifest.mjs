@@ -63,6 +63,11 @@ const layout = {
   "max-width/page": { px: 1440, source: ".page (--page-max, 90rem)" },
   "max-width/form": { px: 576, source: ".contact-form (max-w-xl)" },
   "max-width/viewer": { px: 1024, source: ".viewer (64rem)" },
+  "max-width/hero-intro": { px: 680, source: ".hero__intro (42.5rem)" },
+  "size/hero-media-width": {
+    px: 420,
+    source: ".hero--image-left/right photo column from lg (26.25rem)",
+  },
   "size/target-min": { px: 44, source: "min-h-11, the touch target minimum" },
   "radius/control": {
     px: 8,
@@ -77,7 +82,7 @@ const layout = {
   "radius/panel": { px: 16, source: ".viewer (rounded-panel)" },
   "radius/feature": {
     px: 24,
-    source: ".artist-profile__photo (rounded-feature)",
+    source: ".artist-profile__photo, .hero__media (rounded-feature)",
   },
   "radius/pill": {
     px: 9999,

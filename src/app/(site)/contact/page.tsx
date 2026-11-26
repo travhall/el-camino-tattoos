@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
 import { ShopNotes } from "@/components/shop-notes";
-import { getArtists, getSite } from "@/lib/content";
+import { Hero } from "@/components/hero";
+import { getArtists, getHero, getSite } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { phoneHref, siteName } from "@/lib/site";
 
@@ -12,16 +13,16 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function ContactPage() {
-  const [artists, site] = await Promise.all([getArtists(), getSite()]);
+  const [artists, site, hero] = await Promise.all([
+    getArtists(),
+    getSite(),
+    getHero("contact"),
+  ]);
 
   return (
     <div className="stack stack--lg">
+      <Hero hero={hero} fallbackHeading="Contact" />
       <div className="stack">
-        <h1>Contact</h1>
-        <p className="lead muted measure">
-          Tell us about the tattoo you have in mind and we&rsquo;ll get back to
-          you.
-        </p>
         <ShopNotes site={site} />
         {site.phone && (
           <p>

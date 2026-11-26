@@ -161,6 +161,49 @@ export const getFaqs = cache(async (): Promise<Faq[]> => {
     .sort((a, b) => a.order - b.order || a.question.localeCompare(b.question));
 });
 
+export type HeroPage =
+  "home" | "artists" | "portfolio" | "aftercare" | "faq" | "contact";
+
+export type HeroButton = { label: string; href: string };
+
+export type HeroContent = {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  buttons: readonly HeroButton[];
+  /** null when the page has no photo, or the photo has no description. */
+  image: { src: string; alt: string; position: "left" | "right" } | null;
+};
+
+/**
+ * One page's hero from the Keystatic "Page heroes" entry. Every field may be
+ * empty; a button is kept only with both a label and a link, and a photo
+ * only with a description (it is content, so it needs alt text).
+ */
+export const getHero = cache(async (page: HeroPage): Promise<HeroContent> => {
+  const entry = (await reader.singletons.heroes.read())?.[page];
+  const buttons = [entry?.primary, entry?.secondary].flatMap((button) =>
+    button?.label.trim() && button.href.trim()
+      ? [{ label: button.label.trim(), href: button.href.trim() }]
+      : [],
+  );
+  const alt = entry?.imageAlt.trim() ?? "";
+  return {
+    eyebrow: entry?.eyebrow.trim() ?? "",
+    heading: entry?.heading.trim() ?? "",
+    intro: entry?.intro.trim() ?? "",
+    buttons,
+    image:
+      entry?.image && alt
+        ? {
+            src: entry.image,
+            alt,
+            position: entry.imagePosition === "left" ? "left" : "right",
+          }
+        : null,
+  };
+});
+
 export type Site = {
   description: string;
   phone: string;
@@ -173,9 +216,6 @@ export type Site = {
   walkIns: boolean;
   walkInNote: string;
   consultationNote: string;
-  heroHeadline: string;
-  heroDescription: string;
-  heroPhotoCaption: string;
   shopPromises: readonly string[];
   footerTagline: string;
   footerSignoff: string;
@@ -203,9 +243,6 @@ export const getSite = cache(async (): Promise<Site> => {
     walkIns: entry?.walkIns ?? false,
     walkInNote: entry?.walkInNote ?? "",
     consultationNote: entry?.consultationNote ?? "",
-    heroHeadline: entry?.heroHeadline ?? "",
-    heroDescription: entry?.heroDescription ?? "",
-    heroPhotoCaption: entry?.heroPhotoCaption ?? "",
     shopPromises: entry?.shopPromises ?? [],
     footerTagline: entry?.footerTagline ?? "",
     footerSignoff: entry?.footerSignoff ?? "",

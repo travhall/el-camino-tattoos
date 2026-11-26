@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RichText } from "@/components/rich-text";
-import { getAftercare } from "@/lib/content";
+import { Hero } from "@/components/hero";
+import { getAftercare, getHero } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { siteName } from "@/lib/site";
 
@@ -12,16 +13,18 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function AftercarePage() {
-  const content = await getAftercare();
+  const [content, hero] = await Promise.all([
+    getAftercare(),
+    getHero("aftercare"),
+  ]);
 
   return (
     <div className="stack stack--lg">
-      <div className="stack">
-        <h1>Aftercare</h1>
-        {content?.intro ? (
-          <p className="lead measure">{content.intro}</p>
-        ) : null}
-      </div>
+      {/* The Aftercare entry's own intro stands in until the hero has one. */}
+      <Hero
+        hero={{ ...hero, intro: hero.intro || content?.intro || "" }}
+        fallbackHeading="Aftercare"
+      />
 
       {content ? (
         <>

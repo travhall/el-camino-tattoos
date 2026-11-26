@@ -789,3 +789,48 @@ test("opening and closing a piece from the filmstrip keeps the scroll position",
   await expect(page).toHaveURL("/");
   expect(await page.evaluate(() => window.scrollY)).toBe(before);
 });
+
+test.describe("scroll conceal", () => {
+  // The artist photo (like a page hero's) stays put on screen while its
+  // frame scrolls away; with reduced motion it scrolls like anything else.
+  async function measure(page: Page, y: number) {
+    await page.evaluate((top) => window.scrollTo(0, top), y);
+    await page.evaluate(
+      () =>
+        new Promise((r) =>
+          requestAnimationFrame(() => requestAnimationFrame(r)),
+        ),
+    );
+    return page.evaluate(() => {
+      const frame = document.querySelector(".artist-profile__photo")!;
+      const layer = frame.querySelector(".scroll-conceal__content")!;
+      return {
+        frame: frame.getBoundingClientRect().top,
+        layer: layer.getBoundingClientRect().top,
+        height: document.documentElement.scrollHeight,
+      };
+    });
+  }
+
+  test("the photo stays put while its frame scrolls away", async ({ page }) => {
+    await page.setViewportSize({ width: 1512, height: 900 });
+    await page.goto("/artists/ty-morse");
+    const start = await measure(page, 0);
+    const later = await measure(page, 300);
+    expect(Math.round(later.frame)).toBe(Math.round(start.frame - 300));
+    expect(Math.round(later.layer)).toBe(Math.round(start.layer));
+    // Moving the photo down doesn't make the page any longer.
+    expect(later.height).toBe(start.height);
+  });
+
+  test("with reduced motion the photo scrolls with its frame", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1512, height: 900 });
+    await page.goto("/artists/ty-morse");
+    const start = await measure(page, 0);
+    const later = await measure(page, 300);
+    expect(Math.round(later.layer)).toBe(Math.round(start.layer - 300));
+  });
+});
