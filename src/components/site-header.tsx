@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeaderMenu } from "@/components/header-menu";
 import { NauticalStar } from "@/components/nautical-star";
 import { NavLink } from "@/components/nav-link";
 import { ShopStatus } from "@/components/shop-status";
@@ -59,37 +60,55 @@ export async function SiteHeader() {
         </div>
       )}
       <div className="site-header__inner">
-        <nav aria-label="Primary" className="site-nav">
-          {navLinks.map(({ href, label }) => (
-            <NavLink key={href} href={href} className="site-nav__link">
-              {label}
-            </NavLink>
-          ))}
-        </nav>
         <Link href="/" className="site-header__brand">
           <span className="site-header__wordmark">El Camino</span>
           <span className="site-header__tagline">Tattoo</span>
         </Link>
-        <div className="site-header__actions">
-          {/* Points at /contact until a booking flow exists. */}
-          <ButtonLink
-            href="/contact"
-            variant="ghost"
-            icon="arrow-up-right"
-            className="site-header__cta"
-          >
-            Request an appointment
-          </ButtonLink>
-          {site.instagram && (
-            <IconButtonLink
-              href={`https://instagram.com/${site.instagram}`}
-              rel="noopener noreferrer"
-              icon="instagram"
-              label="Instagram"
+        <HeaderMenu>
+          <nav aria-label="Primary" className="site-nav">
+            {navLinks.map(({ href, label }) => (
+              <NavLink key={href} href={href} className="site-nav__link">
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="site-header__actions">
+            {/* Points at /contact until a booking flow exists. */}
+            <ButtonLink
+              href="/contact"
               variant="ghost"
-            />
+              icon="arrow-up-right"
+              className="site-header__cta"
+            >
+              Request an appointment
+            </ButtonLink>
+            {site.socials.length > 0 && (
+              <ul className="site-header__socials">
+                {site.socials.map(({ url, label, icon }) => (
+                  <li key={url}>
+                    <IconButtonLink
+                      href={url}
+                      rel="noopener noreferrer"
+                      icon={icon}
+                      label={label}
+                      variant="ghost"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {hasStatus && (
+            <p className="site-header__status">
+              <ShopStatus
+                hours={site.hours}
+                walkIns={site.walkIns}
+                walkInNote={site.walkInNote}
+                className="shop-status"
+              />
+            </p>
           )}
-        </div>
+        </HeaderMenu>
       </div>
     </header>
   );

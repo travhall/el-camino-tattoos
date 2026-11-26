@@ -15,7 +15,7 @@ const config = {
   maxViewport: 1240,
   minBase: 16,
   maxBase: 18,
-  minRatio: 1.2, // major third on phones
+  minRatio: 1.25, // major third on phones
   maxRatio: 1.333, // perfect fourth on wide screens
   smallRatio: 1.125, // steps below base, both ends
   floorPx: 12, // 0.75rem: no type step is ever smaller than this

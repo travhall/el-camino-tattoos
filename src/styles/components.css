@@ -17,45 +17,128 @@
     top: calc(-1 * var(--topbar-height));
   }
 
-  /* Desktop: links | centred wordmark | booking and social, the two outer
-     columns equal so the wordmark sits on the page's centre line. Phones
-     (not designed yet): brand and actions on one row, links scroll below. */
+  /* Desktop (lg): links | centred wordmark | booking and social, the two
+     outer columns equal so the wordmark sits on the page's centre line; the
+     menu wrapper is display: contents, so its nav and actions are the grid's
+     outer columns. Below lg: wordmark and Menu button on one row, and the
+     nav and actions fold into a panel under it (HeaderMenu). */
   .site-header__inner {
-    @apply flex flex-wrap items-center justify-between gap-x-fluid-md px-(--page-gutter) py-fluid-xs md:grid md:grid-cols-[1fr_auto_1fr];
+    @apply flex flex-wrap items-center justify-between gap-x-fluid-md px-(--page-gutter) py-fluid-xs lg:grid lg:grid-cols-[1fr_auto_1fr];
   }
 
   .site-header__brand {
-    @apply order-1 inline-flex min-h-11 flex-col items-center text-center text-foreground uppercase md:order-2;
+    @apply relative z-2 inline-flex min-h-11 flex-col items-center text-center text-foreground uppercase lg:order-2;
   }
 
   .site-header__wordmark {
-    @apply -mb-1 font-display text-xl leading-none font-normal md:text-2xl md:leading-(--text-xl--line-height);
+    @apply -mb-1 font-display text-3xl leading-none font-normal lg:text-2xl lg:leading-(--text-xl--line-height);
   }
 
   .site-header__tagline {
     @apply text-xs tracking-[0.2em];
   }
 
-  .site-header__actions {
-    @apply order-2 flex items-center justify-end gap-fluid-2xs md:order-3;
+  /* Menu toggle: two lines that cross into an X while open
+     (aria-expanded). A 48px target with 28px lines; the lines are borders,
+     not fills, so forced-colors mode keeps them. The global reduced-motion
+     rule makes the change instant. */
+  .menu-toggle {
+    @apply inline-grid size-12 place-items-center rounded-control text-foreground transition-colors hover:bg-hover;
+    transition-duration: var(--duration-fast);
   }
 
-  .site-header__cta {
-    @apply max-md:px-3 max-md:text-sm;
+  .menu-toggle__line {
+    @apply col-start-1 row-start-1 h-0 w-7 border-t-[1.5px] border-current transition-transform;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-out);
+    transform: translateY(-0.3125rem);
+
+    &:last-child {
+      transform: translateY(0.3125rem);
+    }
+  }
+
+  .menu-toggle[aria-expanded="true"] .menu-toggle__line {
+    transform: rotate(45deg);
+
+    &:last-child {
+      transform: rotate(-45deg);
+    }
+  }
+
+  /* Lines sit flush with the gutter, like the wordmark opposite. */
+  .site-header__toggle {
+    @apply relative z-2 -mr-2.5 lg:hidden;
+  }
+
+  /* The panel. It collapses only once scripts run (data-collapsible), so
+     without JavaScript the links are simply shown in the flow. Open, it is
+     a full-screen overlay under the wordmark and Menu button (z-2 above);
+     --menu-top (set by HeaderMenu) starts its content below that row, and
+     it scrolls on its own while the page behind is locked. */
+  .site-header__menu {
+    @apply flex w-full basis-full flex-col gap-fluid-md pt-fluid-xs pb-fluid-md lg:contents;
+  }
+
+  /* Once scripts run, below lg the panel is always laid out as the overlay,
+     open or not, so it can fade both ways without its layout jumping:
+     closed it is display: none at opacity 0, and display flips at the end of
+     the fade out (allow-discrete) and before the fade in (@starting-style).
+     Browsers without discrete transitions just show and hide it. */
+  @media (width < 64rem) {
+    .site-header__menu[data-collapsible] {
+      @apply fixed inset-0 z-1 overflow-y-auto overscroll-contain bg-background px-(--page-gutter) pt-[calc(var(--menu-top,5rem)+var(--spacing-fluid-sm))] pb-fluid-xl;
+    }
+
+    /* Only after first use (HeaderMenu sets data-animate), so nothing fades
+       on page load. */
+    .site-header__menu[data-collapsible][data-animate] {
+      transition:
+        opacity var(--duration-base) var(--ease-out),
+        display var(--duration-base) allow-discrete;
+    }
+
+    .site-header__menu[data-collapsible]:not([data-open]) {
+      @apply hidden opacity-0;
+    }
+
+    @starting-style {
+      .site-header__menu[data-open] {
+        @apply opacity-0;
+      }
+    }
+  }
+
+  /* Open status, in the phone panel only (the topbar shows it on desktop). */
+  .site-header__status {
+    @apply text-sm lg:hidden;
   }
 
   .site-nav {
-    @apply order-3 flex w-full flex-nowrap items-center gap-x-fluid-sm overflow-x-auto md:order-1 md:w-auto md:gap-x-fluid-lg md:overflow-visible;
+    @apply flex flex-col items-start lg:order-1 lg:flex-row lg:items-center lg:gap-x-fluid-lg;
   }
 
   /* 44px hit area; the current page or section is underlined as well as
-     marked with aria-current, so it isn't conveyed by color alone. */
+     marked with aria-current, so it isn't conveyed by color alone. In the
+     phone panel the links are set large in the display face. */
   .site-nav__link {
-    @apply inline-flex min-h-11 shrink-0 items-center text-sm whitespace-nowrap text-foreground underline-offset-8 hover:underline;
+    @apply inline-flex min-h-11 shrink-0 items-center font-display text-3xl whitespace-nowrap text-foreground uppercase underline-offset-8 hover:underline lg:font-sans lg:text-sm lg:normal-case;
   }
 
   .site-nav__link[aria-current] {
     @apply underline decoration-nav-current decoration-2;
+  }
+
+  .site-header__actions {
+    @apply flex flex-wrap items-center justify-between gap-fluid-2xs border-t border-line pt-fluid-sm lg:order-3 lg:justify-end lg:border-0 lg:pt-0;
+  }
+
+  .site-header__cta {
+    @apply max-lg:-ml-4;
+  }
+
+  .site-header__socials {
+    @apply flex items-center gap-fluid-3xs;
   }
 
   /* One row, never wrapping: the topbar has a fixed height (the sticky
@@ -538,6 +621,7 @@
     @apply font-display text-5xl font-normal min-[1400px]:text-6xl;
     /* Being's ink-trap cut, as in .display. */
     font-variation-settings: "trap" 1;
+    text-wrap: balance;
   }
 
   .home-hero__title-line {

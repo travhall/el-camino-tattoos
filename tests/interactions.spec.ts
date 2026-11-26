@@ -509,3 +509,28 @@ test.describe("artists page", () => {
     ).toBeVisible();
   });
 });
+
+test("phone header: the Menu button opens the nav and Escape closes it", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await open(page, "/");
+  const toggle = page.getByRole("button", { name: "Menu" });
+  const nav = page.getByRole("navigation", { name: "Primary" });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(nav).toBeHidden();
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(nav.getByRole("link", { name: "Artists" })).toBeVisible();
+  // Full-screen overlay: the page behind is locked and inert.
+  await expect(page.locator("html")).toHaveCSS("overflow", "hidden");
+  await expect(page.locator("main")).toHaveAttribute("inert", "");
+
+  await page.keyboard.press("Escape");
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(toggle).toBeFocused();
+  await expect(nav).toBeHidden();
+  await expect(page.locator("main")).not.toHaveAttribute("inert");
+  await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden");
+});

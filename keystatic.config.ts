@@ -1,4 +1,5 @@
 import { collection, config, fields, singleton } from "@keystatic/core";
+import { type SocialPlatform, socialPlatforms } from "./src/lib/socials";
 
 // One day of opening hours. Times are 24-hour "HH:MM" so the site can work
 // out whether the shop is open right now (src/lib/hours.ts).
@@ -309,7 +310,34 @@ export default config({
           label: "Deposit (USD)",
           description: "Shown on the contact page. Leave empty to hide.",
         }),
-        instagram: instagramField(),
+        socials: fields.array(
+          fields.object({
+            platform: fields.select({
+              label: "Platform",
+              options: Object.entries(socialPlatforms).map(
+                ([value, { label }]) => ({ value, label }),
+              ),
+              defaultValue: "instagram",
+            }),
+            url: fields.text({
+              label: "Link",
+              description:
+                "The full profile address, e.g. https://www.instagram.com/yourshop/. For Instagram the handle alone also works.",
+            }),
+            label: fields.text({
+              label: "Name (Other only)",
+              description:
+                "What the link is called for screen readers, e.g. TikTok. Only used when the platform is Other.",
+            }),
+          }),
+          {
+            label: "Social links",
+            description:
+              "Shown as icons in the header, in this order. Pick Other for a platform without its own icon yet; it gets a generic link icon.",
+            itemLabel: (props) =>
+              `${props.fields.platform.value === "other" ? props.fields.label.value || "Other" : (socialPlatforms[props.fields.platform.value as SocialPlatform]?.label ?? "")}: ${props.fields.url.value}`,
+          },
+        ),
       },
     }),
   },

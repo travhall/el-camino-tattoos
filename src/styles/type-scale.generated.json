@@ -4,7 +4,7 @@
     "maxViewport": 1240,
     "minBase": 16,
     "maxBase": 18,
-    "minRatio": 1.2,
+    "minRatio": 1.25,
     "maxRatio": 1.333,
     "smallRatio": 1.125,
     "floorPx": 12
@@ -39,7 +39,7 @@
       "step": 1,
       "lineHeight": 1.45,
       "tracking": null,
-      "minPx": 19.2,
+      "minPx": 20,
       "maxPx": 23.994
     },
     {
@@ -47,7 +47,7 @@
       "step": 2,
       "lineHeight": 1.15,
       "tracking": null,
-      "minPx": 23.04,
+      "minPx": 25,
       "maxPx": 31.984
     },
     {
@@ -55,7 +55,7 @@
       "step": 3,
       "lineHeight": 1.05,
       "tracking": null,
-      "minPx": 27.648,
+      "minPx": 31.25,
       "maxPx": 42.6347
     },
     {
@@ -63,7 +63,7 @@
       "step": 4,
       "lineHeight": 1,
       "tracking": null,
-      "minPx": 33.1776,
+      "minPx": 39.0625,
       "maxPx": 56.832
     },
     {
@@ -71,7 +71,7 @@
       "step": 5,
       "lineHeight": 0.95,
       "tracking": null,
-      "minPx": 39.8131,
+      "minPx": 48.8281,
       "maxPx": 75.7571
     },
     {
@@ -79,7 +79,7 @@
       "step": 6,
       "lineHeight": 0.95,
       "tracking": null,
-      "minPx": 47.7757,
+      "minPx": 61.0352,
       "maxPx": 100.9842
     },
     {
@@ -87,7 +87,7 @@
       "step": 7,
       "lineHeight": 0.9,
       "tracking": null,
-      "minPx": 57.3309,
+      "minPx": 76.2939,
       "maxPx": 134.6119
     }
   ],

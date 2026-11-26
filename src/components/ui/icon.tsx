@@ -1,4 +1,5 @@
-type LineIconName = "arrow-right" | "arrow-up-right" | "plus";
+type LineIconName =
+  "arrow-right" | "arrow-up-right" | "close" | "link" | "menu" | "plus";
 type BrandLogoName = "instagram" | "facebook";
 export type IconName = LineIconName | BrandLogoName;
 
@@ -7,6 +8,12 @@ export type IconName = LineIconName | BrandLogoName;
 const paths: Record<LineIconName, React.ReactNode> = {
   "arrow-right": <path d="M4 12h16m-6-6 6 6-6 6" />,
   "arrow-up-right": <path d="M7 17 17 7M8 7h9v9" />,
+  close: <path d="M6 6l12 12M18 6 6 18" />,
+  // Generic link, for a social profile without its own icon.
+  link: (
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  ),
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   plus: <path d="M12 5v14M5 12h14" />,
 };
 

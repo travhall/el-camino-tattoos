@@ -3,6 +3,7 @@ import type { Node } from "@markdoc/markdoc";
 import { cache } from "react";
 import config from "../../keystatic.config";
 import { dayHours, type WeeklyHours, weekdays } from "./hours";
+import { type SocialLink, type SocialPlatform, socialLink } from "./socials";
 
 const reader = createReader(process.cwd(), config);
 
@@ -165,7 +166,7 @@ export type Site = {
   footerTagline: string;
   footerSignoff: string;
   depositAmount: number | null;
-  instagram: string;
+  socials: SocialLink[];
 };
 
 /** Shop details from the Keystatic "Shop info" entry. Every field may be empty. */
@@ -195,6 +196,8 @@ export const getSite = cache(async (): Promise<Site> => {
     footerTagline: entry?.footerTagline ?? "",
     footerSignoff: entry?.footerSignoff ?? "",
     depositAmount: entry?.depositAmount ?? null,
-    instagram: normalizeInstagramHandle(entry?.instagram ?? ""),
+    socials: (entry?.socials ?? [])
+      .map((s) => socialLink(s.platform as SocialPlatform, s.url, s.label))
+      .filter((s): s is SocialLink => s !== null),
   };
 });

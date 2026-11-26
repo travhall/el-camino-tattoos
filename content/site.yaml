@@ -1,47 +1,43 @@
-# PLACEHOLDER shop details. The address is the sister skate shop's. Replace
-# everything here before launch (edit in /keystatic, under Shop info).
-description: Traditional tattoos and more in downtown Eau Claire, Wisconsin. Walk-ins welcome when available, free consultations.
+description: >-
+  Traditional tattoos and more in downtown Eau Claire, Wisconsin. Walk-ins
+  welcome when available, free consultations.
+phone: (715) 912-1169
 street: 310 Water Street
 city: Eau Claire
 region: WI
-phone: "(715) 912-1169"
-postalCode: "54703"
+postalCode: '54703'
 hours:
   monday:
     open: false
-    opens: ""
-    closes: ""
   tuesday:
     open: true
-    opens: "12:00"
-    closes: "20:00"
+    opens: '12:00'
+    closes: '20:00'
   wednesday:
     open: true
-    opens: "12:00"
-    closes: "20:00"
+    opens: '12:00'
+    closes: '20:00'
   thursday:
     open: true
-    opens: "12:00"
-    closes: "20:00"
+    opens: '12:00'
+    closes: '20:00'
   friday:
     open: true
-    opens: "12:00"
-    closes: "20:00"
+    opens: '12:00'
+    closes: '20:00'
   saturday:
     open: true
-    opens: "11:00"
-    closes: "18:00"
+    opens: '11:00'
+    closes: '18:00'
   sunday:
     open: false
-    opens: ""
-    closes: ""
 walkIns: true
 walkInNote: Walk-ins welcome when available.
 consultationNote: Free consultations.
-heroHeadline: |-
-  Classic Tattoos,
-  Fair Prices.
-heroDescription: El Camino Tattoo is a small, welcoming tattoo studio located in downtown Eau Claire—making tattoos you'll be proud to wear.
+heroHeadline: Classic Tattoos, Fair Prices.
+heroDescription: >-
+  El Camino Tattoo is a small, welcoming tattoo studio located in downtown Eau
+  Claire—making tattoos you'll be proud to wear.
 heroPhotoCaption: Tradition at heart. All are welcome.
 shopPromises:
   - Rooted in American traditional
@@ -50,3 +46,10 @@ shopPromises:
 footerTagline: Good work. Good company. Downtown Eau Claire, Wisconsin.
 footerSignoff: Made to last.
 depositAmount: 100
+socials:
+  - platform: instagram
+    url: https://www.instagram.com/elcaminotattoos/
+    label: Instagram
+  - platform: facebook
+    url: https://www.facebook.com/people/El-Camino-Skateshop/61553258934455/
+    label: Facebook
