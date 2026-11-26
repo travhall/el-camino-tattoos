@@ -12,10 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/aftercare",
     "/faq",
     "/contact",
-    ...artists.flatMap(({ slug }) => [
-      `/artists/${slug}`,
-      `/artists/${slug}/portfolio`,
-    ]),
+    ...artists.map(({ slug }) => `/artists/${slug}`),
     ...pieces.map(({ slug }) => `/portfolio/${slug}`),
   ];
 

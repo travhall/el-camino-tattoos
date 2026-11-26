@@ -2,8 +2,9 @@ import Link from "next/link";
 import type { Artist } from "@/lib/content";
 
 /**
- * Per-artist portfolios are real routes, so the filter is plain links:
- * fully static, shareable, and no client JS.
+ * Filters the portfolio by artist without leaving /portfolio: each chip is a
+ * plain link to /portfolio?artist=<slug> (shareable, no client JS). scroll
+ * is off so the page stays where it is while the grid below changes.
  */
 export function ArtistFilter({
   artists,
@@ -15,7 +16,7 @@ export function ArtistFilter({
   const items = [
     { href: "/portfolio", label: "All", active: !activeSlug },
     ...artists.map((artist) => ({
-      href: `/artists/${artist.slug}/portfolio`,
+      href: `/portfolio?artist=${encodeURIComponent(artist.slug)}`,
       label: artist.name,
       active: artist.slug === activeSlug,
     })),
@@ -28,6 +29,7 @@ export function ArtistFilter({
           <li key={href}>
             <Link
               href={href}
+              scroll={false}
               aria-current={active ? "page" : undefined}
               className="filter-chip"
             >

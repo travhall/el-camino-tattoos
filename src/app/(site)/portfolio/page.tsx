@@ -12,18 +12,33 @@ export const metadata: Metadata = pageMetadata({
   path: "/portfolio",
 });
 
-export default async function PortfolioPage() {
+export default async function PortfolioPage(props: PageProps<"/portfolio">) {
+  const { artist: artistParam } = await props.searchParams;
   const [artists, pieces, hero] = await Promise.all([
     getArtists(),
     getPieces(),
     getHero("portfolio"),
   ]);
 
+  // ?artist=<slug> filters the grid (ArtistFilter); an unknown or repeated
+  // value shows everything.
+  const active =
+    typeof artistParam === "string"
+      ? artists.find((artist) => artist.slug === artistParam)
+      : undefined;
+
   return (
     <div className="stack stack--lg">
       <Hero hero={hero} fallbackHeading="Portfolio" />
-      <ArtistFilter artists={artists} />
-      <PieceGrid pieces={pieces} artists={artists} />
+      <ArtistFilter artists={artists} activeSlug={active?.slug} />
+      <PieceGrid
+        pieces={
+          active
+            ? pieces.filter((piece) => piece.artistSlug === active.slug)
+            : pieces
+        }
+        artists={artists}
+      />
     </div>
   );
 }

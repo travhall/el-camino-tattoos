@@ -83,7 +83,10 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
       <section aria-labelledby="portfolio-heading" className="stack stack--lg">
         <div className="section-header">
           <h2 id="portfolio-heading">Portfolio</h2>
-          <Link href={`/artists/${artist.slug}/portfolio`} className="link">
+          <Link
+            href={`/portfolio?artist=${encodeURIComponent(artist.slug)}`}
+            className="link"
+          >
             View all
           </Link>
         </div>

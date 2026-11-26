@@ -4,7 +4,7 @@ export const routes = [
   "/",
   "/artists",
   "/artists/zz-fixture-one",
-  "/artists/zz-fixture-one/portfolio",
+  "/portfolio?artist=zz-fixture-one",
   "/portfolio",
   "/portfolio/zz-fixture-koi",
   "/aftercare",

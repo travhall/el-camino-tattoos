@@ -834,3 +834,37 @@ test.describe("scroll conceal", () => {
     expect(Math.round(later.layer)).toBe(Math.round(start.layer - 300));
   });
 });
+
+test("the artist filter stays on the portfolio page and keeps the scroll position", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, "/portfolio");
+  const tiles = page.locator(".piece-grid > li");
+  const all = await tiles.count();
+  await page.evaluate(() => window.scrollTo(0, 300));
+  await page
+    .getByRole("navigation", { name: "Filter portfolio by artist" })
+    .getByRole("link", { name: "Fixture One" })
+    .click();
+  await expect(page).toHaveURL(/\/portfolio\?artist=zz-fixture-one$/);
+  await expect(
+    page.getByRole("link", { name: "Fixture One", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  await expect.poll(() => tiles.count()).toBeLessThan(all);
+  // Not sent back to the top. The browser may nudge it a few pixels to keep
+  // the same content in view as the grid shrinks (scroll anchoring), and a
+  // short grid can pull the bottom of the page up past 300.
+  const { y, max } = await page.evaluate(() => ({
+    y: window.scrollY,
+    max: document.documentElement.scrollHeight - window.innerHeight,
+  }));
+  expect(y).toBeGreaterThan(Math.min(300, max) - 20);
+});
+
+test("an artist's old portfolio address redirects to the filtered portfolio", async ({
+  page,
+}) => {
+  await page.goto("/artists/zz-fixture-one/portfolio");
+  await expect(page).toHaveURL(/\/portfolio\?artist=zz-fixture-one$/);
+});
