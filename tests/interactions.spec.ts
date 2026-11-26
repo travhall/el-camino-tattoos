@@ -72,7 +72,7 @@ test.describe("piece viewer", () => {
     await expect(page).toHaveURL(/\/portfolio$/);
   });
 
-  test("closes on a backdrop click but not on a click inside the dialog", async ({
+  test("closes on a click around the photo but not on the photo or caption", async ({
     page,
   }) => {
     await open(page, "/portfolio");
@@ -80,17 +80,39 @@ test.describe("piece viewer", () => {
     const dialog = page.getByRole("dialog", { name: "Fixture Koi" });
     await expect(dialog).toBeVisible();
 
-    // Just inside the dialog's padding area. 20px in: the corner itself is
-    // rounded (radius/panel, 16px), so the pixel at 2,2 is backdrop now.
-    await dialog.click({ position: { x: 20, y: 20 } });
+    await dialog.getByRole("img").click();
     await expect(dialog).toBeVisible();
     await dialog.getByRole("heading", { level: 1 }).click();
     await expect(dialog).toBeVisible();
 
-    // Outside the dialog box is the backdrop.
-    await page.mouse.click(2, 2);
+    // The stage's own space: left of the close button, above the photo.
+    await page.mouse.click(4, 4);
     await expect(dialog).toBeHidden();
     await expect(page).toHaveURL(/\/portfolio$/);
+  });
+
+  test("is full screen with the caption in a sheet under the photo", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    // Measure the settled layout, not the reveal.
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const dialog = page.getByRole("dialog", { name: "Fixture Koi" });
+    await expect(dialog).toBeVisible();
+
+    const box = (await dialog.boundingBox())!;
+    expect(box).toMatchObject({ x: 0, y: 0, width: 393, height: 852 });
+    const sheet = (await page.locator(".viewer__sheet").boundingBox())!;
+    const media = (await page.locator(".viewer__media").boundingBox())!;
+    expect(media.y + media.height).toBeLessThanOrEqual(sheet.y);
+    expect(sheet.y + sheet.height).toBeCloseTo(852, 0);
+    // Page behind is locked while open, and unlocked after.
+    await expect(page.locator("html")).toHaveCSS("overflow", "hidden");
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden");
   });
 
   test("a piece loaded directly is a full page, not a dialog", async ({
@@ -453,6 +475,10 @@ test.describe("touch targets on a phone", () => {
 test("the topbar shows the walk-in status", async ({ page }) => {
   // Wednesday 3pm Central: open, so the status mentions walk-ins.
   await page.clock.setFixedTime(new Date("2026-11-25T21:00:00Z"));
+  // The footer's scroll reveal leaves its links part-clipped mid-scroll,
+  // which axe reads as obscured targets; reduced motion shows it settled
+  // (as in a11y.spec.ts).
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page, "/");
 
   const topbar = page.locator(".site-topbar");
@@ -533,4 +559,64 @@ test("phone header: the Menu button opens the nav and Escape closes it", async (
   await expect(nav).toBeHidden();
   await expect(page.locator("main")).not.toHaveAttribute("inert");
   await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden");
+});
+
+test.describe("filmstrip", () => {
+  test("is a three-column grid below lg", async ({ page }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await open(page, "/");
+    const items = page.locator(".filmstrip__item");
+    const [a, b, c, d] = await Promise.all(
+      [0, 1, 2, 3].map((i) => items.nth(i).boundingBox()),
+    );
+    expect(a!.y).toBe(b!.y);
+    expect(b!.y).toBe(c!.y);
+    expect(d!.y).toBeGreaterThan(a!.y);
+    expect(d!.x).toBe(a!.x);
+  });
+
+  test("widens the hovered or focused frame on desktop", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page, "/");
+    const items = page.locator(".filmstrip__item");
+    const width = async (i: number) =>
+      (await items.nth(i).boundingBox())!.width;
+
+    const resting = await width(0);
+    expect(await width(1)).toBeCloseTo(resting, 0);
+
+    await items.nth(2).hover();
+    await expect.poll(() => width(2)).toBeGreaterThan(resting * 2);
+    expect(await width(0)).toBeLessThan(resting);
+
+    await page.mouse.move(0, 0);
+    await expect.poll(() => width(2)).toBeCloseTo(resting, 0);
+
+    await items.nth(4).getByRole("link").focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect.poll(() => width(4)).toBeGreaterThan(resting * 2);
+  });
+});
+
+test("opening and closing a piece from the filmstrip keeps the scroll position", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, "/");
+  const frame = page.locator(".filmstrip__frame").nth(1);
+  await frame.scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => window.scrollY);
+  expect(before).toBeGreaterThan(0);
+
+  const href = await frame.getAttribute("href");
+  await frame.click();
+  await expect(page).toHaveURL(href!);
+  await expect(page.locator("dialog[open]")).toBeVisible();
+  expect(await page.evaluate(() => window.scrollY)).toBe(before);
+
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveURL("/");
+  expect(await page.evaluate(() => window.scrollY)).toBe(before);
 });

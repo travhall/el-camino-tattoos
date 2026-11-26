@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { PieceDetail } from "@/components/piece-detail";
-import { PieceViewerDialog } from "@/components/piece-viewer-dialog";
+import { PieceLightbox } from "@/components/piece-lightbox";
 import { getArtist, getPiece } from "@/lib/content";
 
 export default async function PieceViewer(props: {
@@ -11,9 +10,5 @@ export default async function PieceViewer(props: {
   if (!piece) notFound();
   const artist = await getArtist(piece.artistSlug);
 
-  return (
-    <PieceViewerDialog>
-      <PieceDetail piece={piece} artist={artist} />
-    </PieceViewerDialog>
-  );
+  return <PieceLightbox piece={piece} artist={artist} />;
 }

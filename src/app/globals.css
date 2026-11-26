@@ -21,6 +21,8 @@
   --duration-fast: 120ms;
   --duration-base: 200ms;
   --duration-slow: 320ms;
+  /* Full-screen reveals (the piece viewer). */
+  --duration-reveal: 560ms;
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 

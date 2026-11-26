@@ -199,6 +199,12 @@ export default config({
           description: "Show this piece first.",
           defaultValue: false,
         }),
+        filmstrip: fields.checkbox({
+          label: "Show in filmstrip",
+          description:
+            "The strip of work on the homepage. Shows up to 9, in portfolio order; if none are ticked, the newest pieces show.",
+          defaultValue: false,
+        }),
         // Everything below is optional so publishing stays a two-field job.
         style: fields.text({ label: "Style" }),
         placement: fields.text({ label: "Placement" }),

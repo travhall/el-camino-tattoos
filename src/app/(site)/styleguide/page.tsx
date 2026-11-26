@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Filmstrip } from "@/components/filmstrip";
+import { getArtists, getFilmstripPieces } from "@/lib/content";
 import { ShopPromises } from "@/components/shop-promises";
 import {
   Button,
@@ -125,6 +127,7 @@ const sectionNav = [
   { id: "filters", title: "Filter chips" },
   { id: "richtext", title: "Rich text" },
   { id: "cards", title: "Cards and grid" },
+  { id: "filmstrip", title: "Filmstrip" },
   { id: "hero", title: "Hero" },
 ] as const;
 
@@ -162,6 +165,10 @@ export default async function StyleGuidePage() {
   const { config, steps, space } = typeScale;
   const { rolesCss, ramps } = await loadInputs();
   const pairs = checkContrast(rolesCss, ramps);
+  const [artists, filmstrip] = await Promise.all([
+    getArtists(),
+    getFilmstripPieces(),
+  ]);
 
   return (
     <div className="stack stack--xl">
@@ -623,6 +630,15 @@ export default async function StyleGuidePage() {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section id="filmstrip" title="Filmstrip">
+        <p className="muted measure">
+          Pieces ticked &ldquo;Show in filmstrip&rdquo; in Keystatic. Three
+          columns on phones and tablets; one row from lg, where the hovered or
+          focused frame widens.
+        </p>
+        <Filmstrip pieces={filmstrip} artists={artists} />
       </Section>
 
       <Section id="hero" title="Hero">

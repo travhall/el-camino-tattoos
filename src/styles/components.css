@@ -87,7 +87,7 @@
      Browsers without discrete transitions just show and hide it. */
   @media (width < 64rem) {
     .site-header__menu[data-collapsible] {
-      @apply fixed inset-0 z-1 overflow-y-auto overscroll-contain bg-background px-(--page-gutter) pt-[calc(var(--menu-top,5rem)+var(--spacing-fluid-sm))] pb-fluid-xl;
+      @apply fixed inset-0 top-11 z-1 overflow-y-auto overscroll-contain bg-background px-(--page-gutter) pt-[calc(var(--menu-top,5rem)+var(--spacing-fluid-sm))] pb-fluid-xl;
     }
 
     /* Only after first use (HeaderMenu sets data-animate), so nothing fades
@@ -416,6 +416,25 @@
     @apply scale-[1.02];
   }
 
+  /* Filmstrip: a three-column grid of frames on phones and tablets. From lg,
+     one row of equal frames; the hovered or keyboard-focused frame grows to
+     three shares and the others narrow to make room, so the row keeps its
+     width. Frames crop to fill (object-cover). The global reduced-motion rule
+     makes the change instant. */
+  .filmstrip {
+    @apply grid grid-cols-3 gap-2 lg:flex;
+  }
+
+  .filmstrip__item {
+    @apply min-w-0 lg:flex-1 lg:transition-[flex-grow] lg:hover:grow-3 lg:has-focus-visible:grow-3;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-out);
+  }
+
+  .filmstrip__frame {
+    @apply relative block h-45 overflow-hidden rounded-media bg-surface lg:h-72 xl:h-80;
+  }
+
   .empty-state {
     @apply text-muted;
   }
@@ -469,27 +488,13 @@
     @apply relative aspect-[3/4] overflow-hidden rounded-feature bg-surface;
   }
 
-  /* Single piece: full page and viewer overlay share this */
+  /* Single piece as a full page (a direct visit to /portfolio/[piece]) */
   .piece-detail {
     @apply grid items-start gap-fluid-md md:grid-cols-[2fr_1fr];
   }
 
   .piece-detail__media {
     @apply relative aspect-[4/5] overflow-hidden rounded-media bg-surface;
-  }
-
-  /* In the viewer, the photo fits the viewport (minus the dialog's close bar
-     and padding) so the dialog doesn't scroll. The image is object-contain,
-     so a shorter box letterboxes rather than crops. */
-  .viewer .piece-detail__media {
-    max-height: calc(92dvh - 8rem);
-  }
-
-  @media (min-width: 48rem) {
-    .viewer .piece-detail__media {
-      aspect-ratio: auto;
-      height: calc(92dvh - 8rem);
-    }
   }
 
   .piece-detail__meta {
@@ -504,17 +509,75 @@
     @apply text-muted;
   }
 
-  /* Piece viewer: native <dialog> */
-  .viewer {
-    @apply m-auto max-h-[92dvh] w-[min(64rem,calc(100vw-1.5rem))] overflow-auto overscroll-contain rounded-panel bg-background text-foreground backdrop:bg-veil/80;
+  /* Piece viewer: a full-screen native <dialog> over the page (PieceViewerDialog).
+     Three rows: close bar, photo, caption sheet. The stage (bar and photo,
+     on the background) spans all three through a subgrid, so the sheet sits
+     over its last row and the photo stops above the sheet.
+
+     Opening mirrors the footer reveal: the stage's rounded bottom edge sweeps
+     down from the top of the screen (clip-path) while the photo stays put,
+     and the sheet rises from the bottom a beat later. Closing
+     ([data-closing], set by the dialog) runs it backwards, sheet first; the
+     dialog closes when the stage's animation ends. The global reduced-motion
+     rule makes both instant. */
+  .viewer[open] {
+    @apply fixed inset-0 m-0 grid h-dvh max-h-none w-full max-w-none grid-rows-[auto_1fr_auto] overflow-hidden bg-transparent p-0 text-foreground backdrop:bg-transparent;
   }
 
-  .viewer__inner {
-    @apply p-4 md:p-6;
+  .viewer__stage {
+    @apply col-start-1 row-span-3 row-start-1 grid grid-rows-subgrid bg-background;
+    animation: viewer-reveal var(--duration-reveal) var(--ease-out) both;
   }
 
   .viewer__bar {
-    @apply mb-4 flex justify-end;
+    @apply flex justify-end px-(--page-gutter) pt-fluid-xs;
+  }
+
+  .viewer__close {
+    @apply -mr-2.5;
+  }
+
+  /* The photo fills this box and is contained (letterboxed, never cropped). */
+  .viewer__media {
+    @apply relative mx-(--page-gutter) mb-fluid-sm min-h-0;
+  }
+
+  .viewer__sheet {
+    @apply col-start-1 row-start-3 mx-(--page-gutter) flex flex-wrap items-baseline gap-x-fluid-sm gap-y-1 rounded-t-panel bg-surface px-fluid-sm pt-fluid-sm pb-[max(var(--spacing-fluid-sm),env(safe-area-inset-bottom))];
+    animation: viewer-sheet var(--duration-slow) var(--ease-out)
+      calc(var(--duration-reveal) * 0.4) both;
+  }
+
+  .viewer[data-closing] .viewer__sheet {
+    animation: viewer-sheet-out var(--duration-base) var(--ease-out) both;
+  }
+
+  .viewer[data-closing] .viewer__stage {
+    animation: viewer-conceal var(--duration-reveal) var(--ease-out)
+      var(--duration-fast) both;
+  }
+
+  /* The global reduced-motion rule shortens durations, not delays, so the
+     staggered parts would sit hidden through their delay. */
+  @media (prefers-reduced-motion: reduce) {
+    .viewer__stage,
+    .viewer__sheet {
+      animation-delay: 0s !important;
+    }
+  }
+
+  .viewer__title {
+    @apply font-display text-xl leading-none font-normal;
+  }
+
+  .viewer__details {
+    @apply flex flex-wrap gap-x-2 text-sm text-muted;
+  }
+
+  /* Middle dots between details, decorative (empty alt text). */
+  .viewer__detail + .viewer__detail::before {
+    @apply mr-2;
+    content: "\00B7" / "";
   }
 
   /* Forms */
@@ -694,5 +757,39 @@
 
   .shop-promises__star {
     @apply size-5 shrink-0 text-accent-mark;
+  }
+}
+
+@keyframes viewer-reveal {
+  from {
+    clip-path: inset(
+      0 0 100% 0 round 0 0 var(--radius-feature) var(--radius-feature)
+    );
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 0);
+  }
+}
+
+@keyframes viewer-conceal {
+  from {
+    clip-path: inset(0 0 0 0 round 0);
+  }
+  to {
+    clip-path: inset(
+      0 0 100% 0 round 0 0 var(--radius-feature) var(--radius-feature)
+    );
+  }
+}
+
+@keyframes viewer-sheet {
+  from {
+    translate: 0 100%;
+  }
+}
+
+@keyframes viewer-sheet-out {
+  to {
+    translate: 0 100%;
   }
 }

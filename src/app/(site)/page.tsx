@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArtistGrid } from "@/components/artist-grid";
+import { Filmstrip } from "@/components/filmstrip";
 import { HeroPhoto } from "@/components/hero-photo";
-import { PieceGrid } from "@/components/piece-grid";
 import { ShopPromises } from "@/components/shop-promises";
 import { ButtonLink } from "@/components/ui/button";
-import { getArtists, getPieces, getSite } from "@/lib/content";
+import {
+  getArtists,
+  getFilmstripPieces,
+  getPieces,
+  getSite,
+} from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { siteName } from "@/lib/site";
 
@@ -15,9 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [artists, pieces, site] = await Promise.all([
+  const [artists, pieces, filmstrip, site] = await Promise.all([
     getArtists(),
     getPieces(),
+    getFilmstripPieces(),
     getSite(),
   ]);
 
@@ -54,6 +60,7 @@ export default async function Home() {
           caption={site.heroPhotoCaption}
         />
       </div>
+      <Filmstrip pieces={filmstrip} artists={artists} />
       <ShopPromises promises={site.shopPromises} />
 
       <section aria-labelledby="artists-heading" className="stack stack--lg">
@@ -68,7 +75,6 @@ export default async function Home() {
             View all
           </Link>
         </div>
-        <PieceGrid pieces={pieces.slice(0, 8)} artists={artists} />
       </section>
     </div>
   );

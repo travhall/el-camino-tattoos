@@ -25,6 +25,8 @@ export type Piece = {
   artistSlug: string;
   image: string;
   featured: boolean;
+  /** Ticked for the homepage filmstrip (see getFilmstripPieces). */
+  filmstrip: boolean;
   style: string;
   placement: string;
   date: string | null;
@@ -78,6 +80,7 @@ export const getPieces = cache(async (): Promise<Piece[]> => {
               artistSlug: entry.artist,
               image: entry.image,
               featured: entry.featured,
+              filmstrip: entry.filmstrip,
               style: entry.style,
               placement: entry.placement,
               date: entry.date,
@@ -90,6 +93,17 @@ export const getPieces = cache(async (): Promise<Piece[]> => {
         Number(b.featured) - Number(a.featured) ||
         (b.date ?? "").localeCompare(a.date ?? ""),
     );
+});
+
+/**
+ * Pieces for the homepage filmstrip: the ticked ones in portfolio order, or
+ * the first pieces when none are ticked, so the strip is never empty while
+ * there is work.
+ */
+export const getFilmstripPieces = cache(async (limit = 9) => {
+  const pieces = await getPieces();
+  const ticked = pieces.filter((piece) => piece.filmstrip);
+  return (ticked.length > 0 ? ticked : pieces).slice(0, limit);
 });
 
 export const getPiecesByArtist = cache(async (artistSlug: string) => {

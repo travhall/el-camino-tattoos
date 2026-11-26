@@ -9,12 +9,12 @@ const dateFormat = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
 });
 
-function formatDate(date: string) {
+export function formatPieceDate(date: string) {
   const parsed = new Date(`${date}T00:00:00Z`);
   return Number.isNaN(parsed.getTime()) ? date : dateFormat.format(parsed);
 }
 
-/** Shared by the full piece page and the overlay that opens over the gallery. */
+/** A piece as a full page (a direct visit). Over the page it opens as PieceLightbox. */
 export function PieceDetail({
   piece,
   artist,
@@ -25,7 +25,7 @@ export function PieceDetail({
   const details = [
     piece.style && ["Style", piece.style],
     piece.placement && ["Placement", piece.placement],
-    piece.date && ["Date", formatDate(piece.date)],
+    piece.date && ["Date", formatPieceDate(piece.date)],
   ].filter((row): row is [string, string] => Boolean(row));
 
   return (

@@ -21,7 +21,15 @@ export function PieceGrid({
         const artistName = artistNames.get(piece.artistSlug);
         return (
           <li key={piece.slug}>
-            <Link href={`/portfolio/${piece.slug}`} className="piece-tile">
+            {/* The piece page opens in the viewer dialog over this grid (an
+                intercepted route). Without scroll={false}, Next scrolls to
+                the top of the new segment on open, and closing (router.back)
+                scrolls back, so the page jumps both ways. */}
+            <Link
+              href={`/portfolio/${piece.slug}`}
+              scroll={false}
+              className="piece-tile"
+            >
               <div className="piece-tile__media">
                 <Photo
                   src={piece.image}
