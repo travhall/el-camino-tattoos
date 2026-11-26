@@ -1,5 +1,30 @@
 import { collection, config, fields, singleton } from "@keystatic/core";
 
+// One day of opening hours. Times are 24-hour "HH:MM" so the site can work
+// out whether the shop is open right now (src/lib/hours.ts).
+const hourPattern = {
+  regex: /^$|^([01]\d|2[0-3]):[0-5]\d$/,
+  message: "Use 24-hour time, like 12:00 or 20:00",
+};
+function dayHoursField(label: string) {
+  return fields.object(
+    {
+      open: fields.checkbox({ label: "Open" }),
+      opens: fields.text({
+        label: "Opens",
+        description: "e.g. 12:00",
+        validation: { pattern: hourPattern },
+      }),
+      closes: fields.text({
+        label: "Closes",
+        description: "e.g. 20:00",
+        validation: { pattern: hourPattern },
+      }),
+    },
+    { label, layout: [4, 4, 4] },
+  );
+}
+
 // Once the GitHub App exists, its public slug is set (in Netlify), and edits
 // commit to GitHub, which triggers a rebuild. Without it (local dev, CI),
 // edits write straight to the working tree. The slug is a NEXT_PUBLIC_ var so
@@ -223,21 +248,20 @@ export default config({
         city: fields.text({ label: "City" }),
         region: fields.text({ label: "State" }),
         postalCode: fields.text({ label: "ZIP code" }),
-        hours: fields.array(
-          fields.object({
-            days: fields.text({
-              label: "Days",
-              description: "e.g. Monday to Friday",
-            }),
-            time: fields.text({
-              label: "Hours",
-              description: "e.g. 12pm to 8pm, or Closed",
-            }),
-          }),
+        hours: fields.object(
+          {
+            monday: dayHoursField("Monday"),
+            tuesday: dayHoursField("Tuesday"),
+            wednesday: dayHoursField("Wednesday"),
+            thursday: dayHoursField("Thursday"),
+            friday: dayHoursField("Friday"),
+            saturday: dayHoursField("Saturday"),
+            sunday: dayHoursField("Sunday"),
+          },
           {
             label: "Hours",
-            itemLabel: (props) =>
-              `${props.fields.days.value} ${props.fields.time.value}`.trim(),
+            description:
+              "In the shop's time zone (Central). The site uses these to say whether the shop is open right now. A day left unticked is closed.",
           },
         ),
         walkIns: fields.checkbox({

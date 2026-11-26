@@ -24,7 +24,7 @@ test("skip link is the first tab stop and moves focus into <main>", async ({
 test("nav marks the current page and its section", async ({ page }) => {
   const portfolio = page
     .getByRole("navigation", { name: "Primary" })
-    .getByRole("link", { name: "Our Work" });
+    .getByRole("link", { name: "Portfolios" });
 
   await open(page, "/portfolio");
   await expect(portfolio).toHaveAttribute("aria-current", "page");
@@ -450,7 +450,9 @@ test.describe("touch targets on a phone", () => {
   }
 });
 
-test("the topbar shows the walk-in note", async ({ page }) => {
+test("the topbar shows the walk-in status", async ({ page }) => {
+  // Wednesday 3pm Central: open, so the status mentions walk-ins.
+  await page.clock.setFixedTime(new Date("2026-11-25T21:00:00Z"));
   await open(page, "/");
 
   const topbar = page.locator(".site-topbar");

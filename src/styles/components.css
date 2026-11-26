@@ -8,8 +8,8 @@
      topbar's height so only the nav row stays pinned. --topbar-height is the
      one source for that offset and for the topbar's own height. */
   .site-header {
-    @apply sticky top-0 z-40 border-b border-line bg-surface-raised;
-    /* 44px: the topbar's links and toggle are standalone targets. */
+    @apply sticky top-0 z-40 bg-background;
+    /* 44px: the topbar's links are standalone targets. */
     --topbar-height: 2.75rem;
   }
 
@@ -17,53 +17,56 @@
     top: calc(-1 * var(--topbar-height));
   }
 
+  /* Desktop: links | centred wordmark | booking and social, the two outer
+     columns equal so the wordmark sits on the page's centre line. Phones
+     (not designed yet): brand and actions on one row, links scroll below. */
   .site-header__inner {
-    @apply mx-auto flex min-h-16 w-(--page-width) flex-wrap items-center justify-between gap-x-fluid-md gap-y-0 py-0 md:min-h-[5.3rem] xl:min-h-[6.125rem];
+    @apply flex flex-wrap items-center justify-between gap-x-fluid-md px-(--page-gutter) py-fluid-xs md:grid md:grid-cols-[1fr_auto_1fr];
   }
 
-  /* Text wordmark: Being for the name, a tracked line under it, as in the
-     design. The footer keeps the SVG wordmark. */
   .site-header__brand {
-    @apply order-1 inline-flex min-h-11 flex-col items-center text-foreground;
-  }
-
-  /* Phones: brand and button share the first row, the links wrap below. */
-  .site-header__cta {
-    @apply order-2 max-md:px-3 max-md:text-sm md:order-3;
+    @apply order-1 inline-flex min-h-11 flex-col items-center text-center text-foreground uppercase md:order-2;
   }
 
   .site-header__wordmark {
-    @apply font-display text-xl leading-none font-normal uppercase md:text-2xl;
+    @apply -mb-1 font-display text-xl leading-none font-normal md:text-2xl md:leading-(--text-xl--line-height);
   }
 
   .site-header__tagline {
-    @apply text-xs tracking-[0.2em] uppercase;
+    @apply text-xs tracking-[0.2em];
   }
 
-  .site-topbar {
-    @apply border-b border-line bg-surface-sunken text-sm text-foreground uppercase;
-    height: var(--topbar-height);
+  .site-header__actions {
+    @apply order-2 flex items-center justify-end gap-fluid-2xs md:order-3;
+  }
+
+  .site-header__cta {
+    @apply max-md:px-3 max-md:text-sm;
+  }
+
+  .site-nav {
+    @apply order-3 flex w-full flex-nowrap items-center gap-x-fluid-sm overflow-x-auto md:order-1 md:w-auto md:gap-x-fluid-lg md:overflow-visible;
+  }
+
+  /* 44px hit area; the current page or section is underlined as well as
+     marked with aria-current, so it isn't conveyed by color alone. */
+  .site-nav__link {
+    @apply inline-flex min-h-11 shrink-0 items-center text-sm whitespace-nowrap text-foreground underline-offset-8 hover:underline;
+  }
+
+  .site-nav__link[aria-current] {
+    @apply underline decoration-nav-current decoration-2;
   }
 
   /* One row, never wrapping: the topbar has a fixed height (the sticky
-     offset above depends on it), so a wrapped row would spill over the
-     brand. Phones get smaller walk-in text so it fits beside the toggle;
-     on very narrow screens it truncates rather than wrapping. */
-  .site-topbar__inner {
-    @apply mx-auto flex h-full w-(--page-width) flex-nowrap items-center justify-between gap-x-fluid-xs md:gap-x-fluid-md;
+     offset above depends on it). On narrow screens the note truncates. */
+  .site-topbar {
+    @apply flex flex-nowrap items-center justify-between gap-x-fluid-md border-b border-border bg-surface-sunken px-(--page-gutter) text-xs text-foreground;
+    height: var(--topbar-height);
   }
 
   .site-topbar__walkin {
-    @apply inline-flex min-h-11 min-w-0 items-center gap-2 text-xs text-status-open hover:underline sm:text-sm;
-  }
-
-  .site-topbar__walkin-text {
-    @apply truncate;
-  }
-
-  /* Decorative "open" light; the note beside it carries the meaning. */
-  .site-topbar__dot {
-    @apply size-2 shrink-0 rounded-full bg-status-open;
+    @apply inline-flex min-h-11 min-w-0 items-center hover:underline;
   }
 
   .site-topbar__star {
@@ -72,7 +75,7 @@
   }
 
   .site-topbar__right {
-    @apply flex shrink-0 items-center gap-fluid-xs;
+    @apply flex shrink-0 items-center gap-fluid-sm;
   }
 
   .site-topbar__location {
@@ -83,82 +86,127 @@
     @apply hidden min-h-11 items-center hover:underline sm:inline-flex;
   }
 
-  .site-nav {
-    @apply order-3 flex w-full flex-nowrap items-center gap-x-2 overflow-x-auto md:order-2 md:ml-auto md:w-auto md:flex-wrap md:gap-x-fluid-md md:overflow-visible;
+  /* Open/closed line (ShopStatus): a label in the text colour and a detail
+     in the state's colour. The dot is decorative; the words carry the state,
+     so it is never colour alone. Truncates rather than wrapping (the topbar
+     has a fixed height). */
+  .shop-status {
+    @apply inline-flex min-w-0 items-center gap-fluid-2xs text-foreground;
   }
 
-  /* 44px hit area both ways; current page/section is marked by an underline
-     as well as aria-current, so it isn't conveyed by color alone. */
-  .site-nav__link {
-    @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap uppercase hover:underline md:text-base;
+  .shop-status__label {
+    @apply shrink-0;
   }
 
-  .site-nav__link[aria-current] {
-    @apply underline decoration-nav-current decoration-2 underline-offset-8;
+  .shop-status__detail {
+    @apply truncate text-status-open;
   }
 
+  .shop-status:not([data-state="open"]) .shop-status__detail {
+    @apply text-muted;
+  }
+
+  .status-dot {
+    @apply size-2 shrink-0 rounded-full bg-status-open;
+  }
+
+  .shop-status:not([data-state="open"]) .status-dot {
+    @apply bg-status-closed;
+  }
+
+  /* The band sits inset from the page edges with its own rounded corners;
+     overflow clips the content to them, and to the rising edge while the
+     reveal runs. */
+  /* Inset by the page gutter, so its edges line up with the header and main
+     content at every width. */
   .site-footer {
-    @apply mt-auto border-t border-line bg-surface-sunken;
+    @apply mx-(--page-gutter) mt-auto overflow-clip rounded-feature bg-surface-sunken;
   }
 
+  /* A size container, so the wordmark can be sized to the band's width. */
+  .site-footer__inner {
+    @apply flex flex-col items-center;
+    container-type: inline-size;
+  }
+
+  /* Phones: one centred column, status first, then the links stacked, then
+     the address (the order differs from the source, which is the desktop
+     order). From md: contact | status | nav in three columns. */
   .site-footer__top {
-    @apply mx-auto flex w-(--page-width) flex-wrap items-center gap-x-fluid-xl gap-y-fluid-sm border-b border-line pt-fluid-xl pb-fluid-md;
+    @apply grid w-full justify-items-center gap-fluid-sm px-fluid-sm pt-fluid-lg pb-fluid-sm text-center md:grid-cols-3 md:items-start md:justify-items-stretch md:gap-fluid-md md:px-fluid-md md:py-fluid-lg md:text-left;
   }
 
-  .site-footer__brand {
-    @apply inline-flex min-h-11 items-center text-foreground;
+  .site-footer__contact {
+    @apply order-3 grid content-start justify-items-center gap-fluid-2xs text-xs font-medium text-muted md:order-1 md:justify-items-start md:p-fluid-lg;
   }
 
-  .site-footer__logo {
-    @apply h-6 w-auto;
-  }
-
-  .site-footer__tagline {
-    @apply text-sm text-muted;
-  }
-
-  .site-footer__social {
-    @apply inline-flex min-h-11 items-center text-sm md:ml-auto;
-  }
-
-  .site-footer__grid {
-    @apply mx-auto grid w-(--page-width) gap-fluid-lg py-fluid-lg text-sm text-muted md:grid-cols-[1.03fr_1.2fr_1.34fr_1fr];
-  }
-
-  .site-footer__col {
-    @apply grid content-start gap-fluid-sm;
+  .site-footer__status {
+    @apply order-1 flex justify-self-center text-xs md:order-2 md:py-fluid-lg;
   }
 
   .site-footer__nav {
-    @apply grid grid-cols-2 gap-x-fluid-md gap-y-fluid-3xs;
+    @apply order-2 flex flex-col items-center md:order-3 md:flex-row md:flex-wrap md:justify-end md:gap-x-fluid-sm md:p-fluid-lg;
   }
 
-  /* Mirrors .site-nav__link's state styling (44px hit area; current page is
-     an underline, not color alone), kept separate rather than shared with
-     the header's .site-nav__link so the footer's vertical layout doesn't
-     depend on overriding the header nav's flex-row rule. */
-  .site-footer__nav-link {
-    @apply inline-flex min-h-11 items-center hover:underline;
+  /* Footer links are standalone targets: 44px tall. */
+  .site-footer__link {
+    @apply inline-flex min-h-11 items-center text-xs text-foreground underline-offset-4 hover:underline;
   }
 
-  .site-footer__nav-link[aria-current] {
-    @apply underline decoration-nav-current decoration-2 underline-offset-4;
+  .site-footer__contact .site-footer__link {
+    @apply text-muted;
   }
 
-  .site-footer__note {
-    @apply text-xs;
+  .site-footer__link[aria-current] {
+    @apply underline decoration-nav-current decoration-2;
   }
 
-  .site-footer__cta {
-    @apply justify-self-start;
+  /* Oversized wordmark filling the band's width (280px in a 1440px band in
+     the design). Decorative and faint, so it isn't held to text contrast. */
+  .site-footer__wordmark {
+    @apply w-full text-center font-display font-medium whitespace-nowrap text-subtle uppercase opacity-20;
+    font-size: 19.4cqi;
+    line-height: 0.786;
+    letter-spacing: 0.02em;
+
+    &::before {
+      content: attr(data-text);
+    }
   }
 
-  .site-footer__bottom {
-    @apply mx-auto flex w-(--page-width) flex-wrap items-center justify-between gap-fluid-xs border-t border-line py-fluid-sm text-sm text-muted;
+  .site-footer__copyright {
+    @apply p-fluid-sm text-xs font-medium text-subtle;
   }
 
-  .site-footer__signoff {
-    @apply italic;
+  /* Scroll reveal, reusable: as the block scrolls in, its content is held
+     against the bottom of the viewport, so the block's rounded top edge
+     rises over content that stays still (the reverse of a pinned hero that
+     shrinks away). Desktop only, and only where scroll-driven animations
+     exist and motion isn't reduced; otherwise it's a plain block. The
+     timeline is named on the block, not on the moving content, so the
+     content's own movement doesn't feed back into it. */
+  @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .scroll-reveal {
+        @apply overflow-clip;
+        view-timeline: --scroll-reveal block;
+      }
+
+      .scroll-reveal__content {
+        animation: scroll-reveal linear both;
+        animation-timeline: --scroll-reveal;
+        animation-range: entry 0% entry 100%;
+      }
+    }
+  }
+
+  @keyframes scroll-reveal {
+    from {
+      translate: 0 -100%;
+    }
+    to {
+      translate: 0 0;
+    }
   }
 
   /* Shop address and contact details: each an <address> block, used inside

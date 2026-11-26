@@ -1,4 +1,5 @@
 import type { Site } from "@/lib/content";
+import { groupHours, hasHours } from "@/lib/hours";
 import { phoneHref } from "@/lib/site";
 
 /** The shop's street address, or nothing if it isn't set. */
@@ -60,11 +61,11 @@ export function ShopContact({
 
 /** Opening hours, or nothing if none are set. */
 export function ShopHours({ site }: { site: Site }) {
-  if (site.hours.length === 0) return null;
+  if (!hasHours(site.hours)) return null;
 
   return (
     <dl className="shop-info__hours">
-      {site.hours.map(({ days, time }) => (
+      {groupHours(site.hours).map(({ days, time }) => (
         <div key={`${days}-${time}`} className="shop-info__hours-row">
           <dt className="shop-info__days">{days}</dt>
           <dd>{time}</dd>

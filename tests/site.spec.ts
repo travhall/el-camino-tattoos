@@ -15,15 +15,19 @@ async function open(page: Page, route: string) {
 const meta = (page: Page, selector: string) =>
   page.locator(selector).first().getAttribute("content");
 
+// Wednesday 3pm in Eau Claire (Central), inside the placeholder hours in
+// content/site.yaml, so the open status is predictable.
+const openTime = new Date("2026-11-25T21:00:00Z");
+
 test.describe("shop info", () => {
-  test("the homepage leads with the walk-in note and phone in the topbar", async ({
+  test("the topbar says the shop is open, and offers the phone", async ({
     page,
   }) => {
+    await page.clock.setFixedTime(openTime);
     await open(page, "/");
     const topbar = page.locator(".site-topbar");
-    await expect(
-      topbar.getByText("Walk-ins welcome when available."),
-    ).toBeVisible();
+    await expect(topbar.getByText("Open today")).toBeVisible();
+    await expect(topbar.getByText("Walk-ins available")).toBeVisible();
     await expect(
       topbar.getByRole("link", { name: "(715) 912-1169" }),
     ).toHaveAttribute("href", "tel:7159121169");
@@ -42,21 +46,27 @@ test.describe("shop info", () => {
     await expect(stamp).toHaveAttribute("aria-hidden", "true");
   });
 
-  test("page sections share one container: 1280px wide at a 1440px viewport", async ({
+  test("the page container is 1440px wide at a 1512px viewport", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
+    // The design's frame: 1440px of content, 36px gutters, the same inset
+    // as the header and footer.
+    await page.setViewportSize({ width: 1512, height: 900 });
     await open(page, "/");
-    for (const selector of [
-      ".site-topbar__inner",
-      ".site-header__inner",
-      "main",
-      ".site-footer__grid",
-    ]) {
-      const box = await page.locator(selector).first().boundingBox();
-      expect(box?.width, selector).toBe(1280);
-      expect(box?.x, selector).toBe(80);
-    }
+    const box = await page.locator("main").boundingBox();
+    expect(box?.width).toBe(1440);
+    expect(box?.x).toBe(36);
+  });
+
+  test("the open status follows the shop's hours in its own time zone", async ({
+    page,
+  }) => {
+    // Monday is closed in content/site.yaml; Tuesday opens at noon.
+    await page.clock.setFixedTime(new Date("2026-11-23T20:00:00Z"));
+    await open(page, "/");
+    const topbar = page.locator(".site-topbar");
+    await expect(topbar.getByText("Closed now")).toBeVisible();
+    await expect(topbar.getByText("Opens tomorrow at 12pm")).toBeVisible();
   });
 
   test("the hero shows the editable headline, description and promises strip", async ({
@@ -110,40 +120,30 @@ test.describe("shop info", () => {
     await expect(footer.getByText("Eau Claire, WI 54703")).toBeVisible();
   });
 
-  test("the footer groups shop details under labeled columns", async ({
+  test("the footer has contact, walk-ins, nav and the copyright", async ({
     page,
   }) => {
+    await page.clock.setFixedTime(openTime);
     await open(page, "/");
     const footer = page.getByRole("contentinfo");
     await expect(
-      footer.getByRole("heading", { name: "Find the shop" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("heading", { name: "Come on by" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("heading", { name: "Get in touch" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("heading", { name: "Take a look around" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("link", { name: "Request an appointment" }),
-    ).toHaveAttribute("href", "/contact");
-  });
-
-  test("the footer has a brand row and a bottom bar", async ({ page }) => {
-    await open(page, "/");
-    const footer = page.getByRole("contentinfo");
-    await expect(footer.locator(".site-footer__brand")).toHaveAttribute(
+      footer.getByRole("link", { name: "(715) 912-1169" }),
+    ).toHaveAttribute("href", "tel:7159121169");
+    await expect(footer.getByText("Walk-ins available")).toBeVisible();
+    const nav = footer.getByRole("navigation", { name: "Footer" });
+    await expect(nav.getByRole("link", { name: "Artists" })).toHaveAttribute(
       "href",
-      "/",
+      "/artists",
     );
-    await expect(footer.getByText("Good work. Good company.")).toBeVisible();
-    await expect(footer.getByText("Made to last.")).toBeVisible();
     await expect(
       footer.getByText(`© ${new Date().getFullYear()} El Camino Tattoos`),
     ).toBeVisible();
+    // The oversized wordmark repeats the name, so it stays out of the
+    // accessibility tree.
+    await expect(footer.locator(".site-footer__wordmark")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
   });
 
   test("the contact page says what a deposit is, and offers the phone", async ({

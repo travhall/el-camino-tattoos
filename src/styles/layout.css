@@ -20,25 +20,20 @@
   }
 
   /* The one page container, sized to match the design mock: content up to
-     80rem (1280px), with 22/40/56px side gutters at phone/tablet/desktop.
-     Every full-width section (topbar, header, main, footer) uses
+     90rem (1440px). Phones keep a 22px gutter; from tablet up the gutter is
+     the header and footer's inset (--spacing-fluid-lg, 32 to 36px), so
+     content lines up with them. Sections that use the container set
      width: var(--page-width) with margin-inline: auto. The % in
      --page-width resolves on the element that uses it. */
   :root {
-    --page-max: 80rem;
+    --page-max: 90rem;
     --page-gutter: 1.375rem;
     --page-width: min(100% - 2 * var(--page-gutter), var(--page-max));
   }
 
   @media (min-width: 48rem) {
     :root {
-      --page-gutter: 2.5rem;
-    }
-  }
-
-  @media (min-width: 75rem) {
-    :root {
-      --page-gutter: 3.5rem;
+      --page-gutter: var(--spacing-fluid-lg);
     }
   }
 

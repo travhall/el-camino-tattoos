@@ -60,7 +60,7 @@ const motion = Object.fromEntries(
 
 /** Values in px. `source` is where the value is used in the code. */
 const layout = {
-  "max-width/page": { px: 1152, source: ".page (max-w-6xl)" },
+  "max-width/page": { px: 1440, source: ".page (--page-max, 90rem)" },
   "max-width/form": { px: 576, source: ".contact-form (max-w-xl)" },
   "max-width/viewer": { px: 1024, source: ".viewer (64rem)" },
   "size/target-min": { px: 44, source: "min-h-11, the touch target minimum" },

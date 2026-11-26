@@ -2,6 +2,7 @@ import { createReader } from "@keystatic/core/reader";
 import type { Node } from "@markdoc/markdoc";
 import { cache } from "react";
 import config from "../../keystatic.config";
+import { dayHours, type WeeklyHours, weekdays } from "./hours";
 
 const reader = createReader(process.cwd(), config);
 
@@ -153,7 +154,7 @@ export type Site = {
   city: string;
   region: string;
   postalCode: string;
-  hours: readonly { days: string; time: string }[];
+  hours: WeeklyHours;
   walkIns: boolean;
   walkInNote: string;
   consultationNote: string;
@@ -178,7 +179,12 @@ export const getSite = cache(async (): Promise<Site> => {
     city: entry?.city ?? "",
     region: entry?.region ?? "",
     postalCode: entry?.postalCode ?? "",
-    hours: entry?.hours ?? [],
+    hours: Object.fromEntries(
+      weekdays.map((day) => {
+        const h = entry?.hours?.[day];
+        return [day, h?.open ? dayHours(h.opens, h.closes) : null];
+      }),
+    ) as WeeklyHours,
     walkIns: entry?.walkIns ?? false,
     walkInNote: entry?.walkInNote ?? "",
     consultationNote: entry?.consultationNote ?? "",
