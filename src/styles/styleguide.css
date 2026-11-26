@@ -3,7 +3,7 @@
   /* Jump nav + a page-local theme toggle, so checking a value in both themes
      doesn't mean scrolling all the way back to the site header every time. */
   .sg-toc {
-    @apply sticky top-2 z-10 flex flex-wrap items-center justify-between gap-4 rounded-md border border-line bg-surface-raised px-4 py-2;
+    @apply sticky top-20 z-10 flex flex-wrap items-center justify-between gap-4 rounded-md border border-line bg-surface-raised px-4 py-2;
   }
 
   .sg-toc__list {

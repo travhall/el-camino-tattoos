@@ -421,8 +421,10 @@
      three shares and the others narrow to make room, so the row keeps its
      width. Frames crop to fill (object-cover). The global reduced-motion rule
      makes the change instant. */
+  /* Two columns on phones (below sm), three from sm. With an odd count on
+     phones the last frame spans both columns, so the grid ends square. */
   .filmstrip {
-    @apply grid grid-cols-3 gap-2 lg:flex;
+    @apply grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex;
   }
 
   .filmstrip__item {
@@ -431,8 +433,12 @@
     transition-timing-function: var(--ease-out);
   }
 
+  .filmstrip__item:last-child:nth-child(odd) {
+    @apply col-span-2 sm:col-span-1;
+  }
+
   .filmstrip__frame {
-    @apply relative block h-45 overflow-hidden rounded-media bg-surface lg:h-72 xl:h-80;
+    @apply relative block h-56 overflow-hidden rounded-media bg-surface sm:h-45 lg:h-72 xl:h-80;
   }
 
   .empty-state {
@@ -510,9 +516,10 @@
   }
 
   /* Piece viewer: a full-screen native <dialog> over the page (PieceViewerDialog).
-     Three rows: close bar, photo, caption sheet. The stage (bar and photo,
-     on the background) spans all three through a subgrid, so the sheet sits
-     over its last row and the photo stops above the sheet.
+     Two rows: photo, caption sheet. The stage (the photo on the background,
+     with the controls floating over its top-right corner) spans both rows
+     through a subgrid, so the sheet sits over its last row and the photo
+     stops above the sheet. On phones the photo runs edge to edge.
 
      Opening mirrors the footer reveal: the stage's rounded bottom edge sweeps
      down from the top of the screen (clip-path) while the photo stays put,
@@ -521,29 +528,61 @@
      dialog closes when the stage's animation ends. The global reduced-motion
      rule makes both instant. */
   .viewer[open] {
-    @apply fixed inset-0 m-0 grid h-dvh max-h-none w-full max-w-none grid-rows-[auto_1fr_auto] overflow-hidden bg-transparent p-0 text-foreground backdrop:bg-transparent;
+    @apply fixed inset-0 m-0 grid h-dvh max-h-none w-full max-w-none grid-rows-[1fr_auto] overflow-hidden bg-transparent p-0 text-foreground backdrop:bg-transparent;
   }
 
   .viewer__stage {
-    @apply col-start-1 row-span-3 row-start-1 grid grid-rows-subgrid bg-background;
+    @apply relative col-start-1 row-span-2 row-start-1 grid grid-rows-subgrid bg-background;
     animation: viewer-reveal var(--duration-reveal) var(--ease-out) both;
   }
 
-  .viewer__bar {
-    @apply flex justify-end px-(--page-gutter) pt-fluid-xs;
+  /* Close and zoom, over the photo's top-right corner. A surface fill keeps
+     them legible where a tall photo runs under them. */
+  .viewer__controls {
+    @apply absolute top-fluid-xs right-(--page-gutter) z-1 flex gap-1 rounded-control bg-surface/80 backdrop-blur-sm;
   }
 
-  .viewer__close {
-    @apply -mr-2.5;
-  }
-
-  /* The photo fills this box and is contained (letterboxed, never cropped). */
+  /* The photo fills this box, contained (letterboxed, never cropped). Zoomed
+     ([data-zoomed] on the dialog), it scales up around --zoom-x/--zoom-y,
+     which follow the pointer (or the arrow keys), so moving pans. */
+  /* touch-none: pinches and swipes on the photo are the viewer's (it zooms
+     the photo, not the page). */
   .viewer__media {
-    @apply relative mx-(--page-gutter) mb-fluid-sm min-h-0;
+    @apply relative row-start-1 min-h-0 cursor-zoom-in touch-none overflow-hidden sm:mx-(--page-gutter) sm:mt-fluid-xs sm:mb-fluid-sm;
+  }
+
+  .viewer__zoom-layer {
+    @apply absolute inset-0 transition-[scale,opacity,translate] motion-reduce:transition-none;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-out);
+    transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
+    scale: var(--zoom-scale, 1);
+  }
+
+  .viewer[data-zoomed] .viewer__media {
+    @apply cursor-zoom-out;
+  }
+
+  /* Follows the fingers during a pinch, no easing lag. */
+  .viewer__media[data-pinching] .viewer__zoom-layer {
+    @apply transition-none;
+  }
+
+  /* Loading: the photo waits hidden, nudged toward the side it comes from
+     (--slide: -1 previous, 1 next, 0 on open), while a soft pulse holds its
+     place; on load it fades and slides in. */
+  .viewer__media[data-loading] .viewer__zoom-layer {
+    @apply opacity-0;
+    translate: calc(var(--slide, 0) * 1.5rem) 0;
+  }
+
+  .viewer__media[data-loading]::before {
+    @apply absolute inset-[15%] animate-pulse rounded-media bg-surface;
+    content: "";
   }
 
   .viewer__sheet {
-    @apply col-start-1 row-start-3 mx-(--page-gutter) flex flex-wrap items-baseline gap-x-fluid-sm gap-y-1 rounded-t-panel bg-surface px-fluid-sm pt-fluid-sm pb-[max(var(--spacing-fluid-sm),env(safe-area-inset-bottom))];
+    @apply col-start-1 row-start-2 mx-(--page-gutter) flex items-center justify-between gap-x-fluid-sm rounded-t-panel bg-surface px-fluid-sm pt-fluid-sm pb-[max(var(--spacing-fluid-sm),env(safe-area-inset-bottom))];
     animation: viewer-sheet var(--duration-slow) var(--ease-out)
       calc(var(--duration-reveal) * 0.4) both;
   }
@@ -566,18 +605,39 @@
     }
   }
 
+  .viewer__caption {
+    @apply min-w-0;
+  }
+
+  /* Previous / next with "3 / 9" between; at the ends the arrow is
+     aria-disabled (dimmed, still focusable, does nothing). */
+  .viewer__nav {
+    @apply -my-2 -mr-2.5 flex shrink-0 items-center;
+  }
+
+  .viewer__count {
+    @apply text-sm text-muted tabular-nums;
+  }
+
+  .viewer__count-word {
+    @apply sr-only;
+  }
+
+  /* The piece's title names the dialog for screen readers; on screen the
+     photo is the title. */
   .viewer__title {
-    @apply font-display text-xl leading-none font-normal;
+    @apply sr-only;
   }
 
+  /* Caption: one line of body text, artist first. Inline, not flex, with
+     a no-break space before each dot, so a wrap can only fall after a dot
+     and never starts a line with one. The dots are decorative (empty alt). */
   .viewer__details {
-    @apply flex flex-wrap gap-x-2 text-sm text-muted;
+    @apply text-sm text-muted;
   }
 
-  /* Middle dots between details, decorative (empty alt text). */
   .viewer__detail + .viewer__detail::before {
-    @apply mr-2;
-    content: "\00B7" / "";
+    content: "\00A0\00B7\0020" / "";
   }
 
   /* Forms */

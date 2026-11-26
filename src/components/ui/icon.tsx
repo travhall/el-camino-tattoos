@@ -1,11 +1,20 @@
 type LineIconName =
-  "arrow-right" | "arrow-up-right" | "close" | "link" | "menu" | "plus";
+  | "arrow-left"
+  | "arrow-right"
+  | "arrow-up-right"
+  | "close"
+  | "link"
+  | "menu"
+  | "plus"
+  | "zoom-in"
+  | "zoom-out";
 type BrandLogoName = "instagram" | "facebook";
 export type IconName = LineIconName | BrandLogoName;
 
 // 24px grid, 1.5 stroke, round caps: one line-icon family. Add a name here and
 // a hover motion in components.css (.button__icon[data-icon="..."]).
 const paths: Record<LineIconName, React.ReactNode> = {
+  "arrow-left": <path d="M20 12H4m6-6-6 6 6 6" />,
   "arrow-right": <path d="M4 12h16m-6-6 6 6-6 6" />,
   "arrow-up-right": <path d="M7 17 17 7M8 7h9v9" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
@@ -15,6 +24,13 @@ const paths: Record<LineIconName, React.ReactNode> = {
   ),
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   plus: <path d="M12 5v14M5 12h14" />,
+  // Magnifier with plus / minus: the piece viewer's zoom toggle.
+  "zoom-in": (
+    <path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM20 20l-4.05-4.05M8 11h6M11 8v6" />
+  ),
+  "zoom-out": (
+    <path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM20 20l-4.05-4.05M8 11h6" />
+  ),
 };
 
 // Facebook and Instagram, from Meta's brand packs (copies in figma/brand/:

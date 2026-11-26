@@ -82,7 +82,7 @@ test.describe("piece viewer", () => {
 
     await dialog.getByRole("img").click();
     await expect(dialog).toBeVisible();
-    await dialog.getByRole("heading", { level: 1 }).click();
+    await page.locator(".viewer__sheet").click();
     await expect(dialog).toBeVisible();
 
     // The stage's own space: left of the close button, above the photo.
@@ -113,6 +113,157 @@ test.describe("piece viewer", () => {
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
     await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden");
+  });
+
+  test("zooms with the button, pans with arrows, and Escape zooms out before closing", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const dialog = page.getByRole("dialog", { name: "Fixture Koi" });
+    const zoom = dialog.getByRole("button", { name: "Zoom" });
+    await expect(zoom).toHaveAttribute("aria-pressed", "false");
+
+    await zoom.click();
+    await expect(zoom).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".viewer__zoom-layer")).toHaveCSS("scale", "2.5");
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator(".viewer__media")).toHaveAttribute(
+      "style",
+      /--zoom-x: 60%/,
+    );
+
+    await page.keyboard.press("Escape");
+    await expect(zoom).toHaveAttribute("aria-pressed", "false");
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+  });
+
+  test("names the dialog with the title but shows only the caption", async ({
+    page,
+  }) => {
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const dialog = page.getByRole("dialog", { name: "Fixture Koi" });
+    await expect(dialog).toBeVisible();
+    const title = dialog.getByRole("heading", { level: 1 });
+    await expect(title).toHaveText("Fixture Koi");
+    expect((await title.boundingBox())?.width ?? 0).toBeLessThanOrEqual(1);
+    await expect(page.locator(".viewer__details")).toHaveCSS(
+      "font-family",
+      /Hanken/i,
+    );
+  });
+
+  test("steps to the next and previous piece in place", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toHaveAccessibleName("Fixture Koi");
+    const first = page.url();
+
+    const next = dialog.getByRole("button", { name: "Next piece" });
+    const previous = dialog.getByRole("button", { name: "Previous piece" });
+    const step = (await next.getAttribute("aria-disabled")) ? previous : next;
+    await step.click();
+    await expect(page).not.toHaveURL(first);
+    await expect(dialog).not.toHaveAccessibleName("Fixture Koi");
+    await expect(page).toHaveURL(/\/portfolio\/[^/]+$/);
+
+    // The arrow key steps back to where we started.
+    await page.keyboard.press(step === next ? "ArrowLeft" : "ArrowRight");
+    await expect(page).toHaveURL(first);
+    await expect(dialog).toHaveAccessibleName("Fixture Koi");
+
+    // Close returns to the gallery, not to a piece we stepped through.
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(page).toHaveURL(/\/portfolio$/);
+  });
+
+  test("a swipe steps, and a pinch zooms the photo only", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toHaveAccessibleName("Fixture Koi");
+    const media = page.locator(".viewer__media");
+    await expect(media).toHaveCSS("touch-action", "none");
+
+    // Pinch: two touch pointers moving apart.
+    await media.evaluate((el) => {
+      const fire = (type: string, id: number, x: number) =>
+        el.dispatchEvent(
+          new PointerEvent(type, {
+            pointerId: id,
+            pointerType: "touch",
+            clientX: x,
+            clientY: 300,
+            bubbles: true,
+          }),
+        );
+      fire("pointerdown", 1, 150);
+      fire("pointerdown", 2, 220);
+      fire("pointermove", 1, 80);
+      fire("pointermove", 2, 300);
+      fire("pointerup", 1, 80);
+      fire("pointerup", 2, 300);
+    });
+    const zoom = dialog.getByRole("button", { name: "Zoom" });
+    await expect(zoom).toHaveAttribute("aria-pressed", "true");
+    const scale = await media.evaluate((el) =>
+      Number.parseFloat(el.style.getPropertyValue("--zoom-scale")),
+    );
+    expect(scale).toBeGreaterThan(2);
+    await zoom.click();
+    await expect(zoom).toHaveAttribute("aria-pressed", "false");
+
+    // Swipe: one touch pointer dragged sideways steps to a neighbour.
+    const first = page.url();
+    const direction = (await dialog
+      .getByRole("button", { name: "Next piece" })
+      .getAttribute("aria-disabled"))
+      ? 1
+      : -1;
+    await media.evaluate((el, dir) => {
+      const fire = (type: string, x: number) =>
+        el.dispatchEvent(
+          new PointerEvent(type, {
+            pointerId: 3,
+            pointerType: "touch",
+            clientX: x,
+            clientY: 300,
+            bubbles: true,
+          }),
+        );
+      fire("pointerdown", 190);
+      fire("pointermove", 190 + dir * 120);
+      fire("pointerup", 190 + dir * 120);
+    }, direction);
+    await expect(page).not.toHaveURL(first);
+    await expect(zoom).toHaveAttribute("aria-pressed", "false");
+  });
+
+  test("shows a loading state until the photo arrives", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    let release = () => {};
+    const held = new Promise<void>((resolve) => (release = resolve));
+    await page.route("**/_next/image**", async (route) => {
+      await held;
+      await route.continue();
+    });
+    await open(page, "/portfolio");
+    await page.getByRole("link", { name: /Fixture Koi/ }).click();
+    const media = page.locator(".viewer__media");
+    await expect(media).toHaveAttribute("data-loading");
+    await expect(media).toHaveAttribute("aria-busy", "true");
+    release();
+    await expect(media).not.toHaveAttribute("data-loading");
+    await expect(media).not.toHaveAttribute("aria-busy");
   });
 
   test("a piece loaded directly is a full page, not a dialog", async ({
@@ -562,15 +713,33 @@ test("phone header: the Menu button opens the nav and Escape closes it", async (
 });
 
 test.describe("filmstrip", () => {
-  test("is a three-column grid below lg", async ({ page }) => {
-    await page.setViewportSize({ width: 393, height: 852 });
+  test("is two columns on phones, the odd last frame spanning both", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await open(page, "/");
+    const items = page.locator(".filmstrip__item");
+    const count = await items.count();
+    const [a, b, c] = await Promise.all(
+      [0, 1, 2].map((i) => items.nth(i).boundingBox()),
+    );
+    expect(a!.y).toBe(b!.y);
+    expect(c!.y).toBeGreaterThan(a!.y);
+    expect(c!.x).toBe(a!.x);
+    if (count % 2 === 1) {
+      const last = (await items.nth(count - 1).boundingBox())!;
+      expect(last.width).toBeGreaterThan(a!.width * 2);
+    }
+  });
+
+  test("is three columns from sm to lg", async ({ page }) => {
+    await page.setViewportSize({ width: 834, height: 1194 });
     await open(page, "/");
     const items = page.locator(".filmstrip__item");
     const [a, b, c, d] = await Promise.all(
       [0, 1, 2, 3].map((i) => items.nth(i).boundingBox()),
     );
-    expect(a!.y).toBe(b!.y);
-    expect(b!.y).toBe(c!.y);
+    expect(a!.y).toBe(c!.y);
     expect(d!.y).toBeGreaterThan(a!.y);
     expect(d!.x).toBe(a!.x);
   });
