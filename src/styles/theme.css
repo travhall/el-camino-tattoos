@@ -57,6 +57,9 @@
   --color-chip-hover: var(--chip-hover);
   --color-chip-selected-bg: var(--chip-selected-bg);
   --color-chip-selected-fg: var(--chip-selected-fg);
+  --color-chip-selected-border: var(--chip-selected-border);
+  --color-chip-selected-mark: var(--chip-selected-mark);
+  --color-tab-current: var(--tab-current);
   --color-selection-bg: var(--selection-bg);
   --color-selection-fg: var(--selection-fg);
   --color-focus-ring: var(--focus-ring);

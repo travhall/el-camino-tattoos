@@ -64,7 +64,11 @@
  *   button-secondary-* ... border, fg, hover
  *   link-* ............... text, underline
  *   nav-current .......... indicator under the current nav item
- *   chip-* ............... border, hover, selected-bg, selected-fg
+ *   chip-* ............... border, hover, selected-bg, selected-fg,
+ *                          selected-border, selected-mark (the radio dot).
+ *                          Selected is a raised fill with an ink edge, never
+ *                          the solid ink fill of the primary button.
+ *   tab-current .......... underline under the chosen tab (RadioTabs)
  *   selection-* .......... selected text: bg, fg
  *   focus-ring ........... keyboard focus outline
  *   status-* ............. open, waitlist, closed: dots and labels for shop
@@ -124,8 +128,11 @@
   --nav-current: var(--accent-mark);
   --chip-border: var(--outline);
   --chip-hover: var(--hover);
-  --chip-selected-bg: var(--foreground);
-  --chip-selected-fg: var(--background);
+  --chip-selected-bg: var(--surface-raised);
+  --chip-selected-fg: var(--foreground);
+  --chip-selected-border: var(--foreground);
+  --chip-selected-mark: var(--accent-mark);
+  --tab-current: var(--accent-mark);
   --selection-bg: var(--accent);
   --selection-fg: var(--on-accent);
   --focus-ring: var(--focus);

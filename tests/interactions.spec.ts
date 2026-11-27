@@ -868,3 +868,52 @@ test("an artist's old portfolio address redirects to the filtered portfolio", as
   await page.goto("/artists/zz-fixture-one/portfolio");
   await expect(page).toHaveURL(/\/portfolio\?artist=zz-fixture-one$/);
 });
+
+test.describe("contact page prototype (/contact/next)", () => {
+  test("a question hides the tattoo fields and changes the wording", async ({
+    page,
+  }) => {
+    await open(page, "/contact/next");
+    const details = page.getByText("Add details (optional)");
+    await expect(details).toBeVisible();
+    await page.getByText("A question", { exact: true }).click();
+    await expect(details).toBeHidden();
+    await expect(page.getByText("Photos (optional)")).toBeHidden();
+    await expect(page.getByLabel("What would you like to know?")).toBeVisible();
+  });
+
+  test("choosing a text reply makes the phone number required", async ({
+    page,
+  }) => {
+    await open(page, "/contact/next");
+    await page.getByLabel("Describe the tattoo").fill("A swallow");
+    await page.getByLabel("Name", { exact: true }).fill("Test");
+    await page.getByRole("textbox", { name: "Email" }).fill("test@example.com");
+    const phone = page.getByLabel("Phone number");
+    await expect(phone).toBeHidden();
+    await page.getByText("Text me", { exact: true }).click();
+    await page.getByRole("button", { name: "Send request" }).click();
+    await expect(phone).toBeFocused();
+    await expect(phone).toHaveAttribute("aria-invalid", "true");
+    await phone.fill("715 555 0100");
+    await expect(phone).not.toHaveAttribute("aria-invalid", "true");
+  });
+
+  test("optional details start folded and open on request", async ({
+    page,
+  }) => {
+    await open(page, "/contact/next");
+    const size = page.getByRole("group", { name: "Size" });
+    await expect(size).toBeHidden();
+    await page.getByText("Add details (optional)").click();
+    await expect(size).toBeVisible();
+  });
+
+  test("?artist= preselects that artist", async ({ page }) => {
+    await open(page, "/contact/next?artist=zz-fixture-one");
+    // Kept outside the folded details, so it's seen.
+    const artist = page.getByLabel("Artist (optional)");
+    await expect(artist).toBeVisible();
+    await expect(artist).toHaveValue("Fixture One");
+  });
+});

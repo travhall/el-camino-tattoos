@@ -5,7 +5,8 @@
   src/components/contact-form.tsx and posts here. Field names below MUST match
   that component (Netlify allows one file per input, hence three reference
   inputs; 8MB per submission). `action` is where Netlify redirects after a successful
-  submission (used by the no-JavaScript fallback).
+  submission (used by the no-JavaScript fallback). topic and contact-method
+  come from the /contact/next prototype (src/components/request-form.tsx).
 -->
 <html lang="en">
   <head>
@@ -23,6 +24,8 @@
     >
       <input type="hidden" name="form-name" value="contact" />
       <input type="text" name="bot-field" />
+      <input type="radio" name="topic" value="A new tattoo" />
+      <input type="radio" name="contact-method" value="Email me" />
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />

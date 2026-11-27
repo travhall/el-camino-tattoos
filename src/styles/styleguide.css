@@ -114,4 +114,9 @@
   .sg-scrim-demo__caption {
     @apply w-full bg-scrim/60 px-3 py-2 text-foreground;
   }
+
+  /* A demo at a form's width (tabs fill their container). */
+  .sg-narrow {
+    @apply max-w-2xl;
+  }
 }

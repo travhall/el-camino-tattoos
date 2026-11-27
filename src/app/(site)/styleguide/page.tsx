@@ -14,6 +14,7 @@ import {
   IconButtonLink,
 } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { RadioTabs } from "@/components/ui/radio-tabs";
 import palette from "@/styles/palette.generated.json";
 import typeScale from "@/styles/type-scale.generated.json";
 import {
@@ -146,6 +147,9 @@ const roleGroups = [
       { name: "chip-hover", note: "UI: filter chip, hovered" },
       { name: "chip-selected-bg", note: "UI: selected chip fill" },
       { name: "chip-selected-fg", note: "UI: selected chip label" },
+      { name: "chip-selected-border", note: "UI: selected chip edge" },
+      { name: "chip-selected-mark", note: "UI: selected chip dot" },
+      { name: "tab-current", note: "UI: chosen tab underline" },
       { name: "selection-bg", note: "UI: selected text fill" },
       { name: "selection-fg", note: "UI: selected text" },
       { name: "focus-ring", note: "UI: keyboard focus outline" },
@@ -163,6 +167,8 @@ const sectionNav = [
   { id: "color", title: "Color" },
   { id: "buttons", title: "Buttons" },
   { id: "forms", title: "Form fields" },
+  { id: "tabs", title: "Tabs" },
+  { id: "chips", title: "Choice chips" },
   { id: "filters", title: "Filter chips" },
   { id: "richtext", title: "Rich text" },
   { id: "cards", title: "Cards and grid" },
@@ -614,6 +620,49 @@ export default async function StyleGuidePage() {
           </p>
           <Button type="submit">Send</Button>
         </form>
+      </Section>
+
+      <Section id="tabs" title="Tabs">
+        <Label>
+          RadioTabs: one choice that swaps the content after it (the request
+          form&rsquo;s tattoo or question versions). Radios, so the choice is
+          sent and works without scripts; the chosen tab has a gold underline,
+          ink text and weight.
+        </Label>
+        <div className="sg-narrow">
+          <RadioTabs
+            name="sg-tabs"
+            legend="Tabs demo"
+            options={["A new tattoo", "A question"]}
+          />
+        </div>
+      </Section>
+
+      <Section id="chips" title="Choice chips">
+        <Label>
+          Answers to pick from (radios). A pill with a dot, so it never reads as
+          a button: chosen is a raised fill, an ink edge, a gold dot and weight.
+          Shown beside the primary button for contrast.
+        </Label>
+        <fieldset className="fieldset">
+          <legend className="field__label">Size</legend>
+          <div className="choice-list">
+            {["Small", "Medium", "Large", "Not sure"].map((option, index) => (
+              <label key={option} className="choice-chip">
+                <input
+                  type="radio"
+                  name="sg-chips"
+                  value={option}
+                  defaultChecked={index === 1}
+                />
+                <span>{option}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="cluster">
+          <Button icon="arrow-right">Send request</Button>
+        </div>
       </Section>
 
       <Section id="filters" title="Filter chips">

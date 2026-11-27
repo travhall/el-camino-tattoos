@@ -495,7 +495,7 @@
 
   /* Selected state is fill AND weight, not color alone. */
   .filter-chip[aria-current="page"] {
-    @apply bg-chip-selected-bg font-semibold text-chip-selected-fg;
+    @apply border-chip-selected-border bg-chip-selected-bg font-semibold text-chip-selected-fg;
   }
 
   /* Artists */
@@ -733,6 +733,243 @@
 
   .form-status {
     @apply rounded-control border border-error bg-error-soft px-3 py-2;
+  }
+
+  /* Radios drawn as chips (RequestForm). The radio itself is visually
+     hidden but still focusable; the label is the 44px target. A chip is a
+     pill with a radio dot, so it never reads as a button: selected is a
+     raised fill, an ink edge, a filled gold dot AND weight (never the solid
+     ink fill of the primary button), and focus rings the whole chip. */
+  .choice-list {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .choice-chip {
+    @apply inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-chip-border py-1.5 pr-4 pl-3 text-sm transition-colors hover:bg-chip-hover motion-reduce:transition-none;
+    transition-duration: var(--duration-fast);
+  }
+
+  .choice-chip input {
+    @apply sr-only;
+  }
+
+  /* The dot: an empty ring, filled gold with a gap when chosen. */
+  .choice-chip::before {
+    @apply size-3.5 shrink-0 rounded-full border border-chip-border;
+    content: "";
+  }
+
+  .choice-chip:has(:checked) {
+    @apply border-chip-selected-border bg-chip-selected-bg font-semibold text-chip-selected-fg hover:bg-chip-selected-bg;
+  }
+
+  .choice-chip:has(:checked)::before {
+    @apply border-chip-selected-mark bg-chip-selected-mark;
+    box-shadow: inset 0 0 0 2px var(--chip-selected-bg);
+  }
+
+  .choice-chip:has(:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Tabs (RadioTabs): one choice that swaps what follows, as radios so it
+     works before scripts run. A full-width row on a rule; the chosen tab
+     gets a gold underline, ink text AND weight, the rest stay muted. */
+  .tabs {
+    @apply min-w-0 border-0 p-0;
+  }
+
+  .tabs__list {
+    @apply grid auto-cols-fr grid-flow-col border-b border-line;
+  }
+
+  .tabs__tab {
+    @apply -mb-px flex min-h-12 cursor-pointer items-center justify-center border-b-2 border-transparent px-4 text-center text-muted transition-colors hover:text-foreground motion-reduce:transition-none;
+    transition-duration: var(--duration-fast);
+  }
+
+  .tabs__tab input {
+    @apply sr-only;
+  }
+
+  .tabs__tab:has(:checked) {
+    @apply border-tab-current font-semibold text-foreground;
+  }
+
+  .tabs__tab:has(:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: -2px;
+  }
+
+  /* PROTOTYPE request form (/contact/next): what it's about, the idea,
+     optional details folded away, how to reach you, then what happens next
+     right above Send. Choosing "A question" hides the tattoo-only parts and
+     swaps the wording, and the phone field shows only for a text reply, all
+     with :has, so it works before scripts run. */
+  /* 42rem on its own; beside the panel (lg) it fills its column, so there's
+     no dead gutter between them. */
+  .request-form {
+    @apply grid max-w-2xl gap-fluid-md sm:gap-fluid-lg lg:max-w-none;
+  }
+
+  .request-form__section,
+  .request-form__group {
+    @apply grid gap-fluid-sm;
+  }
+
+  .request-form__section {
+    @apply border-t border-line pt-fluid-sm sm:pt-fluid-md;
+  }
+
+  /* The tabs' own rule already opens the first section. */
+  .tabs + .request-form__section {
+    @apply border-t-0 pt-0;
+  }
+
+  /* Two short fields side by side from sm (name and email, and so on). */
+  .request-form__row {
+    @apply grid items-start gap-fluid-sm sm:grid-cols-2;
+  }
+
+  .request-form:has(input[name="topic"][value="A question"]:checked)
+    .request-form__tattoo-only,
+  .request-form:not(:has(input[name="topic"][value="A question"]:checked))
+    .request-form__question-only,
+  .request-form:not(:has(input[name="contact-method"][value="Text me"]:checked))
+    .request-form__text-only {
+    @apply hidden;
+  }
+
+  /* "Add details (optional)": everything the consult can settle anyway. */
+  .request-form__more {
+    @apply rounded-panel border border-line;
+  }
+
+  .request-form__more-summary {
+    @apply flex min-h-11 cursor-pointer list-none items-center justify-between gap-fluid-sm px-fluid-sm py-fluid-xs;
+  }
+
+  .request-form__more-summary::-webkit-details-marker {
+    @apply hidden;
+  }
+
+  .request-form__more-summary:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-panel);
+  }
+
+  .request-form__more-title {
+    @apply grid gap-0.5;
+  }
+
+  .request-form__more-label {
+    @apply font-medium;
+  }
+
+  .request-form__more-icon {
+    @apply size-5 shrink-0 transition-transform motion-reduce:transition-none;
+    transition-duration: var(--duration-fast);
+  }
+
+  .request-form__more[open] .request-form__more-icon {
+    @apply rotate-45;
+  }
+
+  .request-form__more-body {
+    @apply grid gap-fluid-sm border-t border-line p-fluid-sm;
+  }
+
+  /* What happens next, then Send. The steps are the reassurance at the
+     moment of sending, so they sit right above the button at every width. */
+  .request-form__submit {
+    @apply grid justify-items-start gap-fluid-sm border-t border-line pt-fluid-sm sm:pt-fluid-md;
+  }
+
+  .request-form__submit .button {
+    @apply max-sm:w-full;
+  }
+
+  /* The error count, shown by Send (it's also announced). */
+  .request-form__status {
+    @apply text-sm font-medium text-error-text;
+  }
+
+  .request-steps {
+    @apply grid list-decimal gap-fluid-3xs pl-5 marker:text-muted;
+  }
+
+  /* One "Add photos" button and a row of square previews, each with a
+     remove button in its corner. */
+  .photo-picker {
+    @apply grid justify-items-start gap-fluid-xs;
+  }
+
+  .photo-picker__list {
+    @apply grid w-full max-w-md grid-cols-3 gap-2;
+  }
+
+  .photo-picker__item {
+    @apply relative aspect-square overflow-hidden rounded-media bg-surface-sunken;
+  }
+
+  .photo-picker__item img {
+    @apply absolute inset-0 size-full;
+  }
+
+  .photo-picker__remove {
+    @apply absolute top-1 right-1;
+  }
+
+  .photo-picker__add {
+    @apply cursor-pointer;
+  }
+
+  .photo-picker__add:has(:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* PROTOTYPE contact page. Below lg: a quick strip (open now, call, text,
+     directions) above the form for the visitor who wants to come in, then
+     the form, then the visit panel (2 columns from md). From lg the panel
+     sits beside the form and stays in view while it scrolls. */
+  .contact-quick {
+    @apply grid gap-fluid-xs rounded-panel bg-surface p-fluid-sm lg:hidden;
+  }
+
+  .contact-quick__actions {
+    @apply grid grid-cols-3 gap-2 sm:flex sm:flex-wrap;
+  }
+
+  .contact-quick__actions .button {
+    @apply px-3;
+  }
+
+  .contact-layout {
+    @apply grid items-start gap-fluid-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)];
+  }
+
+  .contact-aside {
+    @apply grid gap-fluid-md rounded-panel bg-surface p-fluid-md md:max-lg:grid-cols-2 lg:sticky lg:top-28;
+  }
+
+  .contact-aside__block {
+    @apply grid content-start justify-items-start gap-fluid-2xs;
+  }
+
+  .contact-aside__block + .contact-aside__block {
+    @apply border-t border-line pt-fluid-sm md:max-lg:border-t-0 md:max-lg:pt-0;
+  }
+
+  /* The quick strip carries call and text below lg. */
+  .contact-aside__block--call {
+    @apply max-lg:hidden;
+  }
+
+  .contact-aside__note {
+    @apply text-base;
   }
 
   /* FAQ: one section per question, each linkable by its slug. */
