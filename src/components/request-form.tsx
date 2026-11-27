@@ -8,13 +8,10 @@ import { Icon } from "@/components/ui/icon";
 import { RadioTabs } from "@/components/ui/radio-tabs";
 
 /*
- * PROTOTYPE (/contact/next). The redesigned request form from the contact
- * audit, built beside the live ContactForm so /contact doesn't change until
- * this is approved. Same Netlify form ("contact"), same field names where a
- * field carries over; new names (topic, contact-method) are registered in
- * public/__forms.html.
+ * The appointment request form on /contact. It posts to the Netlify form
+ * "contact"; every field name here must be in public/__forms.html.
  *
- * Changes from ContactForm:
+ * How it works:
  * - "A new tattoo" / "A question" tabs first (RadioTabs). A question hides
  *   the tattoo fields with CSS (:has), so it works before scripts run too.
  * - Short by default: the idea and photos, then how to reach you, then
@@ -412,12 +409,8 @@ export function RequestForm({
         options={["A new tattoo", "A question"]}
       />
 
-      <section aria-labelledby="request-idea" className="request-form__section">
-        <h2 id="request-idea" className="heading-4">
-          <span className="request-form__tattoo-only">Your idea</span>
-          <span className="request-form__question-only">Your question</span>
-        </h2>
-
+      {/* The tabs title this part, so no heading of its own. */}
+      <div className="request-form__section">
         <Field
           id="request-message"
           label={
@@ -577,7 +570,7 @@ export function RequestForm({
             </fieldset>
           </div>
         </details>
-      </section>
+      </div>
 
       <section aria-labelledby="request-you" className="request-form__section">
         <h2 id="request-you" className="heading-4">

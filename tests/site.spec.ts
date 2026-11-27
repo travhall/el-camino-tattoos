@@ -10,6 +10,18 @@ import { hydrated } from "./routes";
 async function open(page: Page, route: string) {
   await page.goto(route);
   await page.locator(hydrated).waitFor({ state: "attached" });
+  // Jump the load entrances (header, hero) to their end, so measurements and
+  // contrast checks see the settled page. Scroll entrances still play.
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) {
+      if (animation.timeline !== document.timeline) continue;
+      try {
+        animation.finish();
+      } catch {
+        // Infinite animations (loading pulses) can't finish; leave them.
+      }
+    }
+  });
 }
 
 const meta = (page: Page, selector: string) =>
@@ -165,7 +177,12 @@ test.describe("shop info", () => {
     await expect(
       page.getByText("A $100 deposit holds your appointment."),
     ).toBeVisible();
-    await expect(page.getByText("Prefer to talk?")).toBeVisible();
+    // Call, text or directions: above the form on phones, beside it here.
+    await expect(
+      page
+        .getByRole("complementary", { name: "Visiting the shop" })
+        .getByRole("link", { name: "Call", exact: true }),
+    ).toBeVisible();
   });
 
   test("the header's action is Request an appointment, and it goes to the form", async ({

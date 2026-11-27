@@ -7,8 +7,11 @@
   /* Sticky, with the topbar scrolling off: the header is pulled up by the
      topbar's height so only the nav row stays pinned. --topbar-height is the
      one source for that offset and for the topbar's own height. */
+  /* Named for page transitions: it holds still while the page under it
+     changes (globals.css). */
   .site-header {
     @apply sticky top-0 z-40 bg-background;
+    view-transition-name: site-header;
     /* 44px: the topbar's links are standalone targets. */
     --topbar-height: 2.75rem;
   }
@@ -641,6 +644,74 @@
       var(--duration-fast) both;
   }
 
+  /* Grids (portfolio, artist pages, the artists list): each tile opens as
+     it scrolls in, the tiles of a row a beat apart (--i is the column), and
+     a card's name and specialties fade up under its photo. */
+  .reveal-on-view[data-reveal="play"] {
+    & .piece-tile__media,
+    & .artist-card__media {
+      animation: media-reveal var(--duration-entrance) var(--ease-in-out)
+        calc(var(--reveal-base, 0ms) + var(--i, 0) * 90ms) backwards;
+    }
+
+    & .artist-card > :not(.artist-card__media) {
+      animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+        calc(var(--reveal-base, 0ms) + var(--i, 0) * 90ms + 400ms) backwards;
+    }
+  }
+
+  .piece-tile__media,
+  .artist-card__media {
+    --reveal-radius: var(--radius-media);
+  }
+
+  /* FAQ questions and aftercare steps fade up one by one. */
+  .reveal-on-view:is(.faq__item, .aftercare-step)[data-reveal="play"] {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      var(--reveal-base, 0ms) backwards;
+  }
+
+  /* Artist page: the portrait's frame opens like the hero photo while the
+     name rises from behind its baseline and the rest fades up. Above the
+     fold, so these run on load from CSS alone. */
+  .artist-profile__photo {
+    --reveal-radius: var(--radius-feature);
+    animation: media-reveal var(--duration-entrance) var(--ease-in-out) 150ms
+      backwards;
+  }
+
+  .artist-profile__content {
+    & > h1 {
+      animation: enter-mask-rise var(--duration-entrance) var(--ease-in-out)
+        300ms backwards;
+    }
+
+    & > :not(h1) {
+      animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+        calc(600ms + var(--i, 0) * 100ms) backwards;
+    }
+
+    & > :nth-child(3) {
+      --i: 1;
+    }
+
+    & > :nth-child(n + 4) {
+      --i: 2;
+    }
+  }
+
+  /* Contact page: the form is there at once (it's the task); the visit
+     cards beside or above it fade up after the hero, a beat apart. */
+  .contact-now,
+  .contact-card {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      var(--enter-delay, 500ms) backwards;
+  }
+
+  .contact-card {
+    --enter-delay: 650ms;
+  }
+
   /* The global reduced-motion rule shortens durations, not delays, so the
      staggered parts would sit hidden through their delay. */
   @media (prefers-reduced-motion: reduce) {
@@ -691,7 +762,7 @@
   }
 
   .field__label {
-    @apply text-sm font-medium;
+    @apply mb-2 text-sm font-medium;
   }
 
   .field__control {
@@ -726,11 +797,7 @@
     @apply size-5 shrink-0;
   }
 
-  /* Contact form. Status text carries a bold lead-in so it isn't color alone. */
-  .contact-form {
-    @apply grid max-w-xl gap-fluid-sm;
-  }
-
+  /* Form status. A bold lead-in so it isn't color alone. */
   .form-status {
     @apply rounded-control border border-error bg-error-soft px-3 py-2;
   }
@@ -740,13 +807,25 @@
      pill with a radio dot, so it never reads as a button: selected is a
      raised fill, an ink edge, a filled gold dot AND weight (never the solid
      ink fill of the primary button), and focus rings the whole chip. */
+  /* py-1 holds room for the chips' 4px hit extensions (a fieldset clips
+     them otherwise). */
   .choice-list {
-    @apply flex flex-wrap gap-2;
+    @apply flex flex-wrap gap-2 py-1;
   }
 
+  /* 36px to look at, 44px to hit: the ::after reaches 4px past each edge (5px from inside the 1px border),
+     and rows wrap 8px apart, so neighbours' hit areas meet without
+     overlapping. */
   .choice-chip {
-    @apply inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-chip-border py-1.5 pr-4 pl-3 text-sm transition-colors hover:bg-chip-hover motion-reduce:transition-none;
+    @apply relative isolate inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full border border-chip-border py-1 pr-3 pl-2.5 text-xs transition-colors hover:bg-chip-hover motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
+  }
+
+  /* Behind the label's text (isolate keeps it inside the chip), so the
+     text is still what a click lands on. */
+  .choice-chip::after {
+    @apply absolute -inset-x-px -inset-y-[5px] -z-10;
+    content: "";
   }
 
   .choice-chip input {
@@ -755,7 +834,7 @@
 
   /* The dot: an empty ring, filled gold with a gap when chosen. */
   .choice-chip::before {
-    @apply size-3.5 shrink-0 rounded-full border border-chip-border;
+    @apply size-3 shrink-0 rounded-full border border-chip-border;
     content: "";
   }
 
@@ -785,7 +864,7 @@
   }
 
   .tabs__tab {
-    @apply -mb-px flex min-h-12 cursor-pointer items-center justify-center border-b-2 border-transparent px-4 text-center text-muted transition-colors hover:text-foreground motion-reduce:transition-none;
+    @apply -mb-px flex min-h-12 cursor-pointer items-center justify-center border-b-4 border-transparent px-4 text-center text-muted transition-colors hover:text-foreground motion-reduce:transition-none;
     transition-duration: var(--duration-fast);
   }
 
@@ -802,29 +881,34 @@
     outline-offset: -2px;
   }
 
-  /* PROTOTYPE request form (/contact/next): what it's about, the idea,
+  /* Request form (/contact): what it's about, the idea,
      optional details folded away, how to reach you, then what happens next
      right above Send. Choosing "A question" hides the tattoo-only parts and
      swaps the wording, and the phone field shows only for a text reply, all
      with :has, so it works before scripts run. */
-  /* 42rem on its own; beside the panel (lg) it fills its column, so there's
-     no dead gutter between them. */
+  /* Fills its column, so its edges line up with the cards around it. */
   .request-form {
-    @apply grid max-w-2xl gap-fluid-md sm:gap-fluid-lg lg:max-w-none;
+    @apply grid gap-fluid-md sm:gap-fluid-lg;
   }
 
   .request-form__section,
   .request-form__group {
-    @apply grid gap-fluid-sm;
+    @apply grid gap-fluid-md;
+  }
+
+  /* A section's heading sits closer to its own fields than fields sit to
+     each other... but not tight against the first label. */
+  .request-form__section > h2 {
+    @apply -mb-fluid-3xs;
   }
 
   .request-form__section {
-    @apply border-t border-line pt-fluid-sm sm:pt-fluid-md;
+    @apply border-t border-line pt-fluid-md sm:pt-fluid-lg;
   }
 
   /* The tabs' own rule already opens the first section. */
   .tabs + .request-form__section {
-    @apply border-t-0 pt-0;
+    @apply border-t-0 pt-fluid-xs;
   }
 
   /* Two short fields side by side from sm (name and email, and so on). */
@@ -878,13 +962,13 @@
   }
 
   .request-form__more-body {
-    @apply grid gap-fluid-sm border-t border-line p-fluid-sm;
+    @apply grid gap-fluid-md border-t border-line p-fluid-sm sm:p-fluid-md;
   }
 
   /* What happens next, then Send. The steps are the reassurance at the
      moment of sending, so they sit right above the button at every width. */
   .request-form__submit {
-    @apply grid justify-items-start gap-fluid-sm border-t border-line pt-fluid-sm sm:pt-fluid-md;
+    @apply grid justify-items-start gap-fluid-md border-t border-line pt-fluid-md sm:pt-fluid-lg;
   }
 
   .request-form__submit .button {
@@ -931,45 +1015,90 @@
     outline-offset: 2px;
   }
 
-  /* PROTOTYPE contact page. Below lg: a quick strip (open now, call, text,
-     directions) above the form for the visitor who wants to come in, then
-     the form, then the visit panel (2 columns from md). From lg the panel
-     sits beside the form and stays in view while it scrolls. */
-  .contact-quick {
-    @apply grid gap-fluid-xs rounded-panel bg-surface p-fluid-sm lg:hidden;
+  /* Contact page.
+     - Phone: hero, the "Come in or call" card, the form, then address and
+       hours.
+     - Tablet (md): the same order, the card's buttons beside its text, and
+       address and hours side by side.
+     - Desktop (lg): two columns. The hero and form on the left; on the
+       right, from the top of the page, a panel with the same card (the
+       quick one hides) and address and hours, which stays in view while
+       the form scrolls. */
+  .contact-page {
+    @apply grid gap-fluid-lg lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:gap-x-fluid-2xl lg:gap-y-fluid-xs xl:grid-cols-[minmax(0,1fr)_minmax(0,32rem)];
   }
 
-  .contact-quick__actions {
-    @apply grid grid-cols-3 gap-2 sm:flex sm:flex-wrap;
+  .contact-page__hero,
+  .contact-page__form {
+    @apply min-w-0 lg:col-start-1;
   }
 
-  .contact-quick__actions .button {
-    @apply px-3;
+  /* No photo here, so the hero needn't pad itself to a photo's height. */
+  .contact-page__hero .hero__content {
+    @apply lg:pb-0;
   }
 
-  .contact-layout {
-    @apply grid items-start gap-fluid-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)];
+  .contact-page__aside {
+    @apply grid content-start gap-fluid-sm lg:sticky lg:top-28 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-start;
   }
 
-  .contact-aside {
-    @apply grid gap-fluid-md rounded-panel bg-surface p-fluid-md md:max-lg:grid-cols-2 lg:sticky lg:top-28;
+  .contact-now {
+    @apply grid gap-fluid-sm rounded-panel border border-line bg-surface p-fluid-md md:grid-cols-[minmax(0,1fr)_auto] md:items-center lg:grid-cols-1;
   }
 
-  .contact-aside__block {
-    @apply grid content-start justify-items-start gap-fluid-2xs;
+  .contact-now--quick {
+    @apply lg:hidden;
   }
 
-  .contact-aside__block + .contact-aside__block {
-    @apply border-t border-line pt-fluid-sm md:max-lg:border-t-0 md:max-lg:pt-0;
-  }
-
-  /* The quick strip carries call and text below lg. */
-  .contact-aside__block--call {
+  .contact-now--panel {
     @apply max-lg:hidden;
   }
 
-  .contact-aside__note {
-    @apply text-base;
+  .contact-now__text {
+    @apply grid justify-items-start gap-fluid-2xs;
+  }
+
+  .contact-now__status {
+    @apply text-sm;
+  }
+
+  .contact-now__note {
+    @apply text-sm text-muted;
+  }
+
+  .contact-now__actions {
+    @apply grid grid-cols-3 gap-2 md:flex lg:grid;
+  }
+
+  .contact-now__actions .button {
+    @apply px-3;
+  }
+
+  /* Beside the form (lg+, a pointer screen) the three are compact. */
+  .contact-now--panel .contact-now__actions {
+    @apply grid-cols-3 gap-1.5;
+  }
+
+  /* Address and hours: one card, two columns on tablet. */
+  .contact-card {
+    @apply grid gap-fluid-md rounded-panel bg-surface p-fluid-md md:max-lg:grid-cols-2;
+  }
+
+  .contact-card__block {
+    @apply grid content-start justify-items-start gap-fluid-xs text-sm;
+  }
+
+  .contact-card__block + .contact-card__block {
+    @apply border-t border-line pt-fluid-md md:max-lg:border-t-0 md:max-lg:pt-0;
+  }
+
+  /* Hours as a two-column table: days left, times right. */
+  .contact-card .shop-info__hours {
+    @apply w-full gap-0;
+  }
+
+  .contact-card .shop-info__hours-row {
+    @apply justify-between border-b border-line py-1.5 last:border-b-0;
   }
 
   /* FAQ: one section per question, each linkable by its slug. */
@@ -1034,7 +1163,7 @@
 
   /* h1 size by default; the homepage sets it at the display size (below). */
   .hero__heading {
-    @apply font-display text-4xl font-normal;
+    @apply font-display text-4xl font-light;
     text-wrap: balance;
   }
 
@@ -1056,7 +1185,7 @@
   }
 
   .hero__intro {
-    @apply max-w-[42.5rem] min-w-0 flex-[1_1_20rem] text-base text-foreground;
+    @apply max-w-[42.5rem] min-w-0 flex-[1_1_20rem] text-base text-pretty text-foreground;
   }
 
   .hero--home .hero__intro {
@@ -1105,6 +1234,339 @@
 
   .shop-promises__star {
     @apply size-5 shrink-0 text-accent-mark;
+  }
+
+  /* Home artists section (ArtistsTeaser; Figma "Artists", 1512 frame):
+     the collage, then the copy. Phones stack them; from md they sit side
+     by side, the collage taking a little under half until it reaches the
+     design's 36rem at lg. */
+  .artists-teaser {
+    @apply grid items-center gap-fluid-lg py-fluid-xl md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-cols-[minmax(0,36rem)_minmax(0,1fr)] lg:gap-fluid-xl lg:py-fluid-3xl;
+  }
+
+  /* A square holding three photos at the design's proportions (573px
+     square: two 223x334 portraits, one 334x223 landscape, 16px apart), in
+     percentages so it scales with its column. */
+  .artists-teaser__collage {
+    @apply relative aspect-square w-full max-w-xl justify-self-center;
+  }
+
+  .artists-teaser__photo {
+    @apply absolute h-[58.29%] w-[38.92%] overflow-hidden rounded-media bg-surface;
+
+    /* First artist: top right. */
+    &:nth-child(1) {
+      @apply top-0 left-[41.71%];
+    }
+
+    /* Second: left, set lower. */
+    &:nth-child(2) {
+      @apply top-[20.24%] left-0;
+    }
+
+    /* Third: the wide one under the first. */
+    &:nth-child(3) {
+      @apply top-[61.08%] left-[41.71%] h-[38.92%] w-[58.29%];
+    }
+  }
+
+  /* A size container: the intro and button go side by side by the copy's
+     own width, not the screen's. */
+  .artists-teaser__content {
+    @apply grid justify-items-start gap-fluid-2xs xl:px-fluid-xl;
+    container-type: inline-size;
+
+    & h2 {
+      @apply text-balance;
+    }
+  }
+
+  /* Intro, then the button, inset from the heading's edge. They sit side
+     by side once the copy column is 34rem wide (a wide phone, and desktops
+     from about 1370px); narrower, as beside the collage on tablets and
+     small laptops, the button goes under the intro. */
+  .artists-teaser__body {
+    @apply mt-fluid-xs flex flex-col items-start gap-fluid-sm @min-[30rem]:pl-fluid-md @min-[34rem]:flex-row @min-[34rem]:items-end;
+  }
+
+  .artists-teaser__intro {
+    @apply max-w-[32.5rem] flex-1;
+  }
+
+  /* Entrances. Load ones (header, hero) run from CSS alone as the page
+     paints; scroll ones (filmstrip, home artists) wait for RevealOnView to
+     set data-reveal="play" and are held hidden until then, but only once
+     scripts are known to run (html[data-js], set by the root layout's
+     inline script) or RevealOnView has marked the block pending. Every
+     part uses fill "backwards", so nothing lingers once it has played (the
+     sticky header keeps no transform, the pinned hero photo keeps its own
+     scroll animation). The order on a first load: header (0 to 0.5s),
+     hero heading lines from 0.15s, hero intro and photo after them, then
+     the filmstrip if it's already on screen (RevealOnView loadDelay). */
+
+  /* Header: the bar's parts drop in, a beat apart. */
+  .site-topbar,
+  .site-header__brand,
+  .site-header__toggle,
+  .site-nav,
+  .site-header__actions {
+    animation: enter-drop var(--duration-entrance-quick) var(--ease-out)
+      var(--enter-delay, 0ms) backwards;
+  }
+
+  .site-header__brand {
+    --enter-delay: 60ms;
+  }
+
+  .site-nav,
+  .site-header__toggle {
+    --enter-delay: 120ms;
+  }
+
+  .site-header__actions {
+    --enter-delay: 180ms;
+  }
+
+  /* Hero: each heading line rises from behind a mask at its own baseline,
+     then the eyebrow, intro and buttons fade up and the photo's frame
+     opens downward. */
+  .hero__heading-line {
+    animation: enter-mask-rise var(--duration-entrance) var(--ease-in-out)
+      calc(150ms + var(--line-index, 0) * 120ms) backwards;
+
+    &:nth-child(2) {
+      --line-index: 1;
+    }
+
+    &:nth-child(3) {
+      --line-index: 2;
+    }
+
+    &:nth-child(n + 4) {
+      --line-index: 3;
+    }
+  }
+
+  .hero__content > .eyebrow {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out) 100ms
+      backwards;
+  }
+
+  .hero__body {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out) 600ms
+      backwards;
+  }
+
+  .hero__media {
+    --reveal-radius: var(--radius-feature);
+    animation: media-reveal var(--duration-entrance) var(--ease-in-out) 300ms
+      backwards;
+  }
+
+  /* Scroll entrances: hidden until played. */
+  :is(
+    html[data-js] .reveal-on-view,
+    .reveal-on-view[data-reveal="pending"]
+  ):not([data-reveal="play"]) {
+    & .filmstrip__frame,
+    & .artists-teaser__photo {
+      clip-path: inset(0 0 100% 0 round var(--reveal-radius, 0));
+    }
+
+    & .artists-teaser__content > *,
+    & .artist-card > :not(.artist-card__media),
+    &.faq__item,
+    &.aftercare-step {
+      @apply opacity-0;
+    }
+
+    & .piece-tile__media,
+    & .artist-card__media {
+      clip-path: inset(0 0 100% 0 round var(--reveal-radius, 0));
+    }
+  }
+
+  /* Filmstrip: frames open left to right, quickly in turn. */
+  .reveal-on-view[data-reveal="play"] .filmstrip__frame {
+    animation: media-reveal var(--duration-entrance) var(--ease-in-out)
+      calc(var(--reveal-base, 0ms) + var(--i, 0) * 60ms) backwards;
+  }
+
+  /* Home artists: each photo's frame opens downward while the photo inside
+     settles from a slight zoom, top right, left, then wide, a beat apart;
+     the copy fades up as the last one opens. */
+  .reveal-on-view[data-reveal="play"] .artists-teaser__photo {
+    animation: media-reveal var(--duration-entrance) var(--ease-in-out)
+      calc(var(--reveal-base, 0ms) + var(--i, 0) * var(--stagger-entrance))
+      backwards;
+
+    & img {
+      animation: media-settle calc(var(--duration-entrance) * 1.5)
+        var(--ease-out)
+        calc(var(--reveal-base, 0ms) + var(--i, 0) * var(--stagger-entrance))
+        backwards;
+    }
+  }
+
+  .artists-teaser__photo:nth-child(2) {
+    --i: 1;
+  }
+
+  .artists-teaser__photo:nth-child(3) {
+    --i: 2;
+  }
+
+  .reveal-on-view[data-reveal="play"] .artists-teaser__content > * {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      calc(var(--reveal-base, 0ms) + 500ms + var(--i, 0) * 100ms) backwards;
+
+    &:nth-child(2) {
+      --i: 1;
+    }
+
+    &:nth-child(3) {
+      --i: 2;
+    }
+  }
+
+  .filmstrip__frame,
+  .artists-teaser__photo {
+    --reveal-radius: var(--radius-media);
+  }
+
+  /* Grids (portfolio, artist pages, the artists list): each tile opens as
+     it scrolls in, the tiles of a row a beat apart (--i is the column), and
+     a card's name and specialties fade up under its photo. */
+  .reveal-on-view[data-reveal="play"] {
+    & .piece-tile__media,
+    & .artist-card__media {
+      animation: media-reveal var(--duration-entrance) var(--ease-in-out)
+        calc(var(--reveal-base, 0ms) + var(--i, 0) * 90ms) backwards;
+    }
+
+    & .artist-card > :not(.artist-card__media) {
+      animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+        calc(var(--reveal-base, 0ms) + var(--i, 0) * 90ms + 400ms) backwards;
+    }
+  }
+
+  .piece-tile__media,
+  .artist-card__media {
+    --reveal-radius: var(--radius-media);
+  }
+
+  /* FAQ questions and aftercare steps fade up one by one. */
+  .reveal-on-view:is(.faq__item, .aftercare-step)[data-reveal="play"] {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      var(--reveal-base, 0ms) backwards;
+  }
+
+  /* Artist page: the portrait's frame opens like the hero photo while the
+     name rises from behind its baseline and the rest fades up. Above the
+     fold, so these run on load from CSS alone. */
+  .artist-profile__photo {
+    --reveal-radius: var(--radius-feature);
+    animation: media-reveal var(--duration-entrance) var(--ease-in-out) 150ms
+      backwards;
+  }
+
+  .artist-profile__content {
+    & > h1 {
+      animation: enter-mask-rise var(--duration-entrance) var(--ease-in-out)
+        300ms backwards;
+    }
+
+    & > :not(h1) {
+      animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+        calc(600ms + var(--i, 0) * 100ms) backwards;
+    }
+
+    & > :nth-child(3) {
+      --i: 1;
+    }
+
+    & > :nth-child(n + 4) {
+      --i: 2;
+    }
+  }
+
+  /* Contact page: the form is there at once (it's the task); the visit
+     cards beside or above it fade up after the hero, a beat apart. */
+  .contact-now,
+  .contact-card {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      var(--enter-delay, 500ms) backwards;
+  }
+
+  .contact-card {
+    --enter-delay: 650ms;
+  }
+
+  /* The global reduced-motion rule shortens durations, not delays, so the
+     staggered parts would sit hidden through their delay. */
+  @media (prefers-reduced-motion: reduce) {
+    .site-topbar,
+    .site-header__brand,
+    .site-header__toggle,
+    .site-nav,
+    .site-header__actions,
+    .hero__heading-line,
+    .hero__content > .eyebrow,
+    .hero__body,
+    .hero__media,
+    .reveal-on-view,
+    .reveal-on-view *,
+    .artist-profile__photo,
+    .artist-profile__content > *,
+    .contact-now,
+    .contact-card {
+      animation-delay: 0s !important;
+    }
+  }
+}
+
+@keyframes media-reveal {
+  from {
+    clip-path: inset(0 0 100% 0 round var(--reveal-radius, 0));
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--reveal-radius, 0));
+  }
+}
+
+@keyframes media-settle {
+  from {
+    scale: 1.12;
+  }
+}
+
+@keyframes enter-drop {
+  from {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+}
+
+@keyframes enter-fade-up {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+/* The line moves up while its clip moves down by the same amount, so the
+   visible band stays fixed on the page and the text rises out from under
+   its own baseline. The band reaches 20% past the line box above and below
+   so descenders and Being's tall caps aren't cut at the end; the line
+   starts 130% down so even that extra band is empty at first. */
+@keyframes enter-mask-rise {
+  from {
+    translate: 0 130%;
+    clip-path: inset(-150% -10% 110% -10%);
+  }
+  to {
+    translate: 0 0;
+    clip-path: inset(-20% -10% -20% -10%);
   }
 }
 

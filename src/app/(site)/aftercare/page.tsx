@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RichText } from "@/components/rich-text";
+import { RevealOnView } from "@/components/reveal-on-view";
 import { Hero } from "@/components/hero";
 import { getAftercare, getHero } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
@@ -31,7 +32,14 @@ export default async function AftercarePage() {
           {content.steps.length > 0 && (
             <ol className="aftercare-steps">
               {content.steps.map((step, index) => (
-                <li key={step.title} className="aftercare-step">
+                // Each step fades up as it scrolls into view; those on
+                // screen at load follow the hero in turn (RevealOnView).
+                <RevealOnView
+                  as="li"
+                  key={step.title}
+                  loadDelay={400 + Math.min(index, 5) * 100}
+                  className="aftercare-step"
+                >
                   <span aria-hidden="true" className="aftercare-step__number">
                     {String(index + 1).padStart(2, "0")}
                   </span>
@@ -39,7 +47,7 @@ export default async function AftercarePage() {
                     <h2 className="heading-3">{step.title}</h2>
                     <p className="measure">{step.body}</p>
                   </div>
-                </li>
+                </RevealOnView>
               ))}
             </ol>
           )}

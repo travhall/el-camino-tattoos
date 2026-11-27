@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArtistGrid } from "@/components/artist-grid";
+import { ArtistsTeaser } from "@/components/artists-teaser";
 import { Filmstrip } from "@/components/filmstrip";
 import { Hero } from "@/components/hero";
 import { ShopPromises } from "@/components/shop-promises";
@@ -31,10 +31,7 @@ export default async function Home() {
       <Filmstrip pieces={filmstrip} artists={artists} />
       <ShopPromises promises={site.shopPromises} />
 
-      <section aria-labelledby="artists-heading" className="stack stack--lg">
-        <h2 id="artists-heading">Artists</h2>
-        <ArtistGrid artists={artists} />
-      </section>
+      <ArtistsTeaser artists={artists} />
     </div>
   );
 }

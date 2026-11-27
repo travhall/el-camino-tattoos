@@ -10,7 +10,6 @@ export const routes = [
   "/aftercare",
   "/faq",
   "/contact",
-  "/contact/next",
   "/contact/thanks",
   "/styleguide",
   "/nope",

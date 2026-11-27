@@ -5,6 +5,18 @@ import { hydrated } from "./routes";
 async function open(page: Page, route: string) {
   await page.goto(route);
   await page.locator(hydrated).waitFor({ state: "attached" });
+  // Jump the load entrances (header, hero) to their end, so measurements and
+  // contrast checks see the settled page. Scroll entrances still play.
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) {
+      if (animation.timeline !== document.timeline) continue;
+      try {
+        animation.finish();
+      } catch {
+        // Infinite animations (loading pulses) can't finish; leave them.
+      }
+    }
+  });
 }
 
 test("skip link is the first tab stop and moves focus into <main>", async ({
@@ -294,11 +306,9 @@ test("an unmatched URL is a real 404 with a stable title and lang", async ({
 
 test.describe("contact form", () => {
   async function fillRequired(page: Page) {
+    await page.getByLabel("Describe the tattoo").fill("A small koi.");
     await page.getByLabel("Name", { exact: true }).fill("Test Person");
-    await page.getByLabel("Email").fill("test@example.com");
-    await page.getByLabel("Tell us about your idea").fill("A small koi.");
-    await page.getByLabel("Placement").fill("Inner left forearm");
-    await page.getByLabel("Approximate size").fill("4 inches");
+    await page.getByRole("textbox", { name: "Email" }).fill("test@example.com");
   }
 
   test("posts multipart to /__forms.html and lands on the thanks page", async ({
@@ -318,17 +328,24 @@ test.describe("contact form", () => {
 
     await open(page, "/contact");
     await fillRequired(page);
-    await page.getByLabel("Phone (optional)").fill("555-0100");
-    await page.getByLabel("Budget (optional)").fill("$300 to $500");
-    await page.getByLabel("Artist (optional)").selectOption("Fixture One");
-    await page.getByLabel("Color", { exact: true }).check();
-    await page.getByLabel(/covers up or reworks/).check();
-    await page.getByLabel("Reference image 1").setInputFiles({
+    // A file the browser can't decode is sent as it is (no shrinking).
+    await page.getByLabel("Add photos").setInputFiles({
       name: "koi.png",
       mimeType: "image/png",
       buffer: Buffer.from("fake-image-bytes"),
     });
-    await page.getByRole("button", { name: "Send message" }).click();
+    await expect(page.getByRole("img", { name: /koi\.png/ })).toBeVisible();
+    await page.getByText("Add details (optional)").click();
+    await page.getByLabel("Placement").fill("Inner left forearm");
+    await page.getByText("Medium", { exact: true }).click();
+    // The chip, not the "Color" legend above it.
+    await page.locator(".choice-chip", { hasText: /^Color$/ }).click();
+    await page.getByLabel(/covers up or reworks/).check();
+    await page.getByLabel("Artist").selectOption("Fixture One");
+    await page.getByLabel("Budget").fill("$300 to $500");
+    await page.getByText("Text me", { exact: true }).click();
+    await page.getByLabel("Phone number").fill("555-0100");
+    await page.getByRole("button", { name: "Send request" }).click();
 
     await expect(page).toHaveURL(/\/contact\/thanks$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
@@ -342,13 +359,15 @@ test.describe("contact form", () => {
         `name="${name}"(?:; filename="[^"]*")?\\r\\n(?:Content-Type:[^\\r]*\\r\\n)?\\r\\n([^\\r]*)`,
       ).exec(posted)?.[1];
     expect(field("form-name")).toBe("contact");
+    expect(field("topic")).toBe("A new tattoo");
+    expect(field("contact-method")).toBe("Text me");
     expect(field("name")).toBe("Test Person");
     expect(field("email")).toBe("test@example.com");
     expect(field("phone")).toBe("555-0100");
     expect(field("artist")).toBe("Fixture One");
     expect(field("message")).toBe("A small koi.");
     expect(field("placement")).toBe("Inner left forearm");
-    expect(field("size")).toBe("4 inches");
+    expect(field("size")).toBe("Medium");
     expect(field("budget")).toBe("$300 to $500");
     expect(field("color")).toBe("Color");
     expect(field("cover-up")).toBe("yes");
@@ -368,15 +387,16 @@ test.describe("contact form", () => {
 
     await open(page, "/contact");
     await fillRequired(page);
-    await page.getByLabel("Reference image 1").setInputFiles({
+    await page.getByLabel("Add photos").setInputFiles({
       name: "huge.jpg",
       mimeType: "image/jpeg",
       buffer: Buffer.alloc(8 * 1024 * 1024),
     });
-    await page.getByRole("button", { name: "Send message" }).click();
+    await expect(page.getByRole("img", { name: /huge\.jpg/ })).toBeVisible();
+    await page.getByRole("button", { name: "Send request" }).click();
 
     await expect(
-      page.getByRole("alert").filter({ hasText: "images add up to" }),
+      page.getByRole("alert").filter({ hasText: "photos add up to" }),
     ).toBeVisible();
     await expect(page).toHaveURL(/\/contact$/);
     expect(posts).toBe(0);
@@ -393,14 +413,18 @@ test.describe("contact form", () => {
 
     await open(page, "/contact");
     await fillRequired(page);
-    await page.getByRole("button", { name: "Send message" }).click();
+    await page.getByRole("button", { name: "Send request" }).click();
 
     // Next's route announcer is also role="alert", so match on the message.
     await expect(
-      page.getByRole("alert").filter({ hasText: "send your message" }),
+      page.getByRole("alert").filter({ hasText: "send your request" }),
     ).toBeVisible();
     await expect(page).toHaveURL(/\/contact$/);
-    const button = page.getByRole("button", { name: "Send message" });
+    // What was typed is still there to send again.
+    await expect(page.getByLabel("Describe the tattoo")).toHaveValue(
+      "A small koi.",
+    );
+    const button = page.getByRole("button", { name: "Send request" });
     await expect(button).toBeEnabled();
     await expect(button).not.toHaveAttribute("aria-disabled", "true");
   });
@@ -415,14 +439,18 @@ test.describe("contact form", () => {
     });
 
     await open(page, "/contact");
-    await page.getByRole("button", { name: "Send message" }).click();
+    await page.getByRole("button", { name: "Send request" }).click();
 
-    // Five required fields are empty. Nothing is posted, the first invalid
-    // field takes focus, and the count is announced once.
+    // Three required fields are empty. Nothing is posted, the first invalid
+    // field takes focus, and the count is announced once (and shown by Send).
     expect(posts).toBe(0);
+    const message = page.getByLabel("Describe the tattoo");
     const name = page.getByLabel("Name", { exact: true });
-    const email = page.getByLabel("Email");
-    await expect(name).toBeFocused();
+    const email = page.getByRole("textbox", { name: "Email" });
+    await expect(message).toBeFocused();
+    await expect(message).toHaveAccessibleDescription(
+      /Tell us what you have in mind\./,
+    );
     await expect(name).toHaveAttribute("aria-invalid", "true");
     await expect(name).toHaveAccessibleDescription("Enter your name.");
     await expect(email).toHaveAccessibleDescription(
@@ -430,18 +458,16 @@ test.describe("contact form", () => {
     );
     await expect(
       page.getByRole("status").filter({ hasText: "need attention" }),
-    ).toHaveText("5 fields need attention.");
+    ).toHaveText("3 fields need attention.");
+    await expect(
+      page.getByText("3 fields need attention. They’re marked above."),
+    ).toBeVisible();
 
     // Not color alone: the message is text, and the border is thicker.
     const ring = (control: typeof name) =>
       control.evaluate((el) => getComputedStyle(el).boxShadow);
     expect(await ring(name)).not.toBe("none");
-    expect(await ring(page.getByLabel("Phone (optional)"))).toBe("none");
-
-    // Optional fields never get an error.
-    await expect(page.getByLabel("Phone (optional)")).not.toHaveAttribute(
-      "aria-invalid",
-    );
+    expect(await ring(page.getByLabel("Photo 1"))).toBe("none");
 
     // The error state has to pass axe (contrast of the red text and border).
     // Reduced motion: buttons transition-colors, and axe must not catch a
@@ -502,7 +528,7 @@ test.describe("contact form", () => {
 
     await open(page, "/contact");
     await fillRequired(page);
-    const button = page.getByRole("button", { name: /Send message|Sending/ });
+    const button = page.getByRole("button", { name: /Send request|Sending/ });
     await button.focus();
     await page.keyboard.press("Enter");
 
@@ -511,8 +537,8 @@ test.describe("contact form", () => {
     await expect(button).toHaveAttribute("aria-busy", "true");
     await expect(button).toBeFocused();
     await expect(
-      page.getByRole("status").filter({ hasText: "Sending your message" }),
-    ).toHaveText("Sending your message…");
+      page.getByRole("status").filter({ hasText: "Sending your request" }),
+    ).toHaveText("Sending your request…");
 
     // A second activation while pending must not post again.
     await page.keyboard.press("Enter");
@@ -588,6 +614,12 @@ test.describe("touch targets on a phone", () => {
           if (el.closest("[hidden]") || el.classList.contains("skip-link")) {
             continue;
           }
+          // A visually hidden input inside its label (the photo picker's
+          // "Add photos" button): the label is the target, checked as a link
+          // or button would be.
+          if (el.classList.contains("visually-hidden") && el.closest("label")) {
+            continue;
+          }
           const inlineTextLink =
             el.tagName === "A" &&
             el.closest("p, dd, dt, td, caption") !== null &&
@@ -619,6 +651,18 @@ test.describe("touch targets on a phone", () => {
           .map((el) => (el.textContent ?? "").trim()),
       );
       expect(smallChecks).toEqual([]);
+
+      // Choice chips look 36px but their ::after makes the target 44px.
+      const smallChips = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>(".choice-chip")]
+          .filter(
+            (el) =>
+              el.getBoundingClientRect().height > 0 &&
+              parseFloat(getComputedStyle(el, "::after").height) < 43.5,
+          )
+          .map((el) => (el.textContent ?? "").trim()),
+      );
+      expect(smallChips).toEqual([]);
     });
   }
 });
@@ -869,11 +913,11 @@ test("an artist's old portfolio address redirects to the filtered portfolio", as
   await expect(page).toHaveURL(/\/portfolio\?artist=zz-fixture-one$/);
 });
 
-test.describe("contact page prototype (/contact/next)", () => {
+test.describe("contact page", () => {
   test("a question hides the tattoo fields and changes the wording", async ({
     page,
   }) => {
-    await open(page, "/contact/next");
+    await open(page, "/contact");
     const details = page.getByText("Add details (optional)");
     await expect(details).toBeVisible();
     await page.getByText("A question", { exact: true }).click();
@@ -885,7 +929,7 @@ test.describe("contact page prototype (/contact/next)", () => {
   test("choosing a text reply makes the phone number required", async ({
     page,
   }) => {
-    await open(page, "/contact/next");
+    await open(page, "/contact");
     await page.getByLabel("Describe the tattoo").fill("A swallow");
     await page.getByLabel("Name", { exact: true }).fill("Test");
     await page.getByRole("textbox", { name: "Email" }).fill("test@example.com");
@@ -902,7 +946,7 @@ test.describe("contact page prototype (/contact/next)", () => {
   test("optional details start folded and open on request", async ({
     page,
   }) => {
-    await open(page, "/contact/next");
+    await open(page, "/contact");
     const size = page.getByRole("group", { name: "Size" });
     await expect(size).toBeHidden();
     await page.getByText("Add details (optional)").click();
@@ -910,10 +954,82 @@ test.describe("contact page prototype (/contact/next)", () => {
   });
 
   test("?artist= preselects that artist", async ({ page }) => {
-    await open(page, "/contact/next?artist=zz-fixture-one");
+    await open(page, "/contact?artist=zz-fixture-one");
     // Kept outside the folded details, so it's seen.
     const artist = page.getByLabel("Artist (optional)");
     await expect(artist).toBeVisible();
     await expect(artist).toHaveValue("Fixture One");
   });
+});
+
+test.describe("entrances", () => {
+  test("the home artists section holds until scrolled to, then plays once", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, "/");
+    const section = page.locator(".artists-teaser");
+    await expect(section).toHaveAttribute("data-reveal", "pending");
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).toHaveAttribute("data-reveal", "play");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).toHaveAttribute("data-reveal", "play");
+  });
+
+  test("nothing waits on an entrance without JavaScript", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    for (const route of ["/", "/artists", "/portfolio", "/faq", "/aftercare"]) {
+      await page.goto(route);
+      const hidden = await page
+        .locator(
+          ".filmstrip__frame, .artists-teaser__photo, .artists-teaser__content > *, .piece-tile__media, .artist-card__media, .artist-card > *, .faq__item, .aftercare-step",
+        )
+        .evaluateAll(
+          (parts) =>
+            parts.filter((part) => {
+              const style = getComputedStyle(part);
+              return style.clipPath !== "none" || style.opacity !== "1";
+            }).length,
+        );
+      expect(hidden, route).toBe(0);
+    }
+    await context.close();
+  });
+});
+
+test("page transitions run between pages, not when a piece opens", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, "/");
+  await page.evaluate(() => {
+    const counted = window as unknown as { transitions: number };
+    counted.transitions = 0;
+    const start = document.startViewTransition.bind(document);
+    document.startViewTransition = ((update) => {
+      counted.transitions += 1;
+      return start(update);
+    }) as typeof document.startViewTransition;
+  });
+  const transitions = () =>
+    page.evaluate(
+      () => (window as unknown as { transitions: number }).transitions,
+    );
+
+  await page.locator(".filmstrip__frame").first().click();
+  await expect(page.locator("dialog[open]")).toBeVisible();
+  expect(await transitions()).toBe(0);
+  await page.keyboard.press("Escape");
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+
+  await page
+    .getByRole("navigation", { name: "Primary" })
+    .getByRole("link", { name: "Artists" })
+    .click();
+  await expect(page).toHaveURL(/\/artists$/);
+  expect(await transitions()).toBe(1);
 });

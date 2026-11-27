@@ -1,12 +1,16 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { Photo } from "@/components/photo";
+import { RevealOnView } from "@/components/reveal-on-view";
 import type { Artist, Piece } from "@/lib/content";
 
 /**
  * A strip of portfolio pieces, each linking to its piece page. A three-column
  * grid on phones and tablets; from lg one row of equal frames, where the
  * hovered or focused frame widens and the rest give way (.filmstrip in
- * components.css). Pieces come from getFilmstripPieces().
+ * components.css). Pieces come from getFilmstripPieces(). The frames open
+ * one after another the first time the strip is seen (RevealOnView; --i is
+ * each frame's place in that order).
  */
 export function Filmstrip({
   pieces,
@@ -22,11 +26,15 @@ export function Filmstrip({
   const artistNames = new Map(artists.map((a) => [a.slug, a.name]));
 
   return (
-    <ul className="filmstrip">
-      {pieces.map((piece) => {
+    <RevealOnView as="ul" className="filmstrip" loadDelay={600}>
+      {pieces.map((piece, index) => {
         const artistName = artistNames.get(piece.artistSlug);
         return (
-          <li key={piece.slug} className="filmstrip__item">
+          <li
+            key={piece.slug}
+            className="filmstrip__item"
+            style={{ "--i": index } as CSSProperties}
+          >
             {/* scroll={false}: opens the piece viewer over the page, so the
                 page stays where it is (see PieceGrid). */}
             <Link
@@ -47,6 +55,6 @@ export function Filmstrip({
           </li>
         );
       })}
-    </ul>
+    </RevealOnView>
   );
 }

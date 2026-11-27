@@ -1,5 +1,7 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { Photo } from "@/components/photo";
+import { RevealOnView } from "@/components/reveal-on-view";
 import type { Artist, Piece } from "@/lib/content";
 
 export function PieceGrid({
@@ -17,10 +19,17 @@ export function PieceGrid({
 
   return (
     <ul className="piece-grid">
-      {pieces.map((piece) => {
+      {pieces.map((piece, index) => {
         const artistName = artistNames.get(piece.artistSlug);
         return (
-          <li key={piece.slug}>
+          // Each tile opens as it scrolls into view; --i staggers the tiles of
+          // one row (RevealOnView, Entrances in components.css).
+          <RevealOnView
+            as="li"
+            key={piece.slug}
+            loadDelay={300}
+            style={{ "--i": index % 4 } as CSSProperties}
+          >
             {/* The piece page opens in the viewer dialog over this grid (an
                 intercepted route). Without scroll={false}, Next scrolls to
                 the top of the new segment on open, and closing (router.back)
@@ -42,7 +51,7 @@ export function PieceGrid({
                 />
               </div>
             </Link>
-          </li>
+          </RevealOnView>
         );
       })}
     </ul>

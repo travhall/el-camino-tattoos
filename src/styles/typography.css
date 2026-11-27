@@ -4,27 +4,27 @@
  * Size tokens come from type-scale.css.
  */
 @layer components {
-  /* Weights (2026-11-25, matching Figma): large type is light. Being reads
-     best at Regular from H2 up; H3/H4 step to Medium so small headings keep
-     their weight on a dark ground. */
+  /* Weights (2026-11-27): Being reads best light. Light (300) from H2 up,
+     Regular (400) for H3/H4, which is still enough for small headings on a
+     dark ground. */
   h1,
   .heading-1 {
-    @apply font-display text-4xl font-normal;
+    @apply font-display text-4xl font-light;
   }
 
   h2,
   .heading-2 {
-    @apply font-display text-3xl font-normal;
+    @apply font-display text-3xl font-light;
   }
 
   h3,
   .heading-3 {
-    @apply font-display text-2xl font-medium;
+    @apply font-display text-2xl font-normal;
   }
 
   h4,
   .heading-4 {
-    @apply font-display text-xl font-medium;
+    @apply font-display text-xl font-normal;
   }
 
   .display {

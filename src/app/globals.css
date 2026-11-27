@@ -23,7 +23,73 @@
   --duration-slow: 320ms;
   /* Full-screen reveals (the piece viewer). */
   --duration-reveal: 560ms;
+  /* Entrances as a block scrolls into view (the home artists collage):
+     slow enough to watch, with a stagger between parts. */
+  --duration-entrance: 1100ms;
+  --stagger-entrance: 220ms;
+  /* Short entrances for chrome that has to be usable right away (the header). */
+  --duration-entrance-quick: 500ms;
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Starts and ends gently, so a sweep reads as one movement rather than a
+     snap (ease-out spends most of its travel in the first few frames). */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Page transitions (the ViewTransition in SiteShell). The old page leaves
+   fast so it doesn't compete; the new one arrives a touch later and rises a
+   few pixels, then its hero plays its own entrance. The header holds still
+   above both (named site-header in components.css): its old snapshot is
+   dropped and the live one shown without animating. Clicks pass through
+   the overlay to the live page. Reduced motion keeps the crossfade (opacity
+   only) and drops the rise. */
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(.page-swap) {
+  animation: page-out var(--duration-base) ease-in both;
+}
+
+::view-transition-new(.page-swap) {
+  animation: page-in var(--duration-slow) var(--ease-out) 120ms both;
+}
+
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(.page-swap) {
+    animation-name: page-in-still;
+  }
+
+  @keyframes page-in-still {
+    from {
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {

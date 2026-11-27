@@ -2,11 +2,10 @@
 <!--
   Netlify Forms detection only. Netlify scans this static file at deploy time
   to register the "contact" form; visitors never see it. The real form is
-  src/components/contact-form.tsx and posts here. Field names below MUST match
+  src/components/request-form.tsx and posts here. Field names below MUST match
   that component (Netlify allows one file per input, hence three reference
   inputs; 8MB per submission). `action` is where Netlify redirects after a successful
-  submission (used by the no-JavaScript fallback). topic and contact-method
-  come from the /contact/next prototype (src/components/request-form.tsx).
+  submission (used by the no-JavaScript fallback).
 -->
 <html lang="en">
   <head>
@@ -32,11 +31,11 @@
       <input type="text" name="artist" />
       <textarea name="message"></textarea>
       <input type="text" name="placement" />
-      <input type="text" name="size" />
+      <input type="radio" name="size" value="Medium" />
       <input type="text" name="budget" />
       <input type="radio" name="color" value="Black and gray" />
       <input type="checkbox" name="cover-up" value="yes" />
-      <input type="text" name="availability" />
+      <input type="radio" name="availability" value="Flexible" />
       <input type="file" name="reference-1" />
       <input type="file" name="reference-2" />
       <input type="file" name="reference-3" />

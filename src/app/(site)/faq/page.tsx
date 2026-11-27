@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RichText, richTextToPlainText } from "@/components/rich-text";
+import { RevealOnView } from "@/components/reveal-on-view";
 import { Hero } from "@/components/hero";
 import { getFaqs, getHero } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
@@ -46,8 +47,12 @@ export default async function FaqPage() {
         ) : (
           <div className="faq">
             {/* The id makes each question linkable: /faq#deposit. */}
-            {faqs.map((faq) => (
-              <section
+            {faqs.map((faq, index) => (
+              // Each question fades up as it scrolls into view; those on
+              // screen at load follow the hero in turn (RevealOnView).
+              <RevealOnView
+                as="section"
+                loadDelay={400 + Math.min(index, 5) * 100}
                 key={faq.slug}
                 id={faq.slug}
                 aria-labelledby={`${faq.slug}-question`}
@@ -57,7 +62,7 @@ export default async function FaqPage() {
                   {faq.question}
                 </h2>
                 <RichText node={faq.answer} />
-              </section>
+              </RevealOnView>
             ))}
           </div>
         )}

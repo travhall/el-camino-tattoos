@@ -14,7 +14,11 @@ const config = {
   minViewport: 320,
   maxViewport: 1240,
   minBase: 16,
-  maxBase: 18,
+  // 17, not 18 (2026-11-27): body and lead read large on desktop. Space
+  // keeps its own 18 below, so tightening the type doesn't tighten layout.
+  maxBase: 17,
+  minSpaceBase: 16,
+  maxSpaceBase: 18,
   minRatio: 1.25, // major third on phones
   maxRatio: 1.333, // perfect fourth on wide screens
   smallRatio: 1.125, // steps below base, both ends
@@ -72,8 +76,8 @@ function sizeAt(step) {
 const rows = steps.map((s) => ({ ...s, ...sizeAt(s.step) }));
 
 const spaceRows = space.map((s) => {
-  const minPx = config.minBase * s.multiplier;
-  const maxPx = config.maxBase * s.multiplier;
+  const minPx = config.minSpaceBase * s.multiplier;
+  const maxPx = config.maxSpaceBase * s.multiplier;
   return { ...s, minPx, maxPx, value: fluid(minPx, maxPx) };
 });
 

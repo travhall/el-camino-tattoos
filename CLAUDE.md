@@ -7,7 +7,7 @@
 
 ## Forms and analytics
 
-- **Contact form uses Netlify Forms.** On Netlify's Next runtime, pages aren't static HTML, so Netlify detects forms from `public/__forms.html` and `ContactForm` posts urlencoded data there (with a no-JS fallback that redirects to `/contact/thanks`). Field names in `__forms.html` MUST match `src/components/contact-form.tsx`. It has a honeypot (`bot-field`). Locally the POST has nowhere to go, so tests mock it. Not yet verified on a real deploy.
+- **Contact form uses Netlify Forms.** On Netlify's Next runtime, pages aren't static HTML, so Netlify detects forms from `public/__forms.html` and `RequestForm` posts multipart data there (with a no-JS fallback that redirects to `/contact/thanks`). Field names in `__forms.html` MUST match `src/components/request-form.tsx`. It has a honeypot (`bot-field`). Locally the POST has nowhere to go, so tests mock it. Not yet verified on a real deploy.
 - **Analytics** (`src/components/analytics.tsx`) renders only when `CLOUDFLARE_ANALYTICS_TOKEN` is set. It's cookieless. To change provider, replace that one component.
 
 ## Styling conventions
@@ -31,7 +31,7 @@
 - **Landmarks and skip link** live in `SiteShell` (`skip-link`, `<main id="main" tabindex="-1">`). Don't remove or reorder them; the skip link must stay the first tab stop.
 - **Touch targets:** standalone interactive elements are at least 44px (`min-h-11`). Inline links inside running text are exempt. Only use `.button--sm` for compact, secondary controls.
 - **State is never color alone.** Current page or section uses `aria-current` with an underline (nav) or fill plus weight (filter chips). Style from the attribute, not a class.
-- **Form fields and errors:** build fields with `Field` (`src/components/ui/field.tsx`), which wires the label, hint and error and sets `aria-invalid` and `aria-describedby` (error first). An invalid control gets a red border plus an inset ring (a box-shadow, so nothing shifts; focus still uses `outline`) and a text message in `error-text`, so it is never color alone. The contact form validates inline: it sets `noValidate` only after scripts run (natively validated before that and without JavaScript), focuses the first invalid field, announces the count once, and clears a field's error as it is fixed. Messages live in the `messages` table in `contact-form.tsx`.
+- **Form fields and errors:** build fields with `Field` (`src/components/ui/field.tsx`), which wires the label, hint and error and sets `aria-invalid` and `aria-describedby` (error first). An invalid control gets a red border plus an inset ring (a box-shadow, so nothing shifts; focus still uses `outline`) and a text message in `error-text`, so it is never color alone. The contact form validates inline: it sets `noValidate` only after scripts run (natively validated before that and without JavaScript), focuses the first invalid field, announces the count once, and clears a field's error as it is fixed. Messages live in the `messages` table in `request-form.tsx`.
 - **Motion:** use `--duration-fast|base|slow` and `--ease-out`. A global `prefers-reduced-motion` rule in `globals.css` shortens all transitions and animations, so don't add animation that depends on running for its meaning.
 - **Forced colors:** buttons keep a transparent border so they keep an edge when fills are removed. Focus uses `outline` (never box-shadow) with the `--focus` role.
 - **Images:** content images get descriptive `alt`. Use `alt=""` when the same link already has the name as text (artist cards).

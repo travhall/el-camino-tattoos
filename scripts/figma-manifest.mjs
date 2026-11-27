@@ -53,15 +53,16 @@ const roles = Object.fromEntries(
 
 const motionCss = read("src/app/globals.css");
 const motion = Object.fromEntries(
-  [...motionCss.matchAll(/--(duration-[a-z]+|ease-out):\s*([^;]+);/g)].map(
-    (m) => [m[1], m[2].trim()],
-  ),
+  [
+    ...motionCss.matchAll(
+      /--((?:duration|stagger)-[a-z-]+|ease-[a-z-]+):\s*([^;]+);/g,
+    ),
+  ].map((m) => [m[1], m[2].trim()]),
 );
 
 /** Values in px. `source` is where the value is used in the code. */
 const layout = {
   "max-width/page": { px: 1440, source: ".page (--page-max, 90rem)" },
-  "max-width/form": { px: 576, source: ".contact-form (max-w-xl)" },
   "max-width/viewer": { px: 1024, source: ".viewer (64rem)" },
   "max-width/hero-intro": { px: 680, source: ".hero__intro (42.5rem)" },
   "size/hero-media-width": {
