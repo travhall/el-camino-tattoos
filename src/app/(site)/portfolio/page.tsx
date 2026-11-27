@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import { ArtistFilter } from "@/components/artist-filter";
 import { PieceGrid } from "@/components/piece-grid";
 import { Hero } from "@/components/hero";
@@ -31,14 +32,26 @@ export default async function PortfolioPage(props: PageProps<"/portfolio">) {
     <div className="stack stack--lg">
       <Hero hero={hero} fallbackHeading="Portfolio" />
       <ArtistFilter artists={artists} activeSlug={active?.slug} />
-      <PieceGrid
-        pieces={
-          active
-            ? pieces.filter((piece) => piece.artistSlug === active.slug)
-            : pieces
-        }
-        artists={artists}
-      />
+      {/* Keyed by the filter, so changing it swaps the whole grid as an
+          exit/enter pair: the old cards fade out ("grid-swap" in
+          globals.css), then the new grid's tiles play their entrance. A
+          piece opening in the viewer doesn't change the key, so it doesn't
+          animate (default="none"). */}
+      <ViewTransition
+        key={active?.slug ?? "all"}
+        enter="grid-swap"
+        exit="grid-swap"
+        default="none"
+      >
+        <PieceGrid
+          pieces={
+            active
+              ? pieces.filter((piece) => piece.artistSlug === active.slug)
+              : pieces
+          }
+          artists={artists}
+        />
+      </ViewTransition>
     </div>
   );
 }
