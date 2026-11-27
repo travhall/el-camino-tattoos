@@ -1,4 +1,10 @@
-import { collection, config, fields, singleton } from "@keystatic/core";
+import {
+  collection,
+  type ComponentSchema,
+  config,
+  fields,
+  singleton,
+} from "@keystatic/core";
 import { type SocialPlatform, socialPlatforms } from "./src/lib/socials";
 
 // One day of opening hours. Times are 24-hour "HH:MM" so the site can work
@@ -122,29 +128,22 @@ const instagramField = () =>
     },
   });
 
-// The formatting an editor gets in Aftercare and FAQ text. Headings start at
-// 2 because each page supplies its own <h1>; no images, tables or code, so the
-// page can't be broken from the editor.
-const richText = (label: string, { headings }: { headings: boolean }) =>
-  fields.markdoc({
+// One page's entry under Pages: its hero, plus anything else the page has
+// (home adds the promises and the artists section). Each page is its own
+// file in content/pages/, so editing one page never means scrolling past
+// the others.
+function pageSingleton<Extra extends Record<string, ComponentSchema>>(
+  label: string,
+  path: string,
+  extra: Extra = {} as Extra,
+) {
+  return singleton({
     label,
-    extension: "mdoc",
-    options: {
-      bold: true,
-      italic: true,
-      link: true,
-      orderedList: true,
-      unorderedList: true,
-      heading: headings ? [2, 3] : false,
-      blockquote: false,
-      code: false,
-      codeBlock: false,
-      divider: false,
-      image: false,
-      table: false,
-      strikethrough: false,
-    },
+    path: `content/pages/${path}`,
+    format: { data: "yaml" },
+    schema: { hero: heroField("Hero"), ...extra },
   });
+}
 
 export default config({
   storage: useGitHub
@@ -154,36 +153,20 @@ export default config({
   ui: {
     brand: { name: "El Camino Tattoos" },
     navigation: {
-      Shop: ["site"],
-      Pages: ["heroes", "aftercare", "faq"],
-      Content: ["artists", "pieces"],
+      Shop: ["shopContact", "shopHours", "shopSocials", "shopSearch"],
+      Pages: [
+        "pageHome",
+        "pageArtists",
+        "pagePortfolio",
+        "pageAftercare",
+        "pageFaq",
+        "pageContact",
+      ],
+      Work: ["artists", "pieces"],
     },
   },
 
   collections: {
-    faq: collection({
-      label: "FAQ",
-      slugField: "question",
-      path: "content/faq/*",
-      format: { contentField: "answer" },
-      columns: ["question", "order"],
-      schema: {
-        question: fields.slug({
-          name: {
-            label: "Question",
-            description:
-              "As a visitor would ask it. e.g. How much is a deposit?",
-          },
-        }),
-        order: fields.integer({
-          label: "Order",
-          description: "Lower numbers appear first.",
-          defaultValue: 100,
-        }),
-        answer: richText("Answer", { headings: false }),
-      },
-    }),
-
     artists: collection({
       label: "Artists",
       slugField: "name",
@@ -274,61 +257,25 @@ export default config({
   },
 
   singletons: {
-    aftercare: singleton({
-      label: "Aftercare",
-      path: "content/aftercare",
-      format: { contentField: "warning" },
-      schema: {
-        intro: fields.text({
-          label: "Intro",
-          description: "One short line under the page heading.",
-        }),
-        steps: fields.array(
-          fields.object({
-            title: fields.text({ label: "Title" }),
-            body: fields.text({ label: "Body", multiline: true }),
-          }),
-          {
-            label: "Care steps",
-            description: "Shown in order, numbered automatically on the page.",
-            itemLabel: (props) => props.fields.title.value || "Step",
-          },
-        ),
-        warning: richText("When to get help", { headings: false }),
-      },
-    }),
-
-    heroes: singleton({
-      label: "Page heroes",
-      path: "content/heroes",
+    shopContact: singleton({
+      label: "Contact & location",
+      path: "content/shop/contact",
       format: { data: "yaml" },
       schema: {
-        home: heroField("Home"),
-        artists: heroField("Artists"),
-        portfolio: heroField("Portfolio"),
-        aftercare: heroField("Aftercare"),
-        faq: heroField("FAQ"),
-        contact: heroField("Contact"),
-      },
-    }),
-
-    site: singleton({
-      label: "Shop info",
-      path: "content/site",
-      format: { data: "yaml" },
-      schema: {
-        description: fields.text({
-          label: "Site description",
-          description:
-            "One or two sentences for search results and link previews.",
-          multiline: true,
-        }),
         phone: fields.text({ label: "Phone" }),
         email: fields.text({ label: "Email" }),
         street: fields.text({ label: "Street address" }),
         city: fields.text({ label: "City" }),
         region: fields.text({ label: "State" }),
         postalCode: fields.text({ label: "ZIP code" }),
+      },
+    }),
+
+    shopHours: singleton({
+      label: "Hours & booking",
+      path: "content/shop/hours",
+      format: { data: "yaml" },
+      schema: {
         hours: fields.object(
           {
             monday: dayHoursField("Monday"),
@@ -340,14 +287,15 @@ export default config({
             sunday: dayHoursField("Sunday"),
           },
           {
-            label: "Hours",
+            label: "Opening hours",
             description:
               "In the shop's time zone (Central). The site uses these to say whether the shop is open right now. A day left unticked is closed.",
           },
         ),
         walkIns: fields.checkbox({
           label: "Walk-ins welcome",
-          description: "Shows the note below on the homepage and contact page.",
+          description:
+            "Shows the walk-in note in the header, the footer and on the contact page.",
           defaultValue: false,
         }),
         walkInNote: fields.text({
@@ -356,26 +304,21 @@ export default config({
         }),
         consultationNote: fields.text({
           label: "Consultation note",
-          description: "e.g. Free consultations.",
-        }),
-        shopPromises: fields.array(fields.text({ label: "Promise" }), {
-          label: "Shop promises",
-          description: "Three short lines shown in a strip under the hero.",
-          itemLabel: (props) => props.value || "Promise",
-        }),
-        footerTagline: fields.text({
-          label: "Footer tagline",
-          description: "A short line next to the logo in the footer.",
-        }),
-        footerSignoff: fields.text({
-          label: "Footer sign-off",
-          description: "A short line at the bottom right of the footer.",
+          description: "Shown on the contact page. e.g. Free consultations.",
         }),
         depositAmount: fields.integer({
           label: "Deposit (USD)",
           description: "Shown on the contact page. Leave empty to hide.",
         }),
-        socials: fields.array(
+      },
+    }),
+
+    shopSocials: singleton({
+      label: "Social links",
+      path: "content/shop/socials",
+      format: { data: "yaml" },
+      schema: {
+        links: fields.array(
           fields.object({
             platform: fields.select({
               label: "Platform",
@@ -405,5 +348,52 @@ export default config({
         ),
       },
     }),
+
+    shopSearch: singleton({
+      label: "Search & sharing",
+      path: "content/shop/search",
+      format: { data: "yaml" },
+      schema: {
+        description: fields.text({
+          label: "Site description",
+          description:
+            "One or two sentences for search results and link previews. Pages without their own description use this one.",
+          multiline: true,
+        }),
+      },
+    }),
+
+    pageHome: pageSingleton("Home", "home", {
+      promises: fields.array(fields.text({ label: "Promise" }), {
+        label: "Shop promises",
+        description: "Three short lines shown in a strip under the filmstrip.",
+        itemLabel: (props) => props.value || "Promise",
+      }),
+      artists: fields.object(
+        {
+          eyebrow: fields.text({ label: "Eyebrow" }),
+          heading: fields.text({
+            label: "Heading",
+            description: "Leave empty for “Our artists”.",
+          }),
+          intro: fields.text({ label: "Intro", multiline: true }),
+          buttonLabel: fields.text({
+            label: "Button label",
+            description:
+              "Goes to the Artists page. Leave empty for “Meet the team”.",
+          }),
+        },
+        {
+          label: "Artists section",
+          description:
+            "The section with the artists' photos further down the page.",
+        },
+      ),
+    }),
+    pageArtists: pageSingleton("Artists", "artists"),
+    pagePortfolio: pageSingleton("Portfolio", "portfolio"),
+    pageAftercare: pageSingleton("Aftercare", "aftercare"),
+    pageFaq: pageSingleton("FAQ", "faq"),
+    pageContact: pageSingleton("Contact", "contact"),
   },
 });

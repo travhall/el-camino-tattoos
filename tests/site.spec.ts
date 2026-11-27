@@ -1,9 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
 import { hydrated } from "./routes";
 
-// content/site.yaml is committed with placeholder shop details (the sister
+// content/shop/*.yaml is committed with placeholder shop details (the sister
 // skate shop's address, the walk-in and consultation notes, a $100 deposit),
 // so these tests read real, stable content rather than fixtures.
 
@@ -28,7 +26,7 @@ const meta = (page: Page, selector: string) =>
   page.locator(selector).first().getAttribute("content");
 
 // Wednesday 3pm in Eau Claire (Central), inside the placeholder hours in
-// content/site.yaml, so the open status is predictable.
+// content/shop/hours.yaml, so the open status is predictable.
 const openTime = new Date("2026-11-25T21:00:00Z");
 
 test.describe("shop info", () => {
@@ -84,7 +82,7 @@ test.describe("shop info", () => {
   test("the open status follows the shop's hours in its own time zone", async ({
     page,
   }) => {
-    // Monday is closed in content/site.yaml; Tuesday opens at noon.
+    // Monday is closed in content/shop/hours.yaml; Tuesday opens at noon.
     await page.clock.setFixedTime(new Date("2026-11-23T20:00:00Z"));
     await open(page, "/");
     const topbar = page.locator(".site-topbar");
@@ -125,6 +123,25 @@ test.describe("shop info", () => {
       );
       expect(overflow).toBe(false);
     }
+  });
+
+  test("the home artists section shows its copy from the Home entry", async ({
+    page,
+  }) => {
+    await open(page, "/");
+    const section = page.locator(".artists-teaser");
+    await expect(
+      section.getByText("Our people make the difference"),
+    ).toBeVisible();
+    await expect(
+      section.getByRole("heading", {
+        level: 2,
+        name: "The Artists of El Camino",
+      }),
+    ).toBeVisible();
+    await expect(
+      section.getByRole("link", { name: "Meet the team" }),
+    ).toHaveAttribute("href", "/artists");
   });
 
   test("a photo that fails to load is replaced by a placeholder", async ({
@@ -243,39 +260,7 @@ test.describe("search and sharing metadata", () => {
   });
 });
 
-test.describe("editable pages", () => {
-  test("the FAQ lists questions in order, each linkable and answered", async ({
-    page,
-  }) => {
-    await open(page, "/faq");
-
-    // Scoped to main: the footer now has its own h2 column headings on
-    // every page, so an unscoped query would pick those up too.
-    const questions = page.getByRole("main").getByRole("heading", { level: 2 });
-    await expect(questions).toHaveText([
-      "How much is a deposit?",
-      "Do you take walk-ins?",
-    ]);
-
-    // The slug is the anchor, and the section is named by its question.
-    const deposit = page.locator("#zz-fixture-deposit");
-    await expect(deposit).toHaveAttribute(
-      "aria-labelledby",
-      "zz-fixture-deposit-question",
-    );
-    await expect(
-      deposit.getByRole("link", { name: "contact page" }),
-    ).toHaveAttribute("href", "/contact");
-
-    // Formatting the editor offers comes through: bold and a list.
-    const walkIns = page.locator("#zz-fixture-walk-ins");
-    await expect(walkIns.locator("strong")).toHaveText("Ask first");
-    await expect(walkIns.getByRole("listitem")).toHaveText([
-      "Small pieces are easiest",
-      "Bring a photo ID",
-    ]);
-  });
-
+test.describe("FAQ page", () => {
   test("the FAQ has a title, description and canonical URL", async ({
     page,
   }) => {
@@ -297,32 +282,5 @@ test.describe("editable pages", () => {
         .getByRole("navigation", { name: "Primary" })
         .getByRole("link", { name: "FAQ" }),
     ).toHaveAttribute("href", "/faq");
-  });
-
-  test("Aftercare renders structured steps and a warning, under one h1", async ({
-    page,
-  }) => {
-    // The fixture only exists when there was no real Aftercare file to keep.
-    const file = path.join(process.cwd(), "content/aftercare.mdoc");
-    const seeded =
-      existsSync(file) &&
-      readFileSync(file, "utf8").includes("Fixture aftercare intro line");
-    test.skip(!seeded, "real Aftercare content is present");
-
-    await open(page, "/aftercare");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "Aftercare",
-    );
-    await expect(page.getByText("Fixture aftercare intro line")).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Keep it clean" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Apply a thin layer" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "When to get help" }),
-    ).toBeVisible();
-    await expect(page.getByText("increasing redness")).toBeVisible();
   });
 });

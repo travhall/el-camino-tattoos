@@ -1,0 +1,29 @@
+hours:
+  monday:
+    open: false
+  tuesday:
+    open: true
+    opens: '12:00'
+    closes: '20:00'
+  wednesday:
+    open: true
+    opens: '12:00'
+    closes: '20:00'
+  thursday:
+    open: true
+    opens: '12:00'
+    closes: '20:00'
+  friday:
+    open: true
+    opens: '12:00'
+    closes: '20:00'
+  saturday:
+    open: true
+    opens: '11:00'
+    closes: '18:00'
+  sunday:
+    open: false
+walkIns: true
+walkInNote: Walk-ins welcome when available.
+consultationNote: Free consultations.
+depositAmount: 100

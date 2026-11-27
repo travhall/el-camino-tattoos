@@ -665,12 +665,6 @@
     --reveal-radius: var(--radius-media);
   }
 
-  /* FAQ questions and aftercare steps fade up one by one. */
-  .reveal-on-view:is(.faq__item, .aftercare-step)[data-reveal="play"] {
-    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-      var(--reveal-base, 0ms) backwards;
-  }
-
   /* Artist page: the portrait's frame opens like the hero photo while the
      name rises from behind its baseline and the rest fades up. Above the
      fold, so these run on load from CSS alone. */
@@ -682,8 +676,8 @@
 
   .artist-profile__content {
     & > h1 {
-      animation: enter-mask-rise var(--duration-entrance) var(--ease-in-out)
-        300ms backwards;
+      animation: enter-mask-rise var(--duration-entrance) var(--ease-out) 200ms
+        backwards;
     }
 
     & > :not(h1) {
@@ -700,16 +694,21 @@
     }
   }
 
-  /* Contact page: the form is there at once (it's the task); the visit
-     cards beside or above it fade up after the hero, a beat apart. */
+  /* Contact page: after the hero, the visit card, the form, then the
+     address and hours, a beat apart. Short, so the form is ready fast. */
   .contact-now,
+  .contact-page__form,
   .contact-card {
     animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-      var(--enter-delay, 500ms) backwards;
+      var(--enter-delay, 400ms) backwards;
+  }
+
+  .contact-page__form {
+    --enter-delay: 500ms;
   }
 
   .contact-card {
-    --enter-delay: 650ms;
+    --enter-delay: 600ms;
   }
 
   /* The global reduced-motion rule shortens durations, not delays, so the
@@ -1101,34 +1100,6 @@
     @apply justify-between border-b border-line py-1.5 last:border-b-0;
   }
 
-  /* FAQ: one section per question, each linkable by its slug. */
-  .faq {
-    @apply grid gap-fluid-md;
-  }
-
-  .faq__item {
-    @apply grid gap-fluid-2xs border-t border-line pt-fluid-sm;
-  }
-
-  /* Aftercare: numbered care steps, then a distinct warning callout. */
-  .aftercare-steps {
-    @apply grid list-none gap-fluid-md;
-  }
-
-  .aftercare-step {
-    @apply grid grid-cols-[auto_1fr] items-start gap-fluid-sm;
-  }
-
-  .aftercare-step__number {
-    @apply font-display text-2xl text-muted;
-  }
-
-  /* `warning` role: "waitlist, heads-up" per roles.css — a medical notice to
-     pay attention to, not an error. */
-  .aftercare-warning {
-    @apply border-l-2 border-warning bg-warning-soft p-fluid-sm;
-  }
-
   /* 404 and error pages */
   .status-page {
     @apply grid max-w-prose gap-fluid-sm py-fluid-lg;
@@ -1331,8 +1302,8 @@
      then the eyebrow, intro and buttons fade up and the photo's frame
      opens downward. */
   .hero__heading-line {
-    animation: enter-mask-rise var(--duration-entrance) var(--ease-in-out)
-      calc(150ms + var(--line-index, 0) * 120ms) backwards;
+    animation: enter-mask-rise var(--duration-entrance) var(--ease-out)
+      calc(var(--line-index, 0) * 110ms) backwards;
 
     &:nth-child(2) {
       --line-index: 1;
@@ -1347,14 +1318,43 @@
     }
   }
 
+  /* The eyebrow follows the first heading line by a beat, so the two read
+     as arriving together rather than the eyebrow first. */
   .hero__content > .eyebrow {
-    animation: enter-fade-up var(--duration-entrance) var(--ease-out) 100ms
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out) 150ms
       backwards;
   }
 
   .hero__body {
-    animation: enter-fade-up var(--duration-entrance) var(--ease-out) 600ms
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out) 500ms
       backwards;
+  }
+
+  /* Portfolio artist filter: the chips fade up left to right after the
+     hero. Changing the filter keeps the list, so they don't replay. */
+  .filter-list > li {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      calc(450ms + var(--chip-index, 0) * 70ms) backwards;
+
+    &:nth-child(2) {
+      --chip-index: 1;
+    }
+
+    &:nth-child(3) {
+      --chip-index: 2;
+    }
+
+    &:nth-child(4) {
+      --chip-index: 3;
+    }
+
+    &:nth-child(5) {
+      --chip-index: 4;
+    }
+
+    &:nth-child(n + 6) {
+      --chip-index: 5;
+    }
   }
 
   .hero__media {
@@ -1374,9 +1374,7 @@
     }
 
     & .artists-teaser__content > *,
-    & .artist-card > :not(.artist-card__media),
-    &.faq__item,
-    &.aftercare-step {
+    & .artist-card > :not(.artist-card__media) {
       @apply opacity-0;
     }
 
@@ -1455,12 +1453,6 @@
     --reveal-radius: var(--radius-media);
   }
 
-  /* FAQ questions and aftercare steps fade up one by one. */
-  .reveal-on-view:is(.faq__item, .aftercare-step)[data-reveal="play"] {
-    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-      var(--reveal-base, 0ms) backwards;
-  }
-
   /* Artist page: the portrait's frame opens like the hero photo while the
      name rises from behind its baseline and the rest fades up. Above the
      fold, so these run on load from CSS alone. */
@@ -1472,8 +1464,8 @@
 
   .artist-profile__content {
     & > h1 {
-      animation: enter-mask-rise var(--duration-entrance) var(--ease-in-out)
-        300ms backwards;
+      animation: enter-mask-rise var(--duration-entrance) var(--ease-out) 200ms
+        backwards;
     }
 
     & > :not(h1) {
@@ -1490,16 +1482,21 @@
     }
   }
 
-  /* Contact page: the form is there at once (it's the task); the visit
-     cards beside or above it fade up after the hero, a beat apart. */
+  /* Contact page: after the hero, the visit card, the form, then the
+     address and hours, a beat apart. Short, so the form is ready fast. */
   .contact-now,
+  .contact-page__form,
   .contact-card {
     animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-      var(--enter-delay, 500ms) backwards;
+      var(--enter-delay, 400ms) backwards;
+  }
+
+  .contact-page__form {
+    --enter-delay: 500ms;
   }
 
   .contact-card {
-    --enter-delay: 650ms;
+    --enter-delay: 600ms;
   }
 
   /* The global reduced-motion rule shortens durations, not delays, so the
@@ -1519,7 +1516,9 @@
     .artist-profile__photo,
     .artist-profile__content > *,
     .contact-now,
-    .contact-card {
+    .contact-page__form,
+    .contact-card,
+    .filter-list > li {
       animation-delay: 0s !important;
     }
   }

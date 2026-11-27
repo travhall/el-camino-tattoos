@@ -7,6 +7,7 @@ import {
   getArtists,
   getFilmstripPieces,
   getHero,
+  getHome,
   getSite,
 } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
@@ -18,10 +19,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [artists, filmstrip, site, hero] = await Promise.all([
+  const [artists, filmstrip, home, hero] = await Promise.all([
     getArtists(),
     getFilmstripPieces(),
-    getSite(),
+    getHome(),
     getHero("home"),
   ]);
 
@@ -29,9 +30,9 @@ export default async function Home() {
     <div className="stack stack--xl">
       <Hero hero={hero} fallbackHeading={siteName} size="home" />
       <Filmstrip pieces={filmstrip} artists={artists} />
-      <ShopPromises promises={site.shopPromises} />
+      <ShopPromises promises={home.promises} />
 
-      <ArtistsTeaser artists={artists} />
+      <ArtistsTeaser artists={artists} content={home.artists} />
     </div>
   );
 }

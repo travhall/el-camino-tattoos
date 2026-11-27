@@ -1,5 +1,4 @@
 import { createReader } from "@keystatic/core/reader";
-import type { Node } from "@markdoc/markdoc";
 import { cache } from "react";
 import config from "../../keystatic.config";
 import { dayHours, type WeeklyHours, weekdays } from "./hours";
@@ -116,53 +115,16 @@ export const getPiece = cache(async (slug: string) => {
   return pieces.find((piece) => piece.slug === slug) ?? null;
 });
 
-const hasContent = (node: Node) => node.children.length > 0;
-
-export type AftercareStep = { title: string; body: string };
-
-export type Aftercare = {
-  intro: string;
-  steps: readonly AftercareStep[];
-  warning: Node;
-} | null;
-
-/** The Aftercare page's structured content, or null until someone has written it. */
-export const getAftercare = cache(async (): Promise<Aftercare> => {
-  const entry = await reader.singletons.aftercare.read();
-  if (!entry) return null;
-  const { node } = await entry.warning();
-  const steps = entry.steps.filter((step) => step.title && step.body);
-  const hasIntro = Boolean(entry.intro);
-  const hasWarning = hasContent(node);
-  if (!hasIntro && steps.length === 0 && !hasWarning) return null;
-  return { intro: entry.intro ?? "", steps, warning: node };
-});
-
-export type Faq = {
-  slug: string;
-  question: string;
-  order: number;
-  answer: Node;
+const pageEntries = {
+  home: reader.singletons.pageHome,
+  artists: reader.singletons.pageArtists,
+  portfolio: reader.singletons.pagePortfolio,
+  aftercare: reader.singletons.pageAftercare,
+  faq: reader.singletons.pageFaq,
+  contact: reader.singletons.pageContact,
 };
 
-/** FAQ entries in order. An entry with no question or no answer is skipped. */
-export const getFaqs = cache(async (): Promise<Faq[]> => {
-  const entries = await reader.collections.faq.all();
-  const faqs = await Promise.all(
-    entries.map(async ({ slug, entry }) => ({
-      slug,
-      question: entry.question.trim(),
-      order: entry.order ?? 100,
-      answer: (await entry.answer()).node,
-    })),
-  );
-  return faqs
-    .filter((faq) => faq.question && hasContent(faq.answer))
-    .sort((a, b) => a.order - b.order || a.question.localeCompare(b.question));
-});
-
-export type HeroPage =
-  "home" | "artists" | "portfolio" | "aftercare" | "faq" | "contact";
+export type HeroPage = keyof typeof pageEntries;
 
 export type HeroButton = { label: string; href: string };
 
@@ -176,12 +138,12 @@ export type HeroContent = {
 };
 
 /**
- * One page's hero from the Keystatic "Page heroes" entry. Every field may be
- * empty; a button is kept only with both a label and a link, and a photo
- * only with a description (it is content, so it needs alt text).
+ * One page's hero, from that page's entry under Pages in Keystatic. Every
+ * field may be empty; a button is kept only with both a label and a link,
+ * and a photo only with a description (it is content, so it needs alt text).
  */
 export const getHero = cache(async (page: HeroPage): Promise<HeroContent> => {
-  const entry = (await reader.singletons.heroes.read())?.[page];
+  const entry = (await pageEntries[page].read())?.hero;
   const buttons = [entry?.primary, entry?.secondary].flatMap((button) =>
     button?.label.trim() && button.href.trim()
       ? [{ label: button.label.trim(), href: button.href.trim() }]
@@ -204,6 +166,32 @@ export const getHero = cache(async (page: HeroPage): Promise<HeroContent> => {
   };
 });
 
+export type HomeContent = {
+  /** The strip of short lines under the filmstrip. */
+  promises: readonly string[];
+  /** The artists section; empty fields are hidden or fall back. */
+  artists: {
+    eyebrow: string;
+    heading: string;
+    intro: string;
+    buttonLabel: string;
+  };
+};
+
+/** The home page's own content besides its hero (Pages → Home in Keystatic). */
+export const getHome = cache(async (): Promise<HomeContent> => {
+  const entry = await reader.singletons.pageHome.read();
+  return {
+    promises: (entry?.promises ?? []).map((p) => p.trim()).filter(Boolean),
+    artists: {
+      eyebrow: entry?.artists.eyebrow.trim() ?? "",
+      heading: entry?.artists.heading.trim() ?? "",
+      intro: entry?.artists.intro.trim() ?? "",
+      buttonLabel: entry?.artists.buttonLabel.trim() ?? "",
+    },
+  };
+});
+
 export type Site = {
   description: string;
   phone: string;
@@ -216,38 +204,41 @@ export type Site = {
   walkIns: boolean;
   walkInNote: string;
   consultationNote: string;
-  shopPromises: readonly string[];
-  footerTagline: string;
-  footerSignoff: string;
   depositAmount: number | null;
   socials: SocialLink[];
 };
 
-/** Shop details from the Keystatic "Shop info" entry. Every field may be empty. */
+/**
+ * Shop details, gathered from the four entries under Shop in Keystatic
+ * (Contact & location, Hours & booking, Social links, Search & sharing).
+ * Every field may be empty.
+ */
 export const getSite = cache(async (): Promise<Site> => {
-  const entry = await reader.singletons.site.read();
+  const [contact, booking, socials, search] = await Promise.all([
+    reader.singletons.shopContact.read(),
+    reader.singletons.shopHours.read(),
+    reader.singletons.shopSocials.read(),
+    reader.singletons.shopSearch.read(),
+  ]);
   return {
-    description: entry?.description ?? "",
-    phone: entry?.phone ?? "",
-    email: entry?.email ?? "",
-    street: entry?.street ?? "",
-    city: entry?.city ?? "",
-    region: entry?.region ?? "",
-    postalCode: entry?.postalCode ?? "",
+    description: search?.description ?? "",
+    phone: contact?.phone ?? "",
+    email: contact?.email ?? "",
+    street: contact?.street ?? "",
+    city: contact?.city ?? "",
+    region: contact?.region ?? "",
+    postalCode: contact?.postalCode ?? "",
     hours: Object.fromEntries(
       weekdays.map((day) => {
-        const h = entry?.hours?.[day];
+        const h = booking?.hours?.[day];
         return [day, h?.open ? dayHours(h.opens, h.closes) : null];
       }),
     ) as WeeklyHours,
-    walkIns: entry?.walkIns ?? false,
-    walkInNote: entry?.walkInNote ?? "",
-    consultationNote: entry?.consultationNote ?? "",
-    shopPromises: entry?.shopPromises ?? [],
-    footerTagline: entry?.footerTagline ?? "",
-    footerSignoff: entry?.footerSignoff ?? "",
-    depositAmount: entry?.depositAmount ?? null,
-    socials: (entry?.socials ?? [])
+    walkIns: booking?.walkIns ?? false,
+    walkInNote: booking?.walkInNote ?? "",
+    consultationNote: booking?.consultationNote ?? "",
+    depositAmount: booking?.depositAmount ?? null,
+    socials: (socials?.links ?? [])
       .map((s) => socialLink(s.platform as SocialPlatform, s.url, s.label))
       .filter((s): s is SocialLink => s !== null),
   };

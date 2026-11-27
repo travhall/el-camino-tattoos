@@ -5,7 +5,7 @@
 //
 //   node scripts/fixtures.mjs seed
 //   node scripts/fixtures.mjs clean
-import { mkdir, readFile, rm, rmdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, rmdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { crc32, deflateSync } from "node:zlib";
@@ -62,40 +62,6 @@ export const fixtures = {
   ],
 };
 
-// FAQ entries are one file each (question and order in frontmatter, the answer
-// as the body). Aftercare is a single fixed file (YAML frontmatter for intro/
-// steps, a markdoc body for the warning), so it is only written when it
-// doesn't exist and only removed while it still equals this text: real
-// content is never touched.
-fixtures.faq = [
-  {
-    slug: "zz-fixture-deposit",
-    question: "How much is a deposit?",
-    order: 1,
-    answer:
-      "A deposit holds your appointment. See the [contact page](/contact) to ask.",
-  },
-  {
-    slug: "zz-fixture-walk-ins",
-    question: "Do you take walk-ins?",
-    order: 2,
-    answer:
-      "Sometimes. **Ask first**, because it depends on the day.\n\n- Small pieces are easiest\n- Bring a photo ID",
-  },
-];
-
-export const aftercareFixture = `---
-intro: Fixture aftercare intro line.
-steps:
-  - title: Keep it clean
-    body: Wash gently and pat dry with a clean towel.
-  - title: Apply a thin layer
-    body: Use the aftercare product your artist recommended.
----
-
-Call a doctor if you see **increasing redness** or a fever.
-`;
-
 function png(width, height, [r, g, b]) {
   const row = Buffer.concat([
     Buffer.from([0]),
@@ -127,20 +93,6 @@ const at = (...parts) => path.join(root, ...parts);
 export async function seedFixtures() {
   await mkdir(at("content/artists"), { recursive: true });
   await mkdir(at("content/pieces"), { recursive: true });
-  await mkdir(at("content/faq"), { recursive: true });
-
-  for (const faq of fixtures.faq) {
-    await writeFile(
-      at("content/faq", `${faq.slug}.mdoc`),
-      `---\nquestion: ${faq.question}\norder: ${faq.order}\n---\n\n${faq.answer}\n`,
-    );
-  }
-  // "wx" fails if the file exists, which is the point: never overwrite it.
-  await writeFile(at("content/aftercare.mdoc"), aftercareFixture, {
-    flag: "wx",
-  }).catch((error) => {
-    if (error.code !== "EEXIST") throw error;
-  });
 
   for (const artist of fixtures.artists) {
     const lines = [
@@ -203,16 +155,6 @@ export async function cleanFixtures() {
       force: true,
     });
   }
-  for (const faq of fixtures.faq) {
-    await rm(at("content/faq", `${faq.slug}.mdoc`), { force: true });
-  }
-  const aftercare = await readFile(at("content/aftercare.mdoc"), "utf8").catch(
-    () => null,
-  );
-  if (aftercare === aftercareFixture) {
-    await rm(at("content/aftercare.mdoc"), { force: true });
-  }
-  await rmdir(at("content/faq")).catch(() => {});
   // Remove the image folders again only if they're now empty.
   for (const dir of [
     "public/images/artists",

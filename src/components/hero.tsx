@@ -6,7 +6,7 @@ import type { HeroContent } from "@/lib/content";
  * The block at the top of a page: eyebrow, the page's h1, an intro with up
  * to two buttons, and an optional photo beside it (design: Figma, Ideation
  * page, "Hero - Home" and "Hero - Page + Left/Right Image"). Content comes
- * from Keystatic's "Page heroes" entry via getHero(); styles are .hero in
+ * from the page's entry under Pages in Keystatic via getHero(); styles are .hero in
  * components.css.
  *
  * size "home" sets the heading at the display size and the intro as a lead;

@@ -170,7 +170,6 @@ const sectionNav = [
   { id: "tabs", title: "Tabs" },
   { id: "chips", title: "Choice chips" },
   { id: "filters", title: "Filter chips" },
-  { id: "richtext", title: "Rich text" },
   { id: "cards", title: "Cards and grid" },
   { id: "filmstrip", title: "Filmstrip" },
   { id: "hero", title: "Hero" },
@@ -680,25 +679,6 @@ export default async function StyleGuidePage() {
             ),
           )}
         </ul>
-      </Section>
-
-      <Section id="richtext" title="Rich text">
-        <div className="richtext measure">
-          <p>
-            Text an editor writes in Keystatic: paragraphs with{" "}
-            <strong>bold</strong>, <em>italic</em> and{" "}
-            <a href="#richtext-heading">links</a>.
-          </p>
-          <h3>Headings, lists</h3>
-          <ul>
-            <li>Bulleted items</li>
-            <li>Keep each one short</li>
-          </ul>
-          <ol>
-            <li>Numbered steps</li>
-            <li>Read in order</li>
-          </ol>
-        </div>
       </Section>
 
       <Section id="cards" title="Cards and grid">

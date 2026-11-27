@@ -37,7 +37,7 @@
     }
   }
 
-  /* Anchored links (/faq#...) land below the sticky header row. */
+  /* Anchored links (#...) land below the sticky header row. */
   html {
     scroll-padding-top: 7rem;
   }

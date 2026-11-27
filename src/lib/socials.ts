@@ -1,8 +1,8 @@
 import type { IconName } from "@/components/ui/icon";
 
 /**
- * Social profiles the shop links to, edited in Keystatic (Shop info →
- * Social links). Each known platform has its official icon. "Other" takes a
+ * Social profiles the shop links to, edited in Keystatic (Shop → Social
+ * links). Each known platform has its official icon. "Other" takes a
  * name and shows a generic link icon, so a new profile can go up without a
  * code change; to give a platform its own icon later, add the icon to
  * src/components/ui/icon.tsx and an entry here (the Keystatic select reads

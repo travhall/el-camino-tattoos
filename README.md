@@ -62,11 +62,13 @@ Analytics (Cloudflare Web Analytics, cookieless) loads only when `CLOUDFLARE_ANA
 
 ## Content
 
-Artists and portfolio pieces live in `content/`, and their images in `public/images/`. Edit them in the admin at `/keystatic`.
+Everything editable lives in `content/` (images in `public/images/`) and is edited in the admin at `/keystatic`, which groups it three ways:
 
-The **Aftercare** page and the **FAQ** are also edited in the admin, under **Pages**. The FAQ is Markdoc rich text — each question is its own entry (`content/faq/*.mdoc`) with an order number, and the editor offers bold, italic, links and lists, so the page layout can't be broken. Aftercare (`content/aftercare.mdoc`) is structured instead: an intro line, a numbered list of care steps (title + body, plain text), and a "when to get help" field that's rich text (bold, italic, links, lists). Until something is written, each page says so and points to the contact form. Each question is linkable by its slug, e.g. `/faq#deposit`.
+- **Shop** (`content/shop/`): **Contact & location** (phone, email, address), **Hours & booking** (opening hours, walk-ins, the walk-in and consultation notes, the deposit), **Social links**, and **Search & sharing** (the site description).
+- **Pages** (`content/pages/`): one entry per page, each with its hero (eyebrow, heading, intro, buttons, optional photo). **Home** also holds the shop promises and the artists section's copy. **Aftercare** and **FAQ** are just their hero for now.
+- **Work** (`content/artists/`, `content/pieces/`): artists and portfolio pieces.
 
-Shop details (address, hours, phone, email, Instagram, the walk-ins and consultation notes, the deposit amount, and the site description) are one entry, `content/site.yaml`, edited under **Shop info** in the admin. Every field is optional and shows only when filled in. The committed values are placeholders (the address is the sister skate shop's); replace them before launch.
+Every field is optional and shows only when filled in. The committed shop values are placeholders (the address is the sister skate shop's); replace them before launch.
 
 - **Locally:** the admin writes straight to your working tree.
 - **In production:** the admin commits to GitHub (`travhall/el-camino-tattoos`), and Netlify rebuilds from the commit.

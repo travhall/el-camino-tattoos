@@ -30,7 +30,7 @@ An approachable, unpretentious, working-class American traditional shop downtown
 - **Request flow.** The visitor sends an idea through the form (optionally with reference images, placement, size and budget). An artist replies. A deposit (usually $100) holds the appointment. Then the session.
 - **Pricing.** Never publish tattoo prices. Artists usually charge hourly but may quote a flat rate per piece. The $100 deposit is a booking fee, not tattoo pricing, and may be mentioned in passing. Full policy text lives in the FAQ.
 - **People.** The roster is resident artists, one apprentice (Taylor, likely through spring or summer 2027), and occasional guest or traveling artists. No new residents or apprentices will be taken on.
-- **Content editing.** Shop info, artists, pieces, FAQ and Aftercare are edited in Keystatic (`/keystatic`) by non-developers.
+- **Content editing.** Shop details, each page (its hero, plus the home page's promises and artists section), artists and pieces are edited in Keystatic (`/keystatic`) by non-developers. FAQ and Aftercare are just a hero for now.
 
 ## Capabilities and Constraints
 
@@ -58,7 +58,7 @@ An approachable, unpretentious, working-class American traditional shop downtown
 
 ## Evidence on Hand
 
-- **Placeholders.** Everything visible is placeholder: copy, artist names (Ty Morse and two unnamed artists), photos (Unsplash), and the address. `content/site.yaml` currently holds the sister skate shop's address, and it must never ship as the tattoo shop's address.
+- **Placeholders.** Everything visible is placeholder: copy, artist names (Ty Morse and two unnamed artists), photos (Unsplash), and the address. `content/shop/contact.yaml` currently holds the sister skate shop's address, and it must never ship as the tattoo shop's address.
 - **No real proof yet.** No real testimonials, reviews, press or photography exist. Don't fabricate any.
 - **Logo.** `public/logo.svg` is a placeholder wordmark until the real logo arrives.
 

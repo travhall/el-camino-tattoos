@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { RichText, richTextToPlainText } from "@/components/rich-text";
-import { RevealOnView } from "@/components/reveal-on-view";
 import { Hero } from "@/components/hero";
-import { getFaqs, getHero } from "@/lib/content";
+import { getHero } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { siteName } from "@/lib/site";
 
@@ -13,66 +10,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/faq",
 });
 
+/** The page is its hero, edited under Pages → FAQ in Keystatic. */
 export default async function FaqPage() {
-  const [faqs, hero] = await Promise.all([getFaqs(), getHero("faq")]);
-
-  const faqJsonLd =
-    faqs.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: faqs.map((faq) => ({
-            "@type": "Question",
-            name: faq.question,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: richTextToPlainText(faq.answer),
-            },
-          })),
-        }
-      : null;
-
-  return (
-    <>
-      <Hero hero={hero} fallbackHeading="FAQ" />
-      <div className="stack">
-        {faqs.length === 0 ? (
-          <p className="muted measure">
-            No questions have been added yet. If you have one, please{" "}
-            <Link href="/contact" className="link">
-              get in touch
-            </Link>
-            .
-          </p>
-        ) : (
-          <div className="faq">
-            {/* The id makes each question linkable: /faq#deposit. */}
-            {faqs.map((faq, index) => (
-              // Each question fades up as it scrolls into view; those on
-              // screen at load follow the hero in turn (RevealOnView).
-              <RevealOnView
-                as="section"
-                loadDelay={400 + Math.min(index, 5) * 100}
-                key={faq.slug}
-                id={faq.slug}
-                aria-labelledby={`${faq.slug}-question`}
-                className="faq__item"
-              >
-                <h2 id={`${faq.slug}-question`} className="heading-3">
-                  {faq.question}
-                </h2>
-                <RichText node={faq.answer} />
-              </RevealOnView>
-            ))}
-          </div>
-        )}
-      </div>
-      {faqJsonLd ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      ) : null}
-    </>
-  );
+  const hero = await getHero("faq");
+  return <Hero hero={hero} fallbackHeading="FAQ" />;
 }
