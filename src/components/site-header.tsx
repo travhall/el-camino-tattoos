@@ -98,15 +98,28 @@ export async function SiteHeader() {
               </ul>
             )}
           </div>
-          {hasStatus && (
-            <p className="site-header__status">
-              <ShopStatus
-                hours={site.hours}
-                walkIns={site.walkIns}
-                walkInNote={site.walkInNote}
-                className="shop-status"
-              />
-            </p>
+          {(site.street || site.phone) && (
+            <address className="site-header__contact">
+              {site.street && (
+                <div>
+                  <p className="site-header__contact-label">Find us</p>
+                  <p>{site.street}</p>
+                  {(cityLine || site.postalCode) && (
+                    <p>
+                      {[cityLine, site.postalCode].filter(Boolean).join(" ")}
+                    </p>
+                  )}
+                </div>
+              )}
+              {site.phone && (
+                <div>
+                  <p className="site-header__contact-label">Call or text</p>
+                  <a href={phoneHref(site.phone)} className="link">
+                    {site.phone}
+                  </a>
+                </div>
+              )}
+            </address>
           )}
         </HeaderMenu>
       </div>

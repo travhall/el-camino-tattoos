@@ -12,7 +12,12 @@ import { useEffect, useId, useRef, useState } from "react";
  * Without JavaScript the panel is simply open: it only collapses once
  * data-collapsible is set after hydration, and the toggle only shows then.
  * Closes on Escape (focus returns to the toggle), on navigation, and when a
- * link inside is clicked (a link to the current page doesn't navigate).
+ * link to the current page is clicked (it doesn't navigate).
+ *
+ * A link to another page leaves the panel open until the new page is in:
+ * data-menu-nav on <html> turns that navigation's page transition off
+ * (globals.css), so the swap happens unseen behind the panel, which then
+ * fades out over the new page.
  */
 export function HeaderMenu({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
@@ -25,9 +30,19 @@ export function HeaderMenu({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => setReady(true), []);
-  // Close on navigation (pathname is the trigger, not a value read).
+  // Close on navigation (pathname is the trigger, not a value read), and
+  // once the panel has faded out, let page transitions animate again.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    setOpen(false);
+    const root = document.documentElement;
+    if (!root.hasAttribute("data-menu-nav")) return;
+    const timer = window.setTimeout(
+      () => root.removeAttribute("data-menu-nav"),
+      500,
+    );
+    return () => window.clearTimeout(timer);
+  }, [pathname]);
 
   // While open, the panel covers the screen (CSS), so: lock page scroll,
   // make everything outside the header row inert (the page behind and the
@@ -109,7 +124,18 @@ export function HeaderMenu({ children }: { children: React.ReactNode }) {
         data-open={open || undefined}
         data-animate={used || undefined}
         onClick={(event) => {
-          if ((event.target as Element).closest("a")) setOpen(false);
+          const link = (event.target as Element).closest("a");
+          if (!link) return;
+          // A new tab or window leaves this page as it is.
+          if (event.metaKey || event.ctrlKey || event.shiftKey) return;
+          const url = new URL(link.href, window.location.href);
+          const closeNow =
+            url.origin !== window.location.origin ||
+            url.pathname === window.location.pathname;
+          // Another page on this site: stay open until it's in (above).
+          // Anything else (this page, a phone or social link) just closes.
+          if (closeNow) setOpen(false);
+          else document.documentElement.setAttribute("data-menu-nav", "");
         }}
       >
         {children}

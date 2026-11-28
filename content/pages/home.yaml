@@ -22,3 +22,16 @@ artists:
     We’re all local, working-class people, and we’re guessing you are too. If
     not, no worries, all are welcome here.
   buttonLabel: Meet the team
+steps:
+  heading: What to expect
+  items:
+    - title: Send your idea or stop by.
+      text: What, where, roughly how big. Pictures help.
+    - title: An artist gets back to you.
+      text: Free consult. We talk it through.
+    - title: $100 holds your appointment.
+      text: A deposit books the appointment.
+    - title: Get tattooed, it’s kinda the point.
+      text: Settle in. No rush.
+    - title: Heal it right and make it last.
+      text: Aftercare guide, we check in.

@@ -65,7 +65,7 @@ Analytics (Cloudflare Web Analytics, cookieless) loads only when `CLOUDFLARE_ANA
 Everything editable lives in `content/` (images in `public/images/`) and is edited in the admin at `/keystatic`, which groups it three ways:
 
 - **Shop** (`content/shop/`): **Contact & location** (phone, email, address), **Hours & booking** (opening hours, walk-ins, the walk-in and consultation notes, the deposit), **Social links**, and **Search & sharing** (the site description).
-- **Pages** (`content/pages/`): one entry per page, each with its hero (eyebrow, heading, intro, buttons, optional photo). **Home** also holds the shop promises and the artists section's copy; **Artists** holds the two panels at the foot of its page. **Aftercare** and **FAQ** are just their hero for now.
+- **Pages** (`content/pages/`): one entry per page, each with its hero (eyebrow, heading, intro, buttons, optional photo). **Home** also holds the shop promises, the artists section's copy and the What to expect steps; **Artists** holds the two panels at the foot of its page. **Aftercare** and **FAQ** are just their hero for now.
 - **Work** (`content/artists/`, `content/pieces/`): artists and portfolio pieces. An artist's booking status, extra links and profile facts are optional; leave booking status on Don't show unless someone will keep it current. Tick Featured on up to three of an artist's pieces to choose their featured work.
 
 Every field is optional and shows only when filled in. The committed shop values are placeholders (the address is the sister skate shop's); replace them before launch.

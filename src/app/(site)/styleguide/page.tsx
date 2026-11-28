@@ -3,6 +3,7 @@ import { BookingStatus } from "@/components/booking-status";
 import { FeaturedWork } from "@/components/featured-work";
 import { Filmstrip } from "@/components/filmstrip";
 import { NauticalStar } from "@/components/nautical-star";
+import { WhatToExpect } from "@/components/what-to-expect";
 import { Hero } from "@/components/hero";
 import {
   getArtists,
@@ -177,6 +178,7 @@ const sectionNav = [
   { id: "cards", title: "Cards and grid" },
   { id: "artist-profile", title: "Artist profile" },
   { id: "panels", title: "Closing panels" },
+  { id: "steps", title: "Steps" },
   { id: "filmstrip", title: "Filmstrip" },
   { id: "hero", title: "Hero" },
 ] as const;
@@ -771,6 +773,26 @@ export default async function StyleGuidePage() {
             </div>
           </div>
         </div>
+      </Section>
+
+      <Section id="steps" title="Steps">
+        <Label>
+          What to expect, at the foot of the homepage (Pages → Home). One panel
+          split by hairlines: one column on phones, two from sm, five from lg.
+          Sample copy.
+        </Label>
+        <WhatToExpect
+          steps={{
+            heading: "What to expect",
+            items: [
+              { title: "Send your idea.", text: "Pictures help." },
+              { title: "We talk it through.", text: "Free consult." },
+              { title: "Book it.", text: "A deposit holds the date." },
+              { title: "Get tattooed.", text: "Settle in." },
+              { title: "Heal it right.", text: "We check in." },
+            ],
+          }}
+        />
       </Section>
 
       <Section id="filmstrip" title="Filmstrip">

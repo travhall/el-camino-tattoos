@@ -100,6 +100,19 @@
   }
 }
 
+/* Navigating from the phone Menu: the open panel already covers the page,
+   so the swap happens behind it with no animation, and the panel then fades
+   out over the new page (HeaderMenu sets data-menu-nav for that one
+   navigation). Otherwise the panel would vanish and the old page be seen
+   fading out. */
+html[data-menu-nav]::view-transition-old(.page-swap) {
+  display: none;
+}
+
+html[data-menu-nav]::view-transition-new(.page-swap) {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(.page-swap) {
     animation-name: page-in-still;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { type WeeklyHours, openStatus } from "@/lib/hours";
+import { hasHours, type WeeklyHours, openStatus } from "@/lib/hours";
 
 // The current minute, so the status re-renders as the shop opens and closes.
 // Pages are prerendered, so "now" can only be known in the browser: the
@@ -34,8 +34,16 @@ export function ShopStatus({
 
   if (!status) {
     if (!walkInNote) return null;
+    // With hours set, this is only the placeholder until the browser knows
+    // the time: hidden once scripts run (data-pending, components.css).
+    // Keyed apart from the live status so that one mounts fresh and fades in.
     return (
-      <span className={className} data-state="open">
+      <span
+        key="pending"
+        className={className}
+        data-state="open"
+        data-pending={(now === null && hasHours(hours)) || undefined}
+      >
         <span aria-hidden="true" className="status-dot" />
         <span className="shop-status__detail">{walkInNote}</span>
       </span>
@@ -58,7 +66,7 @@ export function ShopStatus({
           ];
 
   return (
-    <span className={className} data-state={status.state}>
+    <span key="live" className={className} data-state={status.state} data-live>
       <span aria-hidden="true" className="status-dot" />
       <span className="shop-status__label">{label}</span>
       {detail && <span className="shop-status__detail">{detail}</span>}

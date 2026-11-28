@@ -144,6 +144,24 @@ test.describe("shop info", () => {
     ).toHaveAttribute("href", "/artists");
   });
 
+  test("the homepage ends with the numbered What to expect steps", async ({
+    page,
+  }) => {
+    await open(page, "/");
+    const section = page.getByRole("region", { name: "What to expect" });
+    const steps = section.getByRole("listitem");
+    await expect(steps).toHaveCount(5);
+    await expect(steps.first().getByRole("heading", { level: 3 })).toHaveText(
+      "Send your idea or stop by.",
+    );
+    // Five in a row on wide screens.
+    await page.setViewportSize({ width: 1512, height: 900 });
+    const tops = await steps.evaluateAll((items) =>
+      items.map((item) => Math.round(item.getBoundingClientRect().top)),
+    );
+    expect(new Set(tops).size).toBe(1);
+  });
+
   test("a photo that fails to load is replaced by a placeholder", async ({
     page,
   }) => {

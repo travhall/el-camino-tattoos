@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArtistGrid } from "@/components/artist-grid";
 import { NauticalStar } from "@/components/nautical-star";
 import { Photo } from "@/components/photo";
+import { RevealOnView } from "@/components/reveal-on-view";
 import { ButtonLink } from "@/components/ui/button";
 import { Hero } from "@/components/hero";
 import { getArtists, getArtistsPage, getHero, getSite } from "@/lib/content";
@@ -46,8 +47,9 @@ export default async function ArtistsPage() {
 
       {/* Two panels: for clients who don't know who to ask (the main
           button), and for tattooers after a guest spot (a quieter one).
-          Side by side from lg. Copy from Pages → Artists in Keystatic. */}
-      <div className="closing-panels">
+          Side by side from lg, rising in one after the other as they
+          scroll into view. Copy from Pages → Artists in Keystatic. */}
+      <RevealOnView className="closing-panels">
         <section aria-labelledby="match-heading" className="closing-panel">
           {/* The crew's faces, overlapping: decorative, the cards above name them. */}
           {faces.length > 1 && (
@@ -97,7 +99,7 @@ export default async function ArtistsPage() {
             </div>
           </section>
         )}
-      </div>
+      </RevealOnView>
     </div>
   );
 }

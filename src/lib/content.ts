@@ -212,6 +212,11 @@ export type HomeContent = {
     intro: string;
     buttonLabel: string;
   };
+  /** The numbered steps at the foot of the page; no items hides it. */
+  steps: {
+    heading: string;
+    items: readonly { title: string; text: string }[];
+  };
 };
 
 /** The home page's own content besides its hero (Pages → Home in Keystatic). */
@@ -224,6 +229,12 @@ export const getHome = cache(async (): Promise<HomeContent> => {
       heading: entry?.artists.heading.trim() ?? "",
       intro: entry?.artists.intro.trim() ?? "",
       buttonLabel: entry?.artists.buttonLabel.trim() ?? "",
+    },
+    steps: {
+      heading: entry?.steps.heading.trim() ?? "",
+      items: (entry?.steps.items ?? [])
+        .map((item) => ({ title: item.title.trim(), text: item.text.trim() }))
+        .filter((item) => item.title),
     },
   };
 });

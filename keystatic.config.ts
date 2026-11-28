@@ -461,6 +461,31 @@ export default config({
             "The section with the artists' photos further down the page.",
         },
       ),
+      steps: fields.object(
+        {
+          heading: fields.text({
+            label: "Heading",
+            description: "Leave empty for “What to expect”.",
+          }),
+          items: fields.array(
+            fields.object({
+              title: fields.text({ label: "Step" }),
+              text: fields.text({ label: "Detail", multiline: true }),
+            }),
+            {
+              label: "Steps",
+              description:
+                "Numbered in this order. Five fit one row on wide screens. If a step names the deposit, keep it in line with Shop → Hours & booking.",
+              itemLabel: (props) => props.fields.title.value || "Step",
+            },
+          ),
+        },
+        {
+          label: "What to expect",
+          description:
+            "The numbered steps at the foot of the page. Hidden when there are no steps.",
+        },
+      ),
     }),
     pageArtists: pageSingleton("Artists", "artists", {
       match: closingPanelField(

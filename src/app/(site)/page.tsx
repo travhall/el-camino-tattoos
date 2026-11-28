@@ -3,6 +3,7 @@ import { ArtistsTeaser } from "@/components/artists-teaser";
 import { Filmstrip } from "@/components/filmstrip";
 import { Hero } from "@/components/hero";
 import { ShopPromises } from "@/components/shop-promises";
+import { WhatToExpect } from "@/components/what-to-expect";
 import {
   getArtists,
   getFilmstripPieces,
@@ -33,6 +34,7 @@ export default async function Home() {
       <ShopPromises promises={home.promises} />
 
       <ArtistsTeaser artists={artists} content={home.artists} />
+      <WhatToExpect steps={home.steps} />
     </div>
   );
 }
