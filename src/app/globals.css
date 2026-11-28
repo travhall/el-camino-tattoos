@@ -83,8 +83,8 @@
 /* Portfolio filter (the keyed ViewTransition around PieceGrid): the old
    grid sinks and fades out as one; the new grid shows at once with no
    animation of its own, because its tiles are hidden until RevealOnView
-   plays their entrance, timed (loadDelay) to start as the old grid
-   finishes. So the cards leave, then the new set opens in. */
+   plays their entrance, timed (loadDelay 450ms) to start just after the
+   old grid finishes (320ms). So the cards leave, then the new set opens in. */
 ::view-transition-old(.grid-swap) {
   animation: grid-out var(--duration-slow) ease-in both;
 }

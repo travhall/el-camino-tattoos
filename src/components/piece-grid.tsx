@@ -27,7 +27,7 @@ export function PieceGrid({
           <RevealOnView
             as="li"
             key={piece.slug}
-            loadDelay={300}
+            loadDelay={450}
             style={{ "--i": index % 4 } as CSSProperties}
           >
             {/* The piece page opens in the viewer dialog over this grid (an

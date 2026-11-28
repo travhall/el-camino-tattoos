@@ -65,10 +65,17 @@ export function RevealOnView<T extends ElementType = "div">({
     }
 
     element.dataset.reveal = "pending";
+    // An observer always reports once straight away. If the block is on
+    // screen in that first report, it was on screen at load (the check
+    // above can run before layout settles, on phones especially), so it
+    // still waits for the load entrances (loadDelay) instead of racing them.
+    let initial = true;
     const observer = new IntersectionObserver(
       ([entry]) => {
+        const atLoad = initial;
+        initial = false;
         if (!entry?.isIntersecting) return;
-        play(0);
+        play(atLoad ? loadDelay : 0);
         observer.disconnect();
       },
       // Fires once the block's top passes a fifth of the way up the screen,

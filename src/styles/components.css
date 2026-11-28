@@ -1582,7 +1582,7 @@
       clip-path: inset(0 0 100% 0 round var(--reveal-radius, 0));
     }
 
-    & .artists-teaser__content > *,
+    & .artists-teaser__content > :not(h2),
     & .artist-card > :not(.artist-card__media),
     & .what-to-expect__step > *,
     &.closing-panels > * {
@@ -1590,7 +1590,8 @@
     }
 
     /* The mask-rise start state: below its baseline and clipped away. */
-    &.what-to-expect > h2 {
+    &.what-to-expect > h2,
+    & .artists-teaser__content > h2 {
       translate: 0 130%;
       clip-path: inset(-150% -10% 110% -10%);
     }
@@ -1641,6 +1642,12 @@
 
     &:nth-child(3) {
       --i: 2;
+    }
+
+    /* Section headings rise from behind their baseline (as in What to
+       expect and the page heroes), not fade. */
+    &:is(h2) {
+      animation-name: enter-mask-rise;
     }
   }
 
@@ -1727,15 +1734,17 @@
   }
 
   /* The featured frames open after the details, left to right. */
+  /* Starts as the details are still settling, so the whole profile is in
+     by about 2s rather than 2.6s. */
   .featured-work__media {
     --reveal-radius: var(--radius-media);
     animation: media-reveal var(--duration-entrance) var(--ease-in-out)
-      calc(900ms + var(--i, 0) * 120ms) backwards;
+      calc(700ms + var(--i, 0) * 100ms) backwards;
   }
 
   .featured-work__caption {
     animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-      calc(1200ms + var(--i, 0) * 120ms) backwards;
+      calc(900ms + var(--i, 0) * 100ms) backwards;
   }
 
   .featured-work__item:nth-child(2) {

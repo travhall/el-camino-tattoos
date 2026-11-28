@@ -21,7 +21,7 @@ export function ArtistGrid({
         <RevealOnView
           as="li"
           key={artist.slug}
-          loadDelay={300}
+          loadDelay={450}
           style={{ "--i": index % 3 } as CSSProperties}
         >
           <ArtistCard artist={artist} headingLevel={headingLevel} />
