@@ -73,7 +73,7 @@ export default async function ArtistsPage() {
           {match.intro && <p className="closing-panel__text">{match.intro}</p>}
           <div className="closing-panel__action">
             <ButtonLink href="/contact">
-              {match.buttonLabel || "Request an appointment"}
+              {match.buttonLabel || "Book an appointment"}
             </ButtonLink>
           </div>
         </section>

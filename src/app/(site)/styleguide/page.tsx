@@ -41,7 +41,7 @@ const heroCopy = {
   intro:
     "Three artists in downtown Eau Claire making bold, clean work that lasts, at prices that make sense for everyday people.",
   buttons: [
-    { label: "Free consultation", href: "/contact" },
+    { label: "Book a free consult", href: "/contact" },
     { label: "See our work", href: "/portfolio" },
   ],
 };
@@ -501,7 +501,7 @@ export default async function StyleGuidePage() {
           <Button size="lg">Large</Button>
         </div>
         <div className="cluster">
-          <Button icon="arrow-right">Request an appointment</Button>
+          <Button icon="arrow-right">Book an appointment</Button>
           <Button variant="secondary" icon="arrow-up-right">
             Open in new tab
           </Button>
@@ -759,7 +759,7 @@ export default async function StyleGuidePage() {
               with the right hands.
             </p>
             <div className="closing-panel__action">
-              <Button>Request an appointment</Button>
+              <Button>Book an appointment</Button>
             </div>
           </div>
           <div className="closing-panel closing-panel--quiet">

@@ -106,7 +106,7 @@ test.describe("shop info", () => {
     );
     await expect(hero.getByText("Three artists in downtown")).toBeVisible();
     await expect(
-      hero.getByRole("link", { name: "Free consultation" }),
+      hero.getByRole("link", { name: "Book a free consult" }),
     ).toHaveAttribute("href", "/contact");
     await expect(
       hero.getByRole("link", { name: "See our work" }),
@@ -220,14 +220,12 @@ test.describe("shop info", () => {
     ).toBeVisible();
   });
 
-  test("the header's action is Request an appointment, and it goes to the form", async ({
+  test("the header's action is Book now, and it goes to the form", async ({
     page,
   }) => {
     await open(page, "/");
     await expect(
-      page
-        .getByRole("banner")
-        .getByRole("link", { name: "Request an appointment" }),
+      page.getByRole("banner").getByRole("link", { name: "Book now" }),
     ).toHaveAttribute("href", "/contact");
   });
 });
@@ -246,7 +244,7 @@ test.describe("artist pages", () => {
     await expect(facts.getByText("Koi, Peonies")).toBeVisible();
     await expect(facts.getByText("Fixture Fridays")).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Request with Fixture One" }),
+      page.getByRole("link", { name: "Book with Fixture One" }),
     ).toHaveAttribute("href", "/contact?artist=zz-fixture-one");
     await expect(
       page.getByRole("link", { name: "Fixture One on Instagram" }),
@@ -285,7 +283,7 @@ test.describe("artist pages", () => {
       name: "Not sure who’s right for you?",
     });
     await expect(
-      help.getByRole("link", { name: "Request an appointment" }),
+      help.getByRole("link", { name: "Book an appointment" }),
     ).toHaveAttribute("href", "/contact");
     const guests = page.getByRole("region", { name: "Traveling tattooer?" });
     await expect(
@@ -355,12 +353,24 @@ test.describe("FAQ page", () => {
     );
   });
 
-  test("the header links to the FAQ", async ({ page }) => {
+  test("the FAQ and Aftercare are in the footer, not the desktop header", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await open(page, "/");
+    const footer = page.getByRole("navigation", { name: "Footer" });
+    await expect(footer.getByRole("link", { name: "FAQ" })).toHaveAttribute(
+      "href",
+      "/faq",
+    );
     await expect(
-      page
-        .getByRole("navigation", { name: "Primary" })
-        .getByRole("link", { name: "FAQ" }),
-    ).toHaveAttribute("href", "/faq");
+      footer.getByRole("link", { name: "Aftercare" }),
+    ).toHaveAttribute("href", "/aftercare");
+    const header = page.getByRole("navigation", { name: "Primary" });
+    await expect(header.getByRole("link", { name: "FAQ" })).toBeHidden();
+    await expect(header.getByRole("link", { name: "Home" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 });

@@ -36,7 +36,7 @@ test("skip link is the first tab stop and moves focus into <main>", async ({
 test("nav marks the current page and its section", async ({ page }) => {
   const portfolio = page
     .getByRole("navigation", { name: "Primary" })
-    .getByRole("link", { name: "Portfolios" });
+    .getByRole("link", { name: "Portfolio", exact: true });
 
   await open(page, "/portfolio");
   await expect(portfolio).toHaveAttribute("aria-current", "page");
@@ -702,9 +702,7 @@ test.describe("artists page", () => {
       page.getByRole("heading", { name: "Not sure who’s right for you?" }),
     ).toBeVisible();
     await expect(
-      page
-        .getByRole("main")
-        .getByRole("link", { name: "Request an appointment" }),
+      page.getByRole("main").getByRole("link", { name: "Book an appointment" }),
     ).toHaveAttribute("href", "/contact");
     await expect(
       page.getByRole("heading", { name: "Traveling tattooer?" }),
@@ -761,7 +759,7 @@ test.describe("filmstrip", () => {
     await page.setViewportSize({ width: 834, height: 1194 });
     await open(page, "/");
     const items = page.locator(".filmstrip__item");
-    const [a, b, c, d] = await Promise.all(
+    const [a, , c, d] = await Promise.all(
       [0, 1, 2, 3].map((i) => items.nth(i).boundingBox()),
     );
     expect(a!.y).toBe(c!.y);

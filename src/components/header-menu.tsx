@@ -1,7 +1,22 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+
+// True once hydrated (false in the server HTML), without an effect.
+const noop = () => () => {};
+const useHydrated = () =>
+  useSyncExternalStore(
+    noop,
+    () => true,
+    () => false,
+  );
 
 /**
  * The header's nav and actions. On desktop they sit in the header row and
@@ -20,7 +35,7 @@ import { useEffect, useId, useRef, useState } from "react";
  * fades out over the new page.
  */
 export function HeaderMenu({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false);
+  const ready = useHydrated();
   const [open, setOpen] = useState(false);
   // Set on first use, so the fade never runs on page load (when the panel
   // goes from its no-JS layout to closed).
@@ -29,12 +44,18 @@ export function HeaderMenu({ children }: { children: React.ReactNode }) {
   const id = useId();
   const pathname = usePathname();
 
-  useEffect(() => setReady(true), []);
-  // Close on navigation (pathname is the trigger, not a value read), and
-  // once the panel has faded out, let page transitions animate again.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  // Close on navigation: when the pathname changes, reset during render
+  // (React's pattern for adjusting state to a prop) rather than in an
+  // effect, which would render twice.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
     setOpen(false);
+  }
+
+  // Once the panel has faded out after a navigation from it, let page
+  // transitions animate again (pathname is the trigger, not a value read).
+  useEffect(() => {
     const root = document.documentElement;
     if (!root.hasAttribute("data-menu-nav")) return;
     const timer = window.setTimeout(

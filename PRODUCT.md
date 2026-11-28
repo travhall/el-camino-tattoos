@@ -37,7 +37,7 @@ An approachable, unpretentious, working-class American traditional shop downtown
 - Next.js App Router, React, Tailwind CSS v4, TypeScript, Keystatic (files in the repo), hosted on Netlify. Use pnpm only.
 - **Contact form.** Uses Netlify Forms with up to 3 file uploads (8MB per submission), a honeypot, and a no-JavaScript fallback.
 - **Pages.** Artists (resident and guest), portfolio with an artist filter, piece pages plus an intercepting-route lightbox, contact, FAQ, Aftercare, and a styleguide.
-- **Primary action label.** "Request an appointment". The form requests an appointment; it does not confirm a booking. A real "Book" flow for existing clients is a later phase and needs a scheduling tool; don't add a Book link before then.
+- **Primary action labels** (decided 2026-11-27, replacing "Request an appointment"). Every button that opens the request form starts with "Book", the word clients use: "Book now" (header), "Book a free consult" (home hero), "Book with [artist]" (artist profile), "Book an appointment" (elsewhere). The form itself stays honest: its submit is "Send request", and it says an artist gets back to you and a deposit holds the date. "Free consultation" is a selling point in body copy; "book/books" otherwise only means the deposit step or an artist's own diary ("Books open"). A real self-scheduling flow is still a later phase and needs a scheduling tool.
 - **Undecided (waiting on the owner):**
   - Exact deposit and cancellation policy.
   - Response-time promise and walk-in hours.
@@ -66,7 +66,7 @@ An approachable, unpretentious, working-class American traditional shop downtown
 
 1. **Welcome first.** Every page should make a nervous first-timer feel they belong. Approachability beats exclusivity.
 2. **The work is the proof.** Real tattoos by real artists carry the trust; claims don't.
-3. **One clear way in.** Every path leads to "Request an appointment", with walk-ins and the phone always close at hand.
+3. **One clear way in.** Every path leads to the same request form behind a "Book" button, with walk-ins and the phone always close at hand.
 4. **Honest about how it works.** Explain the process (consult, deposit, session) at the moment of decision. Never publish prices.
 5. **Editable by the shop.** Anything the owner may change lives in Keystatic, not in code.
 

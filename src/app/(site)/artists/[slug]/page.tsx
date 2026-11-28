@@ -109,7 +109,7 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
               <ButtonLink
                 href={`/contact?artist=${encodeURIComponent(artist.slug)}`}
               >
-                Request with {artist.name}
+                Book with {artist.name}
               </ButtonLink>
               {artist.links.length > 0 && (
                 <ul className="artist-profile__links">

@@ -491,7 +491,7 @@ export default config({
       match: closingPanelField(
         "Help choosing",
         "The first panel under the artists, for clients who don't know who to ask. Its button goes to the request form.",
-        "Request an appointment",
+        "Book an appointment",
       ),
       guests: closingPanelField(
         "Guest artists",

@@ -8,13 +8,18 @@ import { getSite } from "@/lib/content";
 import { hasHours } from "@/lib/hours";
 import { phoneHref } from "@/lib/site";
 
-/** Site navigation, shared by the header and the footer (as in the design). */
+/**
+ * Site navigation, shared by the header and the footer, in the design's
+ * order. `phoneOnly` links are in the phone Menu panel and the footer but
+ * not the desktop header row, which keeps to the four main pages.
+ */
 export const navLinks = [
+  { href: "/", label: "Home" },
   { href: "/artists", label: "Artists" },
-  { href: "/portfolio", label: "Portfolios" },
-  { href: "/aftercare", label: "Aftercare" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/contact", label: "Contact" },
+  { href: "/aftercare", label: "Aftercare", phoneOnly: true },
+  { href: "/faq", label: "FAQ", phoneOnly: true },
 ] as const;
 
 /**
@@ -66,9 +71,17 @@ export async function SiteHeader() {
         </Link>
         <HeaderMenu>
           <nav aria-label="Primary" className="site-nav">
-            {navLinks.map(({ href, label }) => (
-              <NavLink key={href} href={href} className="site-nav__link">
-                {label}
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.href}
+                href={link.href}
+                className={
+                  "phoneOnly" in link
+                    ? "site-nav__link site-nav__link--phone"
+                    : "site-nav__link"
+                }
+              >
+                {link.label}
               </NavLink>
             ))}
           </nav>
@@ -80,7 +93,7 @@ export async function SiteHeader() {
               icon="arrow-up-right"
               className="site-header__cta"
             >
-              Request an appointment
+              Book now
             </ButtonLink>
             {site.socials.length > 0 && (
               <ul className="site-header__socials">

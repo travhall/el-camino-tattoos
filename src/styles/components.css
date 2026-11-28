@@ -140,6 +140,12 @@
     @apply inline-flex min-h-12 shrink-0 items-center font-display text-3xl whitespace-nowrap text-foreground uppercase underline-offset-8 hover:underline lg:min-h-11 lg:font-sans lg:text-sm lg:normal-case;
   }
 
+  /* Aftercare and FAQ: in the phone panel, but not the desktop row (the
+     footer links them there). */
+  .site-nav__link--phone {
+    @apply lg:hidden;
+  }
+
   .site-nav__link[aria-current] {
     @apply underline decoration-nav-current decoration-2;
   }
@@ -1470,16 +1476,20 @@
         --menu-i: 3;
       }
 
-      & .site-nav__link:nth-child(n + 5) {
+      & .site-nav__link:nth-child(5) {
         --menu-i: 4;
       }
 
-      & > .site-header__actions {
+      & .site-nav__link:nth-child(n + 6) {
         --menu-i: 5;
       }
 
-      & > .site-header__contact {
+      & > .site-header__actions {
         --menu-i: 6;
+      }
+
+      & > .site-header__contact {
+        --menu-i: 7;
       }
     }
   }
