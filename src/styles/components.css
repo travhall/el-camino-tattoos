@@ -540,13 +540,11 @@
     @apply block;
   }
 
+  /* Landscape (4:3), so a row of cards doesn't take a screen of scrolling;
+     the portraits are uploaded tall, so object-position keeps faces (their
+     upper third) in the crop. The profile page has the full-height photo. */
   .artist-card__media {
-    @apply relative aspect-[3/4] overflow-hidden rounded-media bg-surface;
-  }
-
-  /* object-position keeps faces (upper third of a portrait) in the crop. */
-  .artist-grid--landscape .artist-card__media {
-    @apply aspect-[4/3];
+    @apply relative aspect-[4/3] overflow-hidden rounded-media bg-surface;
 
     & img {
       @apply object-[50%_25%];

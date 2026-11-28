@@ -143,7 +143,7 @@ export default async function ArtistPage(props: PageProps<"/artists/[slug]">) {
       {others.length > 0 && (
         <section aria-labelledby="others-heading" className="stack stack--lg">
           <h2 id="others-heading">Other artists</h2>
-          <ArtistGrid artists={others} headingLevel={3} landscape />
+          <ArtistGrid artists={others} headingLevel={3} />
         </section>
       )}
     </div>

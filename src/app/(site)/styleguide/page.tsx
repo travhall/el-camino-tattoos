@@ -701,7 +701,7 @@ export default async function StyleGuidePage() {
         <div className="artist-grid">
           {["Artist one", "Artist two", "Artist three"].map((name) => (
             <div key={name}>
-              <div className="sg-tile sg-tile--portrait">3:4 portrait</div>
+              <div className="sg-tile sg-tile--landscape">4:3 artist photo</div>
               <h3 className="artist-card__name">{name}</h3>
               <p className="artist-card__meta">Fine line, Traditional</p>
             </div>

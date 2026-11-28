@@ -81,8 +81,8 @@
     @apply aspect-[4/5];
   }
 
-  .sg-tile--portrait {
-    @apply aspect-[3/4];
+  .sg-tile--landscape {
+    @apply aspect-[4/3];
   }
 
   .sg-form {
