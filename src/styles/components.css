@@ -514,6 +514,15 @@
     @apply relative aspect-[3/4] overflow-hidden rounded-media bg-surface;
   }
 
+  /* object-position keeps faces (upper third of a portrait) in the crop. */
+  .artist-grid--landscape .artist-card__media {
+    @apply aspect-[4/3];
+
+    & img {
+      @apply object-[50%_25%];
+    }
+  }
+
   .artist-card__name {
     @apply mt-3 text-lg;
   }
@@ -526,20 +535,171 @@
     @apply text-sm text-muted;
   }
 
-  /* items-start: the text column keeps its natural height instead of
-     stretching (and spreading its rows) to the photo's height. */
-  /* Like the page hero (.hero): the text sits on the photo's lower edge,
-     lifted by the same space as .hero__content. */
+  /* Photo left (5 of 12 columns), and beside it the artist's details over
+     their featured work, both anchored to the photo's lower edge. Phones: one column,
+     photo first. */
   .artist-profile {
-    @apply grid items-start gap-fluid-lg md:grid-cols-[minmax(0,1fr)_2fr] md:items-end;
+    @apply grid items-start gap-fluid-lg md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-stretch;
   }
 
   .artist-profile__content {
-    @apply md:py-fluid-xl;
+    @apply flex flex-col justify-end gap-fluid-lg;
   }
 
+  .artist-profile__intro {
+    @apply flex flex-col gap-fluid-sm;
+  }
+
+  .artist-profile__styles {
+    @apply text-lg text-muted;
+  }
+
+  /* self-start: in the stretched row it would take the row's height and
+     widen past its column to keep 3:4. */
   .artist-profile__photo {
-    @apply relative aspect-[3/4] overflow-hidden rounded-feature;
+    @apply relative aspect-[3/4] self-start overflow-hidden rounded-feature;
+  }
+
+  .artist-profile__actions {
+    @apply flex flex-wrap items-center gap-fluid-sm pt-fluid-2xs;
+  }
+
+  .artist-profile__links {
+    @apply flex items-center gap-fluid-3xs;
+  }
+
+  /* Short facts in a row on wider screens (Tattooing since, Loves to
+     tattoo, Walk-ins), each a small label over its value. */
+  .artist-facts {
+    @apply grid gap-fluid-sm border-y border-line py-fluid-sm sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))];
+  }
+
+  .artist-facts__term {
+    @apply text-sm text-muted;
+  }
+
+  /* An artist's booking status (BookingStatus): dot, words, optional note.
+     The dot's color repeats the words (status-* roles). */
+  .booking-status {
+    @apply flex flex-wrap items-center gap-x-2 gap-y-1 text-sm;
+  }
+
+  .booking-status__label {
+    @apply font-medium;
+  }
+
+  .booking-status__note {
+    @apply text-muted;
+  }
+
+  .booking-status[data-status="waitlist"] .status-dot {
+    @apply bg-status-waitlist;
+  }
+
+  .booking-status[data-status="closed"] .status-dot {
+    @apply bg-status-closed;
+  }
+
+  .artist-card .booking-status {
+    @apply mt-1;
+  }
+
+  /* Featured work in the artist profile: three numbered, captioned frames,
+     landscape (5:4) and on their own row, so they read as the artist's picks and
+     not as the start of the 4:5 grid further down. Phones: a row that
+     scrolls sideways, each frame most of the screen wide. */
+  .featured-work__list {
+    @apply -mx-(--page-gutter) flex snap-x snap-mandatory scroll-px-(--page-gutter) gap-fluid-xs overflow-x-auto px-(--page-gutter) md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0;
+    scrollbar-width: none;
+  }
+
+  .featured-work__item {
+    @apply w-[70%] shrink-0 snap-start md:w-auto;
+  }
+
+  .featured-work__link {
+    @apply flex flex-col gap-2;
+  }
+
+  .featured-work__media {
+    @apply relative aspect-[5/4] overflow-hidden rounded-media bg-surface;
+  }
+
+  .featured-work__image {
+    @apply transition-transform motion-reduce:transition-none;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-out);
+  }
+
+  .featured-work__link:hover .featured-work__image {
+    @apply scale-[1.03];
+  }
+
+  .featured-work__caption {
+    @apply grid gap-0.5 border-t border-line pt-2 text-sm;
+  }
+
+  .featured-work__number {
+    @apply font-display text-xs tracking-wide text-accent-text;
+  }
+
+  .featured-work__title {
+    @apply font-medium;
+  }
+
+  .featured-work__link:hover .featured-work__title {
+    @apply underline;
+  }
+
+  .featured-work__meta {
+    @apply text-muted;
+  }
+
+  /* Panels at the foot of a page (the Artists page: help choosing, guest
+     artists). Stacked on phones, side by side from lg. The quiet one has an
+     outline instead of a fill, so the client panel leads. */
+  .closing-panels {
+    @apply grid gap-fluid-sm lg:grid-cols-2;
+  }
+
+  .closing-panel {
+    @apply flex flex-col gap-fluid-sm rounded-panel bg-surface p-fluid-lg;
+  }
+
+  /* relative + overflow: the quiet panel's star sits cropped in a corner. */
+  .closing-panel--quiet {
+    @apply relative overflow-hidden border border-line bg-transparent;
+
+    & > :not(.closing-panel__star) {
+      @apply relative;
+    }
+  }
+
+  .closing-panel__faces {
+    @apply flex;
+  }
+
+  /* Overlapping round portraits, each ringed in the panel's fill so the
+     overlap reads as separate faces. */
+  .closing-panel__face {
+    @apply relative -ml-3 size-14 overflow-hidden rounded-full bg-surface-raised ring-4 ring-surface first:ml-0;
+  }
+
+  .closing-panel__star {
+    @apply pointer-events-none absolute -top-14 -right-16 size-52 text-line;
+  }
+
+  .closing-panel__text {
+    @apply max-w-prose text-muted;
+  }
+
+  /* Pinned to the panel's foot, so the two buttons line up side by side. */
+  .closing-panel__action {
+    @apply mt-auto flex flex-wrap items-center gap-x-fluid-sm gap-y-2 pt-fluid-xs;
+  }
+
+  .closing-panel__note {
+    @apply text-sm text-muted;
   }
 
   /* Single piece as a full page (a direct visit to /portfolio/[piece]) */
@@ -642,73 +802,6 @@
   .viewer[data-closing] .viewer__stage {
     animation: viewer-conceal var(--duration-reveal) var(--ease-out)
       var(--duration-fast) both;
-  }
-
-  /* Grids (portfolio, artist pages, the artists list): each tile opens as
-     it scrolls in, the tiles of a row a beat apart (--i is the column), and
-     a card's name and specialties fade up under its photo. */
-  .reveal-on-view[data-reveal="play"] {
-    & .piece-tile__media,
-    & .artist-card__media {
-      animation: media-reveal var(--duration-entrance) var(--ease-in-out)
-        calc(var(--reveal-base, 0ms) + var(--i, 0) * 90ms) backwards;
-    }
-
-    & .artist-card > :not(.artist-card__media) {
-      animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-        calc(var(--reveal-base, 0ms) + var(--i, 0) * 90ms + 400ms) backwards;
-    }
-  }
-
-  .piece-tile__media,
-  .artist-card__media {
-    --reveal-radius: var(--radius-media);
-  }
-
-  /* Artist page: the portrait's frame opens like the hero photo while the
-     name rises from behind its baseline and the rest fades up. Above the
-     fold, so these run on load from CSS alone. */
-  .artist-profile__photo {
-    --reveal-radius: var(--radius-feature);
-    animation: media-reveal var(--duration-entrance) var(--ease-in-out) 150ms
-      backwards;
-  }
-
-  .artist-profile__content {
-    & > h1 {
-      animation: enter-mask-rise var(--duration-entrance) var(--ease-out) 200ms
-        backwards;
-    }
-
-    & > :not(h1) {
-      animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-        calc(600ms + var(--i, 0) * 100ms) backwards;
-    }
-
-    & > :nth-child(3) {
-      --i: 1;
-    }
-
-    & > :nth-child(n + 4) {
-      --i: 2;
-    }
-  }
-
-  /* Contact page: after the hero, the visit card, the form, then the
-     address and hours, a beat apart. Short, so the form is ready fast. */
-  .contact-now,
-  .contact-page__form,
-  .contact-card {
-    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
-      var(--enter-delay, 400ms) backwards;
-  }
-
-  .contact-page__form {
-    --enter-delay: 500ms;
-  }
-
-  .contact-card {
-    --enter-delay: 600ms;
   }
 
   /* The global reduced-motion rule shortens durations, not delays, so the
@@ -1462,7 +1555,7 @@
       backwards;
   }
 
-  .artist-profile__content {
+  .artist-profile__intro {
     & > h1 {
       animation: enter-mask-rise var(--duration-entrance) var(--ease-out) 200ms
         backwards;
@@ -1480,6 +1573,26 @@
     & > :nth-child(n + 4) {
       --i: 2;
     }
+  }
+
+  /* The featured frames open after the details, left to right. */
+  .featured-work__media {
+    --reveal-radius: var(--radius-media);
+    animation: media-reveal var(--duration-entrance) var(--ease-in-out)
+      calc(900ms + var(--i, 0) * 120ms) backwards;
+  }
+
+  .featured-work__caption {
+    animation: enter-fade-up var(--duration-entrance) var(--ease-out)
+      calc(1200ms + var(--i, 0) * 120ms) backwards;
+  }
+
+  .featured-work__item:nth-child(2) {
+    --i: 1;
+  }
+
+  .featured-work__item:nth-child(3) {
+    --i: 2;
   }
 
   /* Contact page: after the hero, the visit card, the form, then the
@@ -1514,7 +1627,9 @@
     .reveal-on-view,
     .reveal-on-view *,
     .artist-profile__photo,
-    .artist-profile__content > *,
+    .artist-profile__intro > *,
+    .featured-work__media,
+    .featured-work__caption,
     .contact-now,
     .contact-page__form,
     .contact-card,

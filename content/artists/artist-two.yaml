@@ -7,3 +7,16 @@ instagram: ""
 order: 2
 role: resident
 photo: /images/artists/artist-two/photo.avif
+booking:
+  status: waitlist
+  note: Demo status. Next dates open in March.
+startedYear: 2016
+favorites:
+  - Portraits
+  - Roses
+  - Animals
+walkIns: Fridays, when the chair is free
+links:
+  - platform: other
+    url: https://example.com/
+    label: Website

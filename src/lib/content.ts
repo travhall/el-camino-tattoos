@@ -16,7 +16,16 @@ export type Artist = {
   order: number;
   role: "resident" | "apprentice" | "guest";
   visitDates: string;
+  /** Instagram first, then the artist's other links; invalid ones dropped. */
+  links: SocialLink[];
+  /** null when the artist chose not to show one. */
+  booking: { status: BookingStatus; note: string } | null;
+  startedYear: number | null;
+  favorites: readonly string[];
+  walkIns: string;
 };
+
+export type BookingStatus = "open" | "waitlist" | "closed";
 
 export type Piece = {
   slug: string;
@@ -57,6 +66,19 @@ export const getArtists = cache(async (): Promise<Artist[]> => {
       order: entry.order ?? 100,
       role: entry.role ?? "resident",
       visitDates: entry.visitDates,
+      links: [
+        socialLink("instagram", entry.instagram),
+        ...entry.links.map((link) =>
+          socialLink(link.platform as SocialPlatform, link.url, link.label),
+        ),
+      ].filter((link): link is SocialLink => link !== null),
+      booking:
+        entry.booking.status === "hidden"
+          ? null
+          : { status: entry.booking.status, note: entry.booking.note.trim() },
+      startedYear: entry.startedYear ?? null,
+      favorites: entry.favorites.map((f) => f.trim()).filter(Boolean),
+      walkIns: entry.walkIns.trim(),
     }))
     .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
 });
@@ -109,6 +131,20 @@ export const getPiecesByArtist = cache(async (artistSlug: string) => {
   const pieces = await getPieces();
   return pieces.filter((piece) => piece.artistSlug === artistSlug);
 });
+
+/**
+ * The artist's featured work at the top of their page: their ticked pieces
+ * first (newest first), topped up with their newest others to `limit`, so
+ * one tick never leaves the row with a single frame.
+ */
+export const getFeaturedPieces = cache(
+  async (artistSlug: string, limit = 3) => {
+    const pieces = await getPiecesByArtist(artistSlug);
+    const ticked = pieces.filter((piece) => piece.featured);
+    const rest = pieces.filter((piece) => !piece.featured);
+    return [...ticked, ...rest].slice(0, limit);
+  },
+);
 
 export const getPiece = cache(async (slug: string) => {
   const pieces = await getPieces();
@@ -190,6 +226,30 @@ export const getHome = cache(async (): Promise<HomeContent> => {
       buttonLabel: entry?.artists.buttonLabel.trim() ?? "",
     },
   };
+});
+
+export type ClosingPanel = {
+  heading: string;
+  intro: string;
+  buttonLabel: string;
+};
+
+export type ArtistsPageContent = {
+  /** For clients unsure who to ask. */
+  match: ClosingPanel;
+  /** For tattooers asking about a guest spot; hidden without a heading. */
+  guests: ClosingPanel;
+};
+
+/** The Artists page's panels besides its hero (Pages → Artists in Keystatic). */
+export const getArtistsPage = cache(async (): Promise<ArtistsPageContent> => {
+  const entry = await reader.singletons.pageArtists.read();
+  const panel = (p?: ClosingPanel): ClosingPanel => ({
+    heading: p?.heading.trim() ?? "",
+    intro: p?.intro.trim() ?? "",
+    buttonLabel: p?.buttonLabel.trim() ?? "",
+  });
+  return { match: panel(entry?.match), guests: panel(entry?.guests) };
 });
 
 export type Site = {

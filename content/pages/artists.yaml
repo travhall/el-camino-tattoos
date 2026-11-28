@@ -6,3 +6,18 @@ hero:
   primary: {}
   secondary: {}
   imagePosition: right
+match:
+  heading: Not sure who’s right for you?
+  intro: >-
+    Tell us what you’re thinking and we’ll match your idea with the right
+    hands. Each artist keeps their own book, but you only need to knock on one
+    door.
+  buttonLabel: Request an appointment
+guests:
+  heading: Traveling tattooer?
+  intro: >-
+    We’re open to the occasional guest artist who shares our approach to
+    tattooing. Our resident crew is full and we aren’t taking apprentice or
+    new-resident applications right now, but if you’re passing through, send
+    over your portfolio.
+  buttonLabel: Send your portfolio

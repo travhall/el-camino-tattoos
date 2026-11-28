@@ -214,6 +214,68 @@ test.describe("shop info", () => {
   });
 });
 
+test.describe("artist pages", () => {
+  test("a profile shows the artist's status, facts, links and request button", async ({
+    page,
+  }) => {
+    await open(page, "/artists/zz-fixture-one");
+    // Scoped to the profile: the Other artists cards show statuses too.
+    const status = page.locator(".artist-profile .booking-status");
+    await expect(status).toContainText("Waitlist");
+    await expect(status).toContainText("Fixture dates open soon.");
+    const facts = page.locator(".artist-facts");
+    await expect(facts.getByText("Tattooing since")).toBeVisible();
+    await expect(facts.getByText("Koi, Peonies")).toBeVisible();
+    await expect(facts.getByText("Fixture Fridays")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Request with Fixture One" }),
+    ).toHaveAttribute("href", "/contact?artist=zz-fixture-one");
+    await expect(
+      page.getByRole("link", { name: "Fixture One on Instagram" }),
+    ).toHaveAttribute("href", "https://www.instagram.com/fixture_one/");
+    await expect(
+      page.getByRole("link", { name: "Fixture One on Website" }),
+    ).toHaveAttribute("href", "https://example.com/");
+  });
+
+  test("featured work is numbered and captioned, and links to the piece", async ({
+    page,
+  }) => {
+    await open(page, "/artists/zz-fixture-one");
+    const featured = page.getByRole("region", { name: "Featured work" });
+    const first = featured.getByRole("listitem").first();
+    await expect(first.getByText("Fixture Koi")).toBeVisible();
+    await expect(first.getByText("Japanese · Forearm")).toBeVisible();
+    await expect(first.getByRole("link")).toHaveAttribute(
+      "href",
+      "/portfolio/zz-fixture-koi",
+    );
+  });
+
+  test("an artist without a booking status shows none", async ({ page }) => {
+    await open(page, "/artists/zz-fixture-two");
+    const profile = page.locator(".artist-profile");
+    await expect(profile.locator(".booking-status")).toHaveCount(0);
+    await expect(profile.locator(".artist-facts")).toHaveCount(0);
+  });
+
+  test("the artists page ends with the help and guest-artist panels", async ({
+    page,
+  }) => {
+    await open(page, "/artists");
+    const help = page.getByRole("region", {
+      name: "Not sure who’s right for you?",
+    });
+    await expect(
+      help.getByRole("link", { name: "Request an appointment" }),
+    ).toHaveAttribute("href", "/contact");
+    const guests = page.getByRole("region", { name: "Traveling tattooer?" });
+    await expect(
+      guests.getByRole("link", { name: "Send your portfolio" }),
+    ).toBeVisible();
+  });
+});
+
 test.describe("search and sharing metadata", () => {
   test("the homepage has a real description", async ({ page }) => {
     await open(page, "/");

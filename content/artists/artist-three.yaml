@@ -1,9 +1,16 @@
 name: Artist Three
+photo: /images/artists/artist-three/photo.avif
 specialties:
   - Fine line
   - Botanical
 bio: Demo profile. Replace with the real artist's name, photo and bio.
-instagram: ""
+links: []
+booking:
+  status: closed
+  note: Demo status.
+startedYear: 2019
+favorites:
+  - Wildflowers
+  - Ferns
 order: 3
 role: resident
-photo: /images/artists/artist-three/photo.avif

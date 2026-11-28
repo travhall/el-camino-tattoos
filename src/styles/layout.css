@@ -1,8 +1,13 @@
 /* Layout primitives. Compose these instead of spacing utilities in markup. */
 @layer components {
   /* Wraps the whole public site: sticky-footer column. */
+  /* overflow-x: clip guards against anything (a bleeding swipe row, an
+     entrance mid-flight) widening the page and letting phones pan sideways.
+     clip, not hidden: it isn't a scroll container, so the sticky header
+     still sticks. */
   .site-frame {
     @apply flex min-h-dvh flex-col antialiased;
+    overflow-x: clip;
   }
 
   /* First tab stop: jumps past the header to #main. Hidden until focused. */

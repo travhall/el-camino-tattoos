@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { ArtistGrid } from "@/components/artist-grid";
+import { NauticalStar } from "@/components/nautical-star";
+import { Photo } from "@/components/photo";
 import { ButtonLink } from "@/components/ui/button";
 import { Hero } from "@/components/hero";
-import { getArtists, getHero, getSite } from "@/lib/content";
+import { getArtists, getArtistsPage, getHero, getSite } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { siteName } from "@/lib/site";
 
@@ -13,13 +15,21 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function ArtistsPage() {
-  const [artists, site, hero] = await Promise.all([
+  const [artists, site, hero, page] = await Promise.all([
     getArtists(),
     getSite(),
     getHero("artists"),
+    getArtistsPage(),
   ]);
+  const { match, guests: guestPanel } = page;
+  // Email when the shop has an address (Shop → Contact & location), else
+  // the contact form.
+  const guestHref = site.email
+    ? `mailto:${site.email}?subject=${encodeURIComponent("Guest artist inquiry")}`
+    : "/contact";
   const residents = artists.filter((artist) => artist.role !== "guest");
   const guests = artists.filter((artist) => artist.role === "guest");
+  const faces = residents.filter((artist) => artist.photo).slice(0, 4);
 
   return (
     <div className="stack stack--xl">
@@ -34,35 +44,58 @@ export default async function ArtistsPage() {
         </section>
       )}
 
-      <div className="stack">
-        <h2>Not sure who&rsquo;s right for you?</h2>
-        <p className="measure">
-          Tell us what you&rsquo;re thinking and we&rsquo;ll match your idea
-          with the right hands. Each artist keeps their own book, but you only
-          need to knock on one door.
-        </p>
-        <div>
-          <ButtonLink href="/contact">Request an appointment</ButtonLink>
-        </div>
-      </div>
+      {/* Two panels: for clients who don't know who to ask (the main
+          button), and for tattooers after a guest spot (a quieter one).
+          Side by side from lg. Copy from Pages → Artists in Keystatic. */}
+      <div className="closing-panels">
+        <section aria-labelledby="match-heading" className="closing-panel">
+          {/* The crew's faces, overlapping: decorative, the cards above name them. */}
+          {faces.length > 1 && (
+            <div className="closing-panel__faces" aria-hidden="true">
+              {faces.map((artist) => (
+                <div key={artist.slug} className="closing-panel__face">
+                  <Photo
+                    src={artist.photo!}
+                    alt=""
+                    fill
+                    sizes="64px"
+                    className="image-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          <h2 id="match-heading">
+            {match.heading || "Not sure who’s right for you?"}
+          </h2>
+          {match.intro && <p className="closing-panel__text">{match.intro}</p>}
+          <div className="closing-panel__action">
+            <ButtonLink href="/contact">
+              {match.buttonLabel || "Request an appointment"}
+            </ButtonLink>
+          </div>
+        </section>
 
-      <div className="stack">
-        <h2>Traveling tattooer?</h2>
-        <p className="measure">
-          We&rsquo;re open to the occasional guest artist who shares our
-          approach to tattooing. Our resident crew is full and we aren&rsquo;t
-          taking apprentice or new-resident applications right now, but if
-          you&rsquo;re passing through, send over your portfolio.
-        </p>
-        {site.email && (
-          <p>
-            <a
-              href={`mailto:${site.email}?subject=${encodeURIComponent("Guest artist inquiry")}`}
-              className="link"
-            >
-              {site.email}
-            </a>
-          </p>
+        {guestPanel.heading && (
+          <section
+            aria-labelledby="guests-panel-heading"
+            className="closing-panel closing-panel--quiet"
+          >
+            <NauticalStar className="closing-panel__star" />
+            <h2 id="guests-panel-heading">{guestPanel.heading}</h2>
+            {guestPanel.intro && (
+              <p className="closing-panel__text">{guestPanel.intro}</p>
+            )}
+            <div className="closing-panel__action">
+              <ButtonLink href={guestHref} variant="secondary">
+                {guestPanel.buttonLabel || "Send your portfolio"}
+              </ButtonLink>
+              {/* Visible too, for anyone without a mail app set up. */}
+              {site.email && (
+                <p className="closing-panel__note">{site.email}</p>
+              )}
+            </div>
+          </section>
         )}
       </div>
     </div>

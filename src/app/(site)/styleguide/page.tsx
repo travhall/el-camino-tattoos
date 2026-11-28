@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { BookingStatus } from "@/components/booking-status";
+import { FeaturedWork } from "@/components/featured-work";
 import { Filmstrip } from "@/components/filmstrip";
+import { NauticalStar } from "@/components/nautical-star";
 import { Hero } from "@/components/hero";
 import {
   getArtists,
   getFilmstripPieces,
+  getPieces,
   type HeroContent,
 } from "@/lib/content";
 import { ShopPromises } from "@/components/shop-promises";
@@ -171,6 +175,8 @@ const sectionNav = [
   { id: "chips", title: "Choice chips" },
   { id: "filters", title: "Filter chips" },
   { id: "cards", title: "Cards and grid" },
+  { id: "artist-profile", title: "Artist profile" },
+  { id: "panels", title: "Closing panels" },
   { id: "filmstrip", title: "Filmstrip" },
   { id: "hero", title: "Hero" },
 ] as const;
@@ -209,9 +215,10 @@ export default async function StyleGuidePage() {
   const { config, steps, space } = typeScale;
   const { rolesCss, ramps } = await loadInputs();
   const pairs = checkContrast(rolesCss, ramps);
-  const [artists, filmstrip] = await Promise.all([
+  const [artists, filmstrip, pieces] = await Promise.all([
     getArtists(),
     getFilmstripPieces(),
+    getPieces(),
   ]);
 
   return (
@@ -697,6 +704,72 @@ export default async function StyleGuidePage() {
               <p className="artist-card__meta">Fine line, Traditional</p>
             </div>
           ))}
+        </div>
+      </Section>
+
+      <Section id="artist-profile" title="Artist profile">
+        <Label>
+          Booking status: optional per artist (Work → Artists → Booking status,
+          off by default). Dot plus words, never color alone; the cards drop the
+          note.
+        </Label>
+        <div className="stack stack--sm">
+          <BookingStatus
+            booking={{ status: "open", note: "Taking March dates." }}
+          />
+          <BookingStatus
+            booking={{ status: "waitlist", note: "Next dates open Feb 1." }}
+          />
+          <BookingStatus booking={{ status: "closed", note: "" }} />
+        </div>
+        <Label>Facts: each shows only when filled in.</Label>
+        <dl className="artist-facts">
+          {[
+            ["Tattooing since", "2014"],
+            ["Loves to tattoo", "Panthers, Roses, Daggers"],
+            ["Walk-ins", "Fridays, when the chair is free"],
+          ].map(([term, detail]) => (
+            <div key={term} className="artist-facts__item">
+              <dt className="artist-facts__term">{term}</dt>
+              <dd>{detail}</dd>
+            </div>
+          ))}
+        </dl>
+        <Label>
+          Featured work: the pieces ticked Featured (up to 3), topped up with
+          the newest. Landscape, numbered and captioned, unlike the 4:5 grid.
+          Scrolls sideways on phones.
+        </Label>
+        <FeaturedWork pieces={pieces.slice(0, 3)} artistName="the artist" />
+      </Section>
+
+      <Section id="panels" title="Closing panels">
+        <Label>
+          The foot of the Artists page (Pages → Artists). Filled panel for
+          clients with the main button; outlined panel for guest artists with a
+          secondary one. Side by side from lg.
+        </Label>
+        <div className="closing-panels">
+          <div className="closing-panel">
+            <h3>Not sure who&rsquo;s right for you?</h3>
+            <p className="closing-panel__text">
+              Tell us what you&rsquo;re thinking and we&rsquo;ll match your idea
+              with the right hands.
+            </p>
+            <div className="closing-panel__action">
+              <Button>Request an appointment</Button>
+            </div>
+          </div>
+          <div className="closing-panel closing-panel--quiet">
+            <NauticalStar className="closing-panel__star" />
+            <h3>Traveling tattooer?</h3>
+            <p className="closing-panel__text">
+              If you&rsquo;re passing through, send over your portfolio.
+            </p>
+            <div className="closing-panel__action">
+              <Button variant="secondary">Send your portfolio</Button>
+            </div>
+          </div>
         </div>
       </Section>
 

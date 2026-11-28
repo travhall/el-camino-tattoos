@@ -116,6 +116,39 @@ if (process.env.NETLIFY && !useGitHub) {
   );
 }
 
+// A list of profile links, each shown as an icon (src/lib/socials.ts): the
+// shop's in the header, an artist's on their page.
+function socialLinksField(label: string, description: string) {
+  return fields.array(
+    fields.object({
+      platform: fields.select({
+        label: "Platform",
+        options: Object.entries(socialPlatforms).map(([value, { label }]) => ({
+          value,
+          label,
+        })),
+        defaultValue: "instagram",
+      }),
+      url: fields.text({
+        label: "Link",
+        description:
+          "The full profile address, e.g. https://www.instagram.com/yourshop/. For Instagram the handle alone also works.",
+      }),
+      label: fields.text({
+        label: "Name (Other only)",
+        description:
+          "What the link is called for screen readers, e.g. TikTok. Only used when the platform is Other.",
+      }),
+    }),
+    {
+      label,
+      description,
+      itemLabel: (props) =>
+        `${props.fields.platform.value === "other" ? props.fields.label.value || "Other" : (socialPlatforms[props.fields.platform.value as SocialPlatform]?.label ?? "")}: ${props.fields.url.value}`,
+    },
+  );
+}
+
 const instagramField = () =>
   fields.text({
     label: "Instagram handle",
@@ -127,6 +160,25 @@ const instagramField = () =>
       },
     },
   });
+
+// A panel at the foot of a page: a heading, a short paragraph and one button.
+function closingPanelField(
+  label: string,
+  description: string,
+  defaultButton: string,
+) {
+  return fields.object(
+    {
+      heading: fields.text({ label: "Heading" }),
+      intro: fields.text({ label: "Text", multiline: true }),
+      buttonLabel: fields.text({
+        label: "Button label",
+        description: `Leave empty for “${defaultButton}”.`,
+      }),
+    },
+    { label, description },
+  );
+}
 
 // One page's entry under Pages: its hero, plus anything else the page has
 // (home adds the promises and the artists section). Each page is its own
@@ -188,6 +240,49 @@ export default config({
         }),
         bio: fields.text({ label: "Bio", multiline: true }),
         instagram: instagramField(),
+        links: socialLinksField(
+          "Other links",
+          "Optional. A website, a flash shop, TikTok and so on, shown as icons beside Instagram on the artist's page.",
+        ),
+        booking: fields.object(
+          {
+            status: fields.select({
+              label: "Status",
+              options: [
+                { label: "Don't show", value: "hidden" },
+                { label: "Books open", value: "open" },
+                { label: "Waitlist", value: "waitlist" },
+                { label: "Books closed", value: "closed" },
+              ],
+              defaultValue: "hidden",
+            }),
+            note: fields.text({
+              label: "Note",
+              description:
+                'Optional, shown after the status. e.g. "March dates go out Feb 1."',
+            }),
+          },
+          {
+            label: "Booking status",
+            description:
+              "Optional. Shown on the artist's page and card. Only turn it on if someone will keep it current: an out-of-date status sends clients the wrong way. Leave it on Don't show otherwise.",
+          },
+        ),
+        startedYear: fields.integer({
+          label: "Tattooing since",
+          description: "Optional. The year they started, e.g. 2014.",
+        }),
+        favorites: fields.array(fields.text({ label: "Subject" }), {
+          label: "Loves to tattoo",
+          description:
+            "Optional. A few subjects they most enjoy, e.g. Panthers, Roses, Daggers.",
+          itemLabel: (props) => props.value,
+        }),
+        walkIns: fields.text({
+          label: "Walk-ins",
+          description:
+            'Optional. When they take walk-ins, e.g. "Fridays, when the chair\'s free".',
+        }),
         order: fields.integer({
           label: "Order",
           description: "Lower numbers appear first.",
@@ -239,7 +334,8 @@ export default config({
         }),
         featured: fields.checkbox({
           label: "Featured",
-          description: "Show this piece first.",
+          description:
+            "Shows in the artist's featured work at the top of their page (up to 3, newest first) and first in the portfolio. Fewer than 3 ticked? Their newest other pieces fill the rest.",
           defaultValue: false,
         }),
         filmstrip: fields.checkbox({
@@ -318,33 +414,9 @@ export default config({
       path: "content/shop/socials",
       format: { data: "yaml" },
       schema: {
-        links: fields.array(
-          fields.object({
-            platform: fields.select({
-              label: "Platform",
-              options: Object.entries(socialPlatforms).map(
-                ([value, { label }]) => ({ value, label }),
-              ),
-              defaultValue: "instagram",
-            }),
-            url: fields.text({
-              label: "Link",
-              description:
-                "The full profile address, e.g. https://www.instagram.com/yourshop/. For Instagram the handle alone also works.",
-            }),
-            label: fields.text({
-              label: "Name (Other only)",
-              description:
-                "What the link is called for screen readers, e.g. TikTok. Only used when the platform is Other.",
-            }),
-          }),
-          {
-            label: "Social links",
-            description:
-              "Shown as icons in the header, in this order. Pick Other for a platform without its own icon yet; it gets a generic link icon.",
-            itemLabel: (props) =>
-              `${props.fields.platform.value === "other" ? props.fields.label.value || "Other" : (socialPlatforms[props.fields.platform.value as SocialPlatform]?.label ?? "")}: ${props.fields.url.value}`,
-          },
+        links: socialLinksField(
+          "Social links",
+          "Shown as icons in the header, in this order. Pick Other for a platform without its own icon yet; it gets a generic link icon.",
         ),
       },
     }),
@@ -390,7 +462,18 @@ export default config({
         },
       ),
     }),
-    pageArtists: pageSingleton("Artists", "artists"),
+    pageArtists: pageSingleton("Artists", "artists", {
+      match: closingPanelField(
+        "Help choosing",
+        "The first panel under the artists, for clients who don't know who to ask. Its button goes to the request form.",
+        "Request an appointment",
+      ),
+      guests: closingPanelField(
+        "Guest artists",
+        "The second panel, for tattooers asking about a guest spot. Its button emails the shop (Shop → Contact & location), or opens the contact form when there is no email. Leave the heading empty to hide this panel.",
+        "Send your portfolio",
+      ),
+    }),
     pagePortfolio: pageSingleton("Portfolio", "portfolio"),
     pageAftercare: pageSingleton("Aftercare", "aftercare"),
     pageFaq: pageSingleton("FAQ", "faq"),

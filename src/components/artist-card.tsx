@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BookingStatus } from "@/components/booking-status";
 import { Photo } from "@/components/photo";
 import { PhotoPlaceholder } from "@/components/photo-placeholder";
 import type { Artist } from "@/lib/content";
@@ -34,6 +35,7 @@ export function ArtistCard({
       {artist.role === "guest" && artist.visitDates && (
         <p className="artist-card__meta">Guest · {artist.visitDates}</p>
       )}
+      {artist.booking && <BookingStatus booking={artist.booking} compact />}
     </Link>
   );
 }

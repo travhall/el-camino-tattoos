@@ -22,6 +22,21 @@ export const fixtures = {
       instagram: "fixture_one",
       order: 1,
       photo: { file: "photo.png", color: [120, 140, 100] },
+      // The optional profile extras (YAML lines, written as given).
+      extra: [
+        "booking:",
+        "  status: waitlist",
+        "  note: Fixture dates open soon.",
+        "startedYear: 2015",
+        "favorites:",
+        "  - Koi",
+        "  - Peonies",
+        "walkIns: Fixture Fridays",
+        "links:",
+        "  - platform: other",
+        "    url: https://example.com/",
+        "    label: Website",
+      ],
     },
     {
       slug: "zz-fixture-two",
@@ -105,6 +120,7 @@ export async function seedFixtures() {
     ];
     if (artist.role) lines.push(`role: ${artist.role}`);
     if (artist.visitDates) lines.push(`visitDates: ${artist.visitDates}`);
+    if (artist.extra) lines.push(...artist.extra);
     if (artist.photo) {
       const dir = at("public/images/artists", artist.slug);
       await mkdir(dir, { recursive: true });
